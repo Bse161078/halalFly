@@ -486,6 +486,93 @@ const CustomLabelNormalLanding18 = (props) => {
     )
 }
 
+
+
+
+
+
+
+
+
+const CustomLabelCurrency = (props) => {
+    return (
+        <Typography
+            sx={{
+                fontSize:{xs:"10px",sm:"14px"}
+            }}
+            style={{
+                color: props.color?props.color:'white',
+                fontFamily: 'Inter-Regular',
+                cursor: "pointer",
+                fontWeight:props.fontWeight?props.fontWeight:"normal",
+                textAlign:props.textAlign
+            }}>
+            {props.text}
+            {props.children}
+        </Typography>
+    )
+}
+
+
+const CustomLabelCardHeader = (props) => {
+    return (
+        <Typography
+            sx={{
+                fontSize:{xs:"1rem",sm:"1.3rem"}
+            }}
+            style={{
+                color: props.color?props.color:'white',
+                fontFamily: 'Inter-Regular',
+                cursor: "pointer",
+                fontWeight:props.fontWeight?props.fontWeight:"normal",
+            }}>
+            {props.text}
+            {props.children}
+        </Typography>
+    )
+}
+
+
+
+
+const CustomLabelCardHeaderSmall = (props) => {
+    return (
+        <Typography
+            sx={{
+                fontSize:{xs:"12px",sm:"14px"}
+            }}
+            style={{
+                color: props.color?props.color:'white',
+                fontFamily: 'Inter-Regular',
+                cursor: "pointer",
+                fontWeight:props.fontWeight?props.fontWeight:"normal",
+            }}>
+            {props.text}
+            {props.children}
+        </Typography>
+    )
+}
+
+
+
+const CustomLabelXSmall = (props) => {
+    return (
+        <Typography
+            sx={{
+                fontSize:{xs:"10px",sm:"10px"}
+            }}
+            style={{
+                color: props.color?props.color:'white',
+                fontFamily: 'Inter-Regular',
+                cursor: "pointer",
+                fontWeight:props.fontWeight?props.fontWeight:"normal",
+            }}>
+            {props.text}
+            {props.children}
+        </Typography>
+    )
+}
+
 export {
     CustomLabelHeader,
     CustomLabelNormal20,
@@ -511,5 +598,9 @@ export {
     CustomLabelNormalLanding18,
     CustomLabelHeaderLogin,
     CustomLabelNormalBoldStats26,
-    CustomLabelReviewValue
+    CustomLabelReviewValue,
+    CustomLabelCurrency,
+    CustomLabelCardHeader,
+    CustomLabelCardHeaderSmall,
+    CustomLabelXSmall
 }

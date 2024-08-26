@@ -23,8 +23,8 @@ import UpdatePackage from "./components/package/Update";
 import Reward from "./components/reward";
 import ListReward from "./components/reward/List";
 import AddReward from "./components/reward/Add";
-
-
+import PackageDetails from "./components/package-details";
+import Register from "./components/register";
 
 
 const theme = createTheme({
@@ -47,29 +47,10 @@ function App() {
                     <Router>
                         <Routes>
                             <Route path="/" element={<Navigation/>}>
-                                <Route path="login" element={<Login/>}/>
-                                <Route path="home" element={<Home/>}>
-                                    <Route path="dashboard" element={<Stats/>}/>
-                                    <Route path="user" element={<Users/>}/>
-                                    <Route path="waiver" element={<Waivers/>}/>
-                                    <Route path="experience" element={<Experiences/>}/>
-                                    <Route path="group" element={<Groups/>}/>
-                                    <Route path="game-master" element={<GameMasters/>}/>
-                                    <Route path="privacy-policy" element={<StaticDataEditor type={"privacy_policy"}/>}/>
-                                    <Route path="package" element={<Package/>}>
-                                        <Route path="list" element={<ListPackages/>}/>
-                                        <Route path="add" element={<AddPackage/>}/>
-                                        <Route path="update" element={<UpdatePackage/>}/>
-                                    </Route>
-
-                                    <Route path="reward" element={<Reward/>}>
-                                        <Route path="list" element={<ListReward/>}/>
-                                        <Route path="add" element={<AddReward/>}/>
-                                    </Route>
-
-
-
-                                </Route>
+                                <Route path="home" element={<Home/>}></Route>
+                                <Route path="login" element={<Login/>}></Route>
+                                <Route path="register" element={<Register/>}></Route>
+                                <Route path="package/:id/details" element={<PackageDetails/>}></Route>
                             </Route>
                         </Routes>
                     </Router>

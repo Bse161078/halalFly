@@ -34,11 +34,17 @@ const initialConfirmation = {
 }
 
 const initialLogin = {
-    email: {value: null, error: "Phone cant be empty", showError: false},
+    email: {value: null, error: "Email cant be empty", showError: false},
+    display_name: {value: null, error: "Display name cant be empty", showError: false},
+    given_name: {value: null, error: "Given name cant be empty", showError: false},
+    sur_name: {value: null, error: "Surname cant be empty", showError: false},
     password: {value: null, error: "Password cant be empty", showError: false},
+    confirm_password: {value: null, error: "Confirm password cant be empty", showError: false},
+    phone: {value: null, error: "Phone cant be empty", showError: false},
+
 };
 
-const Login = () => {
+const Register = () => {
     const dispatch = useDispatch()
     const [confirmation, setConfirmation] = useState(initialConfirmation);
 
@@ -107,7 +113,7 @@ const Login = () => {
 
 
     return (
-        <Grid container style={{width: "100%", height: "99%", position: "relative"}}>
+        <Grid container style={{width: "100%", position: "relative",background:"#F1F3F8",padding:"40px"}}>
             {(loading) && <Loader/>}
             {
                 confirmation.show &&
@@ -118,12 +124,11 @@ const Login = () => {
                 />
             }
 
-            <Grid container style={{background: "#F1F3F8", top: "0", height: "100vh", position: "absolute"}}></Grid>
 
             <Grid item md={1} xs={0}></Grid>
 
-            <Grid item xs={0} md={5} container alignItems={"center"} justifyContent={"center"}
-                  style={{zIndex: 1, height: "80%"}}>
+            <Grid item xs={0} md={5} container alignItems={"center"}  justifyContent={"center"}
+                  style={{zIndex: 1, height: "80vh"}}>
                 <Grid container justifyContent={"center"}>
                     <Grid item>
                         <img src={HeaderLogo}/>
@@ -149,7 +154,7 @@ const Login = () => {
                 <Paper style={{width: "100%", background: "white", borderRadius: "30px", padding: "40px"}}>
                     <Grid item xs={12} container alignItems={"center"} justifyContent={'center'}>
                         <Grid item xs={12} container justifyContent={"center"}>
-                            <CustomLabelHeaderLarge text={"Sign In"} color={"black"} fontWeight={"bold"}/>
+                            <CustomLabelHeaderLarge text={"Sign Up"} color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "20px"}}>
 
@@ -167,6 +172,67 @@ const Login = () => {
                                 />
                             </Grid>
                         </Grid>
+
+
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+
+                            <Grid item>
+                                <CustomLabelCardHeader text={"Display Name"} color={"black"} fontWeight={"bold"}/>
+                            </Grid>
+
+                            <Grid item style={{marginTop: "10px"}}>
+                                <CustomTextField label={""}
+                                                 onChange={(e) => onChange(e, 'display_name')}
+                                                 error={user.display_name.showError}
+                                                 value={user.display_name.value}
+                                                 placeholder={""}
+                                                 helperText={user.display_name.showError ? user.display_name.error : ""}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+
+                            <Grid item>
+                                <CustomLabelCardHeader text={"Given Name"} color={"black"} fontWeight={"bold"}/>
+                            </Grid>
+
+                            <Grid item style={{marginTop: "10px"}}>
+                                <CustomTextField label={""}
+                                                 onChange={(e) => onChange(e, 'given_name')}
+                                                 error={user.given_name.showError}
+                                                 value={user.given_name.value}
+                                                 placeholder={""}
+                                                 helperText={user.given_name.showError ? user.given_name.error : ""}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+
+
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+
+                            <Grid item>
+                                <CustomLabelCardHeader text={"Surname"} color={"black"} fontWeight={"bold"}/>
+                            </Grid>
+
+                            <Grid item style={{marginTop: "10px"}}>
+                                <CustomTextField label={""}
+                                                 onChange={(e) => onChange(e, 'sur_name')}
+                                                 error={user.sur_name.showError}
+                                                 value={user.sur_name.value}
+                                                 placeholder={""}
+                                                 helperText={user.sur_name.showError ? user.sur_name.error : ""}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+
+
                         <Grid item xs={12} style={{marginTop: "30px"}}>
 
                             <Grid item>
@@ -183,23 +249,51 @@ const Login = () => {
                                                  helperText={user.password.showError ? user.password.error : ""}/>
                             </Grid>
                         </Grid>
+
+
+                        <Grid item xs={12} style={{marginTop: "30px"}}>
+
+                            <Grid item>
+                                <CustomLabelCardHeader text={"Confirm Password"} color={"black"} fontWeight={"bold"}/>
+                            </Grid>
+
+                            <Grid item style={{marginTop: "10px"}}>
+                                <CustomTextField label={""}
+                                                 onChange={(e) => onChange(e, 'confirm_password')}
+                                                 error={user.confirm_password.showError}
+                                                 value={user.confirm_password.value}
+                                                 type={"confirm_password"}
+                                                 placeholder={""}
+                                                 helperText={user.confirm_password.showError ? user.confirm_password.error : ""}/>
+                            </Grid>
+                        </Grid>
+
+
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+
+                            <Grid item>
+                                <CustomLabelCardHeader text={"Phone Number"} color={"black"} fontWeight={"bold"}/>
+                            </Grid>
+
+                            <Grid item style={{marginTop: "10px"}}>
+                                <CustomTextField label={""}
+                                                 onChange={(e) => onChange(e, 'phone')}
+                                                 error={user.phone.showError}
+                                                 value={user.phone.value}
+                                                 placeholder={""}
+                                                 helperText={user.phone.showError ? user.phone.error : ""}
+                                />
+                            </Grid>
+                        </Grid>
+
+
                         <Grid item container justifyContent={"center"}>
                             <Grid item xs={8} style={{marginTop: "40px"}} onClick={(e)=>navigate('/home')}>
-                                <CustomButtonLarge text={"Sign In"} background={"#37386C"}
+                                <CustomButtonLarge text={"Register"} background={"#37386C"}
                                                    borderRadius={25} />
                             </Grid>
                         </Grid>
 
-
-                        <Grid item container justifyContent={"center"}>
-                            <Grid item style={{marginTop: "20px"}}>
-                                <CustomLabelCardHeaderSmall text={"Don't have an acount?"} color={"black"}
-                                                   fontWeight={"bold"} >
-                                    <span style={{marginLeft:"3px",color:"#37386C"}} onClick={(e)=>navigate('/register')}>Sign up now</span>
-                                </CustomLabelCardHeaderSmall>
-
-                            </Grid>
-                        </Grid>
 
                     </Grid>
                 </Paper>
@@ -209,4 +303,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default Register;

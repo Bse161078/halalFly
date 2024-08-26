@@ -1,6 +1,7 @@
 import React from "react";
 import {makeStyles} from "@mui/styles";
 import TextField from "@mui/material/TextField/TextField";
+import MuiPhoneNumber from "mui-phone-number";
 
 
 const useStyles = makeStyles(() => ({
@@ -9,12 +10,14 @@ const useStyles = makeStyles(() => ({
         color:"white",
         "& .MuiInputBase-root": {
             background: "transparent",
-
+            borderRadius:"20px",
         },
 
         "& .MuiInputLabel-standard": {
             color: "black",
-            fontSize:"21px"
+            fontSize:"21px",
+            padding:"2px"
+
         },
     },
     rootWhite: {
@@ -75,13 +78,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 
+
+
+
 const CustomTextField = (props) => {
     const classes = useStyles();
 
     return (
         <TextField
             fullWidth
-            variant={"standard"}
             onChange={props.onChange}
             className={classes.root}
             label={props.label}
@@ -154,7 +159,7 @@ const CustomTextFieldWhite = (props) => {
             autoComplete='off'
             inputRef={props.params && props.params.inputRef}
             InputProps={{
-                sx:{color:"black"},disableUnderline: true,classes: {underline: classes.withoutUnderline}, ...props.otherInputProps
+                sx:{color:"black",background:"red"},disableUnderline: true,classes: {underline: classes.withoutUnderline}, ...props.otherInputProps
             }}
 
 
@@ -193,4 +198,37 @@ const CustomTextFilled = (props) => {
 }
 
 
-export {CustomTextField,CustomTextFieldWhite,CustomTextFilled,CustomTextMultipleField};
+
+
+const CustomPhoneNumber = (props) => {
+    const classes = useStyles();
+
+    return (
+
+
+
+        <MuiPhoneNumber
+            fullWidth
+            onChange={props.onChange}
+            className={classes.root}
+            label={props.label}
+            value={props.value && (props.value).length > 0 ? props.value : ''}
+            type={props.type}
+            helperText={props.helperText}
+            error={props.error}
+            disabled={props.disabled}
+            autoFocus={props.autoFocus}
+            autoComplete="new-password"
+            inputRef={props.params && props.params.inputRef}
+            InputProps={{
+                sx:{color:"black"},classes: {underline: classes.underline}, ...props.otherInputProps
+            }}
+
+            defaultCountry={'us'}
+
+        />
+    )
+}
+
+
+export {CustomTextField,CustomTextFieldWhite,CustomTextFilled,CustomTextMultipleField,CustomPhoneNumber};

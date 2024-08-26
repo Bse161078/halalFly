@@ -12,11 +12,11 @@ import CancelIcon from '@mui/icons-material/Cancel';
 const useStyles = makeStyles(() => ({
     notchedOutline: {
         borderWidth: "0px",
-        borderColor: "#F1F4F3 !important",
+        borderColor: "red !important",
     },
     root: {
         "& .MuiInputBase-root": {
-            background: "#F1F4F3",
+            background: "red",
             height: "40px",
             borderRadius: "5px"
         }
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
     notchedOutlineSearch: {
         borderWidth: "2px",
-        borderColor: "#F1F4F3 !important",
+        borderColor: "red !important",
     },
     rootSearch: {
         "& .MuiInputBase-root": {
@@ -44,7 +44,7 @@ const CustomDropdown = (props) => {
     const classes = useStyles();
     return (
         <FormControl fullWidth>
-            <InputLabel style={{marginTop: "-8px"}}>{props.placeholder}</InputLabel>
+            <InputLabel style={{marginTop: "-8px",color:"white",fontWeight:"bold"}}>{props.placeholder}</InputLabel>
             <Select
                 MenuProps={{
                     classes: {
@@ -52,9 +52,11 @@ const CustomDropdown = (props) => {
                     }
                 }}
                 value={props.value}
+                name={props.name}
                 onChange={props.onChange}
+                placebolder={props.placebolder}
                 className={classes.root}
-                style={{height: "40px", background: "#F1F4F3", borderRadius: 5, fontSize: 12, fontWeight: "bold"}}
+                style={{height: "40px", background: "white", borderRadius: 5, fontSize: 12, fontWeight: "bold"}}
                 disabled={props.disabled}
                 multiple={props.multiple}
                 autoFocus={props.autoFocus}

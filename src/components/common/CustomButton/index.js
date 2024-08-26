@@ -10,9 +10,10 @@ const CustomButtonLarge = (props) => {
             disabled={props.disabled}
             sx={{padding:{xs:"10px",sm:"15px"}}}
             style={{
-                background: '#187de4', width: "100%",opacity:props.disabled?0.8:1,
-                 borderRadius: 40, fontSize: 13, fontWeight: 'bold',
-                fontFamily: 'SF UI Text Regular', textTransform: 'none'
+                background: props.background || '#187de4', width: "100%",opacity:props.disabled?0.8:1,
+                 borderRadius: props.borderRadius || 40, fontSize: 13, fontWeight: 'bold',
+                fontFamily: 'SF UI Text Regular', textTransform: 'none',
+
             }}
             variant="contained"
 

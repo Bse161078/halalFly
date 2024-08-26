@@ -12,11 +12,8 @@ const Navigation = () => {
     const token = getAccessToken();
 
     useEffect(() => {
-        if (token && token.length > 0) {
-            navigate(`/home`,{replace:true});
-        } else {
-            navigate(`/login`,{replace:true});
-        }
+        navigate(`/home`,{replace:true});
+
     }, []);
 
 
