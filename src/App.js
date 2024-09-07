@@ -25,6 +25,7 @@ import ListReward from "./components/reward/List";
 import AddReward from "./components/reward/Add";
 import PackageDetails from "./components/package-details";
 import Register from "./components/register";
+import { CssBaseline, Box } from "@mui/material";
 
 
 const theme = createTheme({
@@ -39,23 +40,29 @@ const theme = createTheme({
     },
 });
 
+
+
 function App() {
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <Router>
-                        <Routes>
-                            <Route path="/" element={<Navigation/>}>
-                                <Route path="home" element={<Home/>}></Route>
-                                <Route path="login" element={<Login/>}></Route>
-                                <Route path="register" element={<Register/>}></Route>
-                                <Route path="package/:id/details" element={<PackageDetails/>}></Route>
-                            </Route>
-                        </Routes>
-                    </Router>
-                </Provider>
-            </ThemeProvider>
+           <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <Router>
+          {/* MUI's Box for styling */}
+          <Box sx={{ backgroundColor: '#FAF3E0', minHeight: '100vh', paddingBottom: '20px' }}>
+            <CssBaseline /> {/* Ensures consistent padding/margin resets */}
+            <Routes>
+              <Route path="/" element={<Navigation />}>
+                <Route path="home" element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="package/:id/details" element={<PackageDetails />} />
+              </Route>
+            </Routes>
+          </Box>
+        </Router>
+      </Provider>
+    </ThemeProvider>
         </>
     );
 }

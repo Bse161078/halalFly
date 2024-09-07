@@ -34,6 +34,7 @@ import MasterCardIcon from "src/assets/images/mastercard.svg";
 import ApplePayIcon from "src/assets/images/applepay.svg";
 import {useLocation, useNavigate, Outlet} from "react-router-dom"
 import Filter from "../filter/Filter";
+import MyCarousel from "../Mycarousel/myCarousel";
 
 
 const responsive = {
@@ -67,9 +68,8 @@ const Home = () => {
     return (
         <Grid container style={{width: "100%",overflow:"hidden"}}>
 
-            <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
-            <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>
-
+<Grid container style={{background: "#004225", height: "100vh", position: "absolute"}}></Grid>
+<Grid container style={{background: "#FAF3E0", top: "100vh", height: "100vh", position: "absolute"}}></Grid>
 
             <Grid container justifyContent={"center"} style={{top: 0, position: "relative"}}>
                 <Grid container item xs={10} style={{marginTop: 10}} justifyContent={"space-between"}
@@ -118,42 +118,52 @@ const Home = () => {
 
 
                 <Grid item xs={10} container style={{marginTop: "30px"}}>
-                    <Grid item xs={"auto"}>
-                        <Paper style={{padding: "10px 10px", background: "#A46CEF", borderRadius: "10px"}}>
-                            <Grid container alignItems={"center"}>
-                                <Grid item>
-                                    <HomeIcon style={{color: "white"}}/>
+                                            <Grid item xs={"auto"}>
+                                    <Paper style={{
+                                        padding: "10px 10px", 
+                                        background: "#FAF3E0",  // Soft beige background for a calming look
+                                        borderRadius: "10px", 
+                                        border: '1px solid #004225' // Dark green border for consistency
+                                    }}>
+                                        <Grid container alignItems={"center"}>
+                                            <Grid item>
+                                                <HomeIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
+                                            </Grid>
+                                            <Grid item style={{marginLeft: "5px"}}>
+                                                <CustomLabelCurrency text={"Home"} fontWeight={"bold"} color="black" style={{color: "#004225"}}/> {/* Dark green text color */}
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
                                 </Grid>
-                                <Grid item style={{marginLeft: "5px"}}>
-                                    <CustomLabelCurrency text={"Home"} fontWeight={"bold"}/>
+                        <Grid item xs={"auto"}>
+                            <Paper style={{
+                                padding: "10px 10px", 
+                                background: "#FAF3E0",  // Soft beige background for a calming look
+                                borderRadius: "10px", 
+                                marginLeft: "20px",
+                                border: '1px solid #004225', // Dark green border for trust and spirituality
+                                opacity: 0.9
+                            }}>
+                                <Grid container alignItems={"center"}>
+                                    <Grid item>
+                                        <Inventory2OutlinedIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
+                                    </Grid>
+                                    <Grid item style={{marginLeft: "5px"}}>
+                                        <CustomLabelCurrency text={"Umrah Packages"} color="black" fontWeight={"bold"} style={{color: "#004225"}}/> {/* Dark green text color */}
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={"auto"}>
-                        <Paper style={{
-                            padding: "10px 10px", background: "transparent", borderRadius: "10px", marginLeft: "20px",
-                            border: '1px solid #A46CEF', opacity: 0.9
-                        }}>
-                            <Grid container alignItems={"center"}>
-                                <Grid item>
-                                    <Inventory2OutlinedIcon style={{color: "white"}}/>
-                                </Grid>
-                                <Grid item style={{marginLeft: "5px"}}>
-                                    <CustomLabelCurrency text={"Umrah Packages"} fontWeight={"bold"}/>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>
+                            </Paper>
+                        </Grid>
+
                 </Grid>
 
 
                 <Grid item container xs={10} style={{marginTop: "30px"}}>
                     <Grid item container>
-                        <CustomLabelHeaderLarge text={"Let us take you .... there."} color={"white"}/>
+                        <CustomLabelHeaderLarge text={"Begin your spiritual journey with us."} color={"white"}/>
                     </Grid>
                     <Grid item container>
-                        <CustomLabelHeaderLarge text={"Embark on your journey with our affordable packages."}
+                        <CustomLabelHeaderLarge text={"Discover our affordable Umrah packages and let us guide you every step of the way."}
                                                 color={"white"}/>
                     </Grid>
 
@@ -165,383 +175,69 @@ const Home = () => {
                 </Grid>
 
 
-                <Grid item xs={10} container style={{marginTop: "50px", paddingBottom: "20px"}}>
-                    <Carousel responsive={responsive}
-                              containerClass="carousel-container"
-                              itemClass="carousel-item"
-                              infinite={true}
-                              arrows={false}
-                    >
-                        <Paper style={{borderRadius: "10px"}}>
-                            <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeader color={"black"}
-                                                           text={"Umrah Pilgrimage - Concludes in Madinah"}
-                                                           fontWeight={"bold"}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <div style={{background: "#FFE8EE", padding: "3px 10px", borderRadius: 10}}>
-                                        <Grid container alignItems={"center"}>
-                                            <FlagIcon style={{color: "#FF678C"}}/>
-                                            <CustomLabelCurrency text={"Popular"} fontWeight={"bold"}
-                                                                 color={"#FF678C"}/>
-                                        </Grid>
-                                    </div>
-                                </Grid>
+                <Grid container spacing={2} sx={{ marginTop: "50px" }}>
+  
+  {/* Carousel Container */}
+  <Grid item xs={12} sx={{ height: 'auto', marginBottom: '40px', overflow: 'visible', position: 'relative' }}> 
+    <MyCarousel />
+  </Grid>
 
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Makkah 1N"}
-                                                                fontWeight={"bold"}/>
-                                    <span style={{marginLeft: 10}}></span>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Madinah 1N"}
-                                                                fontWeight={"bold"}/>
-                                </Grid>
+  {/* NUSUK Partner Information */}
+  <Grid 
+    container 
+    sx={{
+      padding: "20px",
+      background: "#004225",
+      borderRadius: "10px",
+      color: "white",
+      marginTop: '20px',  // Adds spacing between the carousel and this section
+      zIndex: 1  // Ensures it does not overlap with the carousel
+    }}
+    justifyContent="space-between"
+  >
+    <Grid item xs={12} md={9} sx={{ marginBottom: { xs: '20px', md: 0 } }}>
+      <CustomLabelCardHeader
+        text="We are an accredited NUSUK partner with experience of servicing more than 4 Million Umrah pilgrims through our platforms."
+        color="white"
+      />
+    </Grid>
 
+    {/* Right Side - Ministry and Nusuk Icons */}
+    <Grid 
+      item 
+      xs={12} 
+      md={3} 
+      container 
+      justifyContent="center" 
+      alignItems="center" 
+      spacing={1}
+      sx={{ gap: { xs: 2, md: 1 } }}
+    >
+      <Grid item container justifyContent="center">
+        <CustomLabelCurrency text="Accredited By NUSUK" fontWeight="bold" color="white" />
+      </Grid>
 
-                                <Grid item container style={{padding: "5px 10px"}} spacing={2}>
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <FlightIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
+      <Grid item>
+        <img src={MinistryIcon} alt="Ministry Icon" style={{ maxWidth: '100%', height: 'auto' }} />
+      </Grid>
 
-                                        </Grid>
-                                    </Grid>
+      <Grid item>
+        <Divider orientation="vertical" flexItem sx={{ height: { xs: '40%', md: '60%' }, background: "#F1F3F8" }} />
+      </Grid>
 
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <DirectionsCarFilledIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Transfers"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
+      <Grid item>
+        <img src={NusukIcon} alt="Nusuk Icon" style={{ maxWidth: '100%', height: 'auto' }} />
+      </Grid>
+    </Grid>
+  </Grid>
+</Grid>
 
 
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <HotelIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
 
 
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <LocalActivityIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Activities"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-                                    <Divider style={{width: "100%", marginTop: "20px"}}/>
 
 
-                                    <Grid item container style={{padding: "15px"}} justifyContent={"space-between"}>
-                                        <Grid item xs={"auto"}>
-                                            <Grid item container alignItems={"center"} spacing={1}>
-                                                <Grid item>
-                                                    <CustomLabelCardHeaderSmall color={"black"} text={"AED"}
-                                                                                fontWeight={"bold"}/>
-                                                </Grid>
-                                                <Grid item>
-                                                    <CustomLabelCardHeader color={"black"} text={"3162.53"}
-                                                                           fontWeight={"bold"}/>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"} text={"Starting from"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"}
-                                                                     text={"Per person on twin sharing"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
-                                            <CustomButtonLarge text={"View Detail"} background={"#37386C"}
-                                                               borderRadius={15}/>
-                                        </Grid>
-                                    </Grid>
-
-                                </Grid>
-
-                            </Grid>
-                        </Paper>
-
-
-                        <Paper style={{borderRadius: "10px"}}>
-                            <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeader color={"black"}
-                                                           text={"Umrah Pilgrimage - Concludes in Madinah"}
-                                                           fontWeight={"bold"}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <div style={{background: "#FFE8EE", padding: "3px 10px", borderRadius: 10}}>
-                                        <Grid container alignItems={"center"}>
-                                            <FlagIcon style={{color: "#FF678C"}}/>
-                                            <CustomLabelCurrency text={"Popular"} fontWeight={"bold"}
-                                                                 color={"#FF678C"}/>
-                                        </Grid>
-                                    </div>
-                                </Grid>
-
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Makkah 1N"}
-                                                                fontWeight={"bold"}/>
-                                    <span style={{marginLeft: 10}}></span>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Madinah 1N"}
-                                                                fontWeight={"bold"}/>
-                                </Grid>
-
-
-                                <Grid item container style={{padding: "5px 10px"}} spacing={2}>
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <FlightIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <DirectionsCarFilledIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Transfers"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <HotelIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <LocalActivityIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Activities"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-                                    <Divider style={{width: "100%", marginTop: "20px"}}/>
-
-
-                                    <Grid item container style={{padding: "15px"}} justifyContent={"space-between"}>
-                                        <Grid item xs={"auto"}>
-                                            <Grid item container alignItems={"center"} spacing={1}>
-                                                <Grid item>
-                                                    <CustomLabelCardHeaderSmall color={"black"} text={"AED"}
-                                                                                fontWeight={"bold"}/>
-                                                </Grid>
-                                                <Grid item>
-                                                    <CustomLabelCardHeader color={"black"} text={"3162.53"}
-                                                                           fontWeight={"bold"}/>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"} text={"Starting from"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"}
-                                                                     text={"Per person on twin sharing"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
-                                            <CustomButtonLarge text={"View Detail"} background={"#37386C"}
-                                                               borderRadius={15}/>
-                                        </Grid>
-                                    </Grid>
-
-                                </Grid>
-
-                            </Grid>
-                        </Paper>
-
-
-                        <Paper style={{borderRadius: "10px"}}>
-                            <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeader color={"black"}
-                                                           text={"Umrah Pilgrimage - Concludes in Madinah"}
-                                                           fontWeight={"bold"}/>
-                                </Grid>
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <div style={{background: "#FFE8EE", padding: "3px 10px", borderRadius: 10}}>
-                                        <Grid container alignItems={"center"}>
-                                            <FlagIcon style={{color: "#FF678C"}}/>
-                                            <CustomLabelCurrency text={"Popular"} fontWeight={"bold"}
-                                                                 color={"#FF678C"}/>
-                                        </Grid>
-                                    </div>
-                                </Grid>
-
-                                <Grid item container style={{padding: "5px 10px"}}>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Makkah 1N"}
-                                                                fontWeight={"bold"}/>
-                                    <span style={{marginLeft: 10}}></span>
-                                    <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Madinah 1N"}
-                                                                fontWeight={"bold"}/>
-                                </Grid>
-
-
-                                <Grid item container style={{padding: "5px 10px"}} spacing={2}>
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <FlightIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <DirectionsCarFilledIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Transfers"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <HotelIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Flights"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-
-                                    <Grid item xs={"auto"} container alignItems={"center"}>
-                                        <Grid item>
-                                            <LocalActivityIcon style={{color: "#A0A7B5"}}/>
-                                        </Grid>
-                                        <Grid item style={{marginLeft: "5px"}}>
-                                            <CustomLabelCardHeaderSmall color={"#A0A7B5"} text={"Activities"}
-                                                                        fontWeight={"bold"}/>
-
-                                        </Grid>
-                                    </Grid>
-
-                                    <Divider style={{width: "100%", marginTop: "20px"}}/>
-
-
-                                    <Grid item container style={{padding: "15px"}} justifyContent={"space-between"}>
-                                        <Grid item xs={"auto"}>
-                                            <Grid item container alignItems={"center"} spacing={1}>
-                                                <Grid item>
-                                                    <CustomLabelCardHeaderSmall color={"black"} text={"AED"}
-                                                                                fontWeight={"bold"}/>
-                                                </Grid>
-                                                <Grid item>
-                                                    <CustomLabelCardHeader color={"black"} text={"3162.53"}
-                                                                           fontWeight={"bold"}/>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"} text={"Starting from"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                            <Grid item container>
-                                                <CustomLabelCurrency color={"#A0A7B5"}
-                                                                     text={"Per person on twin sharing"}
-                                                                     fontWeight={"bold"}/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
-                                            <CustomButtonLarge text={"View Detail"} background={"#37386C"}
-                                                               borderRadius={15}/>
-                                        </Grid>
-                                    </Grid>
-
-                                </Grid>
-
-                            </Grid>
-                        </Paper>
-
-                    </Carousel>
-                </Grid>
-
-                <Grid item xs={10} container
-                      style={{padding: "20px", marginTop: "20px", background: "#140442", borderRadius: "10px"}}
-                      justifyContent={"space-between"}>
-                    <Grid item xs={9}>
-                        <CustomLabelCardHeader
-                            text={"We are an accredited NUSUK partner with experience of servicing more than 4 Million Umrah pilgrims through our platforms."}
-                            color={"white"}/>
-                    </Grid>
-                    <Grid item xs container justifyContent={"center"} alignItems={"center"} spacing={1}>
-                        <Grid item container justifyContent={"center"}>
-                            <CustomLabelCurrency text={"Accredited By NUSUK"} fontWeight={"bold"}/>
-                        </Grid>
-                        <Grid item>
-                            <img src={MinistryIcon}/>
-                        </Grid>
-                        <Grid item style={{height: "60%"}}>
-                            <Divider orientation="vertical" flexItem style={{height: "100%", background: "#F1F3F8"}}/>
-                        </Grid>
-                        <Grid item>
-                            <img src={NusukIcon}/>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-
-                <Grid item xs={12} container style={{background: "white", marginTop: "40px"}} justifyContent={"center"}>
+                <Grid item xs={12} container style={{background: "#FAF3E0", marginTop: "40px"}} justifyContent={"center"}>
                     <Grid item xs={10} container justifyContent={"space-between"} style={{padding: "40px 0px"}}>
                         <Grid item container xs={"auto"} direction={"column"}>
                             <Grid item>

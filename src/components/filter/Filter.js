@@ -1,38 +1,28 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
-    Button,
     MenuItem,
-    Select,
     TextField,
-    Typography,
-    FormControl,
-    InputLabel,
     Grid,
 } from "@mui/material";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {styled} from "@mui/material/styles";
-import {PickersDay} from "@mui/x-date-pickers/PickersDay";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {CustomDropdown} from "../common/CustomDrowDown";
-import {CustomLabel} from "../common/CustomLabel";
-import {CustomTextField} from "../common/text";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { styled } from "@mui/material/styles";
+import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomDropdown } from "../common/CustomDrowDown";
+import { CustomLabel } from "../common/CustomLabel";
 
 function Filter() {
     const [selection, setSelection] = useState({
         first: "",
         city: "",
         package: "",
-        room: null,
-        adults: "",
+        room: "",
         date: null,
     });
 
-    const [activeStep, setActiveStep] = useState(1);
-    const [submitted, setSubmitted] = useState(false);
     const [availableDates, setAvailableDates] = useState([]);
 
     const availabilityRules = {
@@ -46,7 +36,6 @@ function Filter() {
             Deluxe: [2, 4], // Tuesdays and Thursdays
             Premium: [5, 6], // Fridays and Saturdays
         },
-        // Add more cities and rules as needed
     };
 
     useEffect(() => {
@@ -62,8 +51,7 @@ function Filter() {
     }, [selection.room]);
 
     const handleSelection = (e, step) => {
-        setSelection({...selection, [e.target.name]: e.target.value});
-        setActiveStep(step);
+        setSelection({ ...selection, [e.target.name]: e.target.value });
     };
 
     const updateAvailableDates = () => {
@@ -71,11 +59,8 @@ function Filter() {
         const selectedPackage = selection.package;
 
         if (selectedCity && selectedPackage) {
-            console.log(`Selected City: ${selectedCity}, Selected Package: ${selectedPackage}`);
-
             const days = availabilityRules[selectedCity]?.[selectedPackage];
             if (!days) {
-                console.error("No available dates found for the selected city and package combination.");
                 setAvailableDates([]);
                 return;
             }
@@ -125,28 +110,23 @@ function Filter() {
                 adults = 3;
                 break;
             case "Quad":
-                adults = ""; // Leave it to user input
+                adults = "";
                 break;
             default:
                 adults = "";
         }
-        setSelection((prev) => ({...prev, adults}));
+        setSelection((prev) => ({ ...prev, adults }));
     };
 
-    const handleSearch = () => {
-        setSubmitted(true);
-    };
-
-    const HighlightedDay = styled(PickersDay)(({theme}) => ({
+    const HighlightedDay = styled(PickersDay)(({ theme }) => ({
         "&.Mui-selected": {
             backgroundColor: theme.palette.primary.main,
             color: theme.palette.primary.contrastText,
         },
     }));
 
-
     const Day = (props) => {
-        const {highlightedDays = [], day, outsideCurrentMonth, ...other} = props;
+        const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
         const isSelected =
             !props.outsideCurrentMonth &&
@@ -162,65 +142,40 @@ function Filter() {
         );
     };
 
-    const renderSelect = (label, name, options, step) => {
-
-        const TourListContainer = options.map((list) =>
-            <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
+    const renderSelect = (label, name, options, step, disabled) => {
         return (
             <CustomDropdown
                 value={selection[name]}
-                container={TourListContainer}
                 name={name}
+                container={options.map((list) => (
+                    <MenuItem key={list} value={list}>
+                        <CustomLabel text={list} />
+                    </MenuItem>
+                ))}
                 placeholder={label}
                 onChange={(e) => handleSelection(e, step + 1)}
+                disabled={disabled} // Disable if the condition for previous step is not met
             />
-        )
-    }
-    console.log(availableDates)
-
-
-    const TourListContainer = ["Umrah", "Hajj", "Umrah Ramadan"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const CityListContainer = ["London", "Paris", "Berlin", "Rome"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const PackageListContainer = ["Standard", "Deluxe", "Premium"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const RoomListContainer = ["Single", "Double", "Triple", "Quad"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
+        );
+    };
 
     return (
-        <Grid container justifyContent={"space-between"} style={{width: "100%"}}>
+        <Grid container justifyContent={"space-between"} style={{ width: "100%" }}>
             <Grid container justifyContent={"space-between"}>
                 <Grid item xs={2}>
-
-
-                    {renderSelect("First Selection", "first", ["Umrah", "Hajj", "Umrah Ramadan"], 1)}
-
+                    {renderSelect("First Selection", "first", ["Umrah", "Hajj", "Umrah Ramadan"], 1, false)}
                 </Grid>
 
                 <Grid item xs={2}>
-                    {renderSelect("City", "city", ["London", "Paris", "Berlin", "Rome"], 2)}
-
+                    {renderSelect("City", "city", ["London", "Paris", "Berlin", "Rome"], 2, !selection.first)}
                 </Grid>
 
                 <Grid item xs={2}>
-                    {renderSelect("Package", "package", ["Standard", "Deluxe", "Premium"], 3)}
-
+                    {renderSelect("Package", "package", ["Standard", "Deluxe", "Premium"], 3, !selection.city)}
                 </Grid>
 
-
                 <Grid item xs={2}>
-                    {renderSelect("Room Option", "room", ["Single", "Double", "Triple", "Quad"], 4)}
-
+                    {renderSelect("Room Option", "room", ["Single", "Double", "Triple", "Quad"], 4, !selection.package)}
                 </Grid>
 
                 <Grid item xs={2}>
@@ -235,29 +190,39 @@ function Filter() {
                                 },
                             }}
                             value={selection.date}
-                            onChange={(newValue) => handleSelection({
-                                target: {
-                                    name: "date",
-                                    value: newValue?.toISOString().split("T")[0]
-                                }
-                            }, 5)}
-
+                            onChange={(newValue) =>
+                                handleSelection({
+                                    target: {
+                                        name: "date",
+                                        value: newValue?.toISOString().split("T")[0],
+                                    },
+                                }, 5)
+                            }
                             sx={{
-                                background: "white",
+                                background: "#FAF3E0",
                                 borderRadius: "5px",
+                                color: "#004225",
                             }}
-
-                            shouldDisableDate={(date) => !availableDates.includes(dayjs(date).format("YYYY-MM-DD"))}
-                            renderInput={(params) => <TextField
-                                style={{height: "40px", background: "white"}} {...params}
-
-                            />}
+                            shouldDisableDate={(date) =>
+                                !availableDates.includes(dayjs(date).format("YYYY-MM-DD"))
+                            }
+                            disabled={!selection.room} // Disable until the room is selected
+                            renderInput={(params) => (
+                                <TextField
+                                    style={{
+                                        height: "40px",
+                                        background: "#FFFFFF",
+                                        color: "#004225",
+                                        borderRadius: "5px",
+                                    }}
+                                    {...params}
+                                />
+                            )}
                         />
                     </LocalizationProvider>
                 </Grid>
             </Grid>
         </Grid>
-
     );
 }
 
