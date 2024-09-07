@@ -16,7 +16,7 @@ const hotels = [
       location: 'Madinah, Saudi Arabia',
       price: '36,777.50',
       rating: '4.7',
-      imageUrl: 'https://pixabay.com/photos/lobby-hotel-interior-hallway-398845/'
+      imageUrl: 'https://cdn.pixabay.com/photo/2014/07/21/19/20/lobby-398845_1280.jpg'
     },
     {
       id: 3,
