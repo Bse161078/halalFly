@@ -8,7 +8,7 @@ const hotels = [
       location: 'Makkah, Saudi Arabia',
       price: '22,425.03',
       rating: '4.5',
-      imageUrl: 'https://via.placeholder.com/300'
+      imageUrl: 'https://cdn.pixabay.com/photo/2017/08/06/14/56/people-2593251_1280.jpg'
     },
     {
       id: 2,
@@ -16,7 +16,7 @@ const hotels = [
       location: 'Madinah, Saudi Arabia',
       price: '36,777.50',
       rating: '4.7',
-      imageUrl: 'https://via.placeholder.com/300'
+      imageUrl: 'https://pixabay.com/photos/lobby-hotel-interior-hallway-398845/'
     },
     {
       id: 3,
@@ -24,7 +24,7 @@ const hotels = [
       location: 'Madinah, Saudi Arabia',
       price: '53,820.82',
       rating: '4.8',
-      imageUrl: 'https://via.placeholder.com/300'
+      imageUrl: 'https://cdn.pixabay.com/photo/2012/11/21/10/24/building-66789_1280.jpg'
     }
   ];
 const HotelList = () => {
