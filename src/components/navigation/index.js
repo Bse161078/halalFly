@@ -12,9 +12,11 @@ const Navigation = () => {
     const token = getAccessToken();
 
     useEffect(() => {
-        navigate(`/home`,{replace:true});
-
-    }, []);
+        // Only redirect to home if we're at the root path and there's no token
+        if (location.pathname === "/" && !token) {
+          navigate("/home", { replace: true });
+        }
+      }, [location, token, navigate]);
 
 
     return (

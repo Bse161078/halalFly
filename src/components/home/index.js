@@ -118,44 +118,68 @@ const Home = () => {
 
 
                 <Grid item xs={10} container style={{marginTop: "30px"}}>
-                                            <Grid item xs={"auto"}>
-                                    <Paper style={{
-                                        padding: "10px 10px", 
-                                        background: "#FAF3E0",  // Soft beige background for a calming look
-                                        borderRadius: "10px", 
-                                        border: '1px solid #004225' // Dark green border for consistency
-                                    }}>
-                                        <Grid container alignItems={"center"}>
-                                            <Grid item>
-                                                <HomeIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
-                                            </Grid>
-                                            <Grid item style={{marginLeft: "5px"}}>
-                                                <CustomLabelCurrency text={"Home"} fontWeight={"bold"} color="black" style={{color: "#004225"}}/> {/* Dark green text color */}
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                </Grid>
-                        <Grid item xs={"auto"}>
-                            <Paper style={{
-                                padding: "10px 10px", 
-                                background: "#FAF3E0",  // Soft beige background for a calming look
-                                borderRadius: "10px", 
-                                marginLeft: "20px",
-                                border: '1px solid #004225', // Dark green border for trust and spirituality
-                                opacity: 0.9
-                            }}>
-                                <Grid container alignItems={"center"}>
-                                    <Grid item>
-                                        <Inventory2OutlinedIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
-                                    </Grid>
-                                    <Grid item style={{marginLeft: "5px"}}>
-                                        <CustomLabelCurrency text={"Umrah Packages"} color="black" fontWeight={"bold"} style={{color: "#004225"}}/> {/* Dark green text color */}
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
+  {/* Home Button */}
+  <Grid item xs={"auto"}>
+    <Paper style={{
+        padding: "10px 10px", 
+        background: "#FAF3E0",  // Soft beige background
+        borderRadius: "10px", 
+        border: '1px solid #004225' // Dark green border
+    }}>
+      <Grid container alignItems={"center"}>
+        <Grid item>
+          <HomeIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
+        </Grid>
+        <Grid item style={{marginLeft: "5px"}}>
+          <CustomLabelCurrency text={"Home"} fontWeight={"bold"} color="black" style={{color: "#004225"}}/> {/* Dark green text color */}
+        </Grid>
+      </Grid>
+    </Paper>
+  </Grid>
 
-                </Grid>
+  {/* Umrah Packages Button */}
+  <Grid item xs={"auto"}>
+    <Paper style={{
+        padding: "10px 10px", 
+        background: "#FAF3E0",  // Soft beige background
+        borderRadius: "10px", 
+        marginLeft: "20px",
+        border: '1px solid #004225', // Dark green border
+        opacity: 0.9
+    }}>
+      <Grid container alignItems={"center"}>
+        <Grid item>
+          <Inventory2OutlinedIcon style={{color: "#004225"}}/> {/* Dark green icon color */}
+        </Grid>
+        <Grid item style={{marginLeft: "5px"}}>
+          <CustomLabelCurrency text={"Umrah Packages"} color="black" fontWeight={"bold"} style={{color: "#004225"}}/> {/* Dark green text color */}
+        </Grid>
+      </Grid>
+    </Paper>
+  </Grid>
+
+  {/* Hotels Button */}
+  <Grid item xs={"auto"}>
+    <Paper style={{
+        padding: "10px 10px", 
+        background: "#FAF3E0",  // Soft beige background
+        borderRadius: "10px", 
+        marginLeft: "20px",
+        border: '1px solid #004225', // Dark green border
+        opacity: 0.9
+    }}>
+      <Grid container onClick={() => navigate('/hotels')}  alignItems={"center"}>
+        <Grid item>
+          <HotelIcon style={{color: "#004225"}}/> {/* Dark green icon for hotels */}
+        </Grid>
+        <Grid item style={{marginLeft: "5px"}}>
+          <CustomLabelCurrency text={"Hotels"}   color="black" fontWeight={"bold"} style={{color: "#004225"}}  /> {/* Dark green text */}
+        </Grid>
+      </Grid>
+    </Paper>
+  </Grid>
+</Grid>
+
 
 
                 <Grid item container xs={10} style={{marginTop: "30px"}}>

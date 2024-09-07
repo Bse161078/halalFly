@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import 'src/App.css';
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, BrowserRouter} from "react-router-dom";
 import Navigation from "src/components/navigation";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
@@ -26,6 +26,7 @@ import AddReward from "./components/reward/Add";
 import PackageDetails from "./components/package-details";
 import Register from "./components/register";
 import { CssBaseline, Box } from "@mui/material";
+import HotelList from './components/Hotels/hotelList';
 
 
 const theme = createTheme({
@@ -57,6 +58,7 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="package/:id/details" element={<PackageDetails />} />
+                <Route path="hotels" element={<HotelList />} />
               </Route>
             </Routes>
           </Box>
