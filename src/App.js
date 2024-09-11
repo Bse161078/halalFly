@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import 'src/App.css';
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, BrowserRouter} from "react-router-dom";
 import Navigation from "src/components/navigation";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
@@ -9,8 +9,11 @@ import Home from "src/components/home";
 import {store} from "src/store/store";
 import {Provider} from 'react-redux'
 import 'src/assets/css/index.css'
+
 import PackageDetails from "./components/package-details";
 import Register from "./components/register";
+import { CssBaseline, Box } from "@mui/material";
+import HotelList from './components/Hotels/hotelList';
 
 
 const theme = createTheme({
@@ -25,23 +28,30 @@ const theme = createTheme({
     },
 });
 
+
+
 function App() {
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <Router>
-                        <Routes>
-                            <Route path="/" element={<Navigation/>}>
-                                <Route path="home" element={<Home/>}></Route>
-                                <Route path="login" element={<Login/>}></Route>
-                                <Route path="register" element={<Register/>}></Route>
-                                <Route path="package/:id/details" element={<PackageDetails/>}></Route>
-                            </Route>
-                        </Routes>
-                    </Router>
-                </Provider>
-            </ThemeProvider>
+           <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <Router>
+          {/* MUI's Box for styling */}
+          <Box sx={{ backgroundColor: '#FAF3E0', minHeight: '100vh', paddingBottom: '20px' }}>
+            <CssBaseline /> {/* Ensures consistent padding/margin resets */}
+            <Routes>
+              <Route path="/" element={<Navigation />}>
+                <Route path="home" element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="package/:id/details" element={<PackageDetails />} />
+                <Route path="hotels" element={<HotelList />} />
+              </Route>
+            </Routes>
+          </Box>
+        </Router>
+      </Provider>
+    </ThemeProvider>
         </>
     );
 }

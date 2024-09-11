@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "halal-fly"
-  }
+    "default": "halalfly-1a512",
+    "halalfly": "halalfly-1a512"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

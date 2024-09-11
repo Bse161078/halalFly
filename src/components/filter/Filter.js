@@ -1,53 +1,48 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
-    Button,
     MenuItem,
-    Select,
     TextField,
-    Typography,
-    FormControl,
-    InputLabel,
     Grid,
 } from "@mui/material";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {styled} from "@mui/material/styles";
-import {PickersDay} from "@mui/x-date-pickers/PickersDay";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {CustomDropdown} from "../common/CustomDrowDown";
-import {CustomLabel} from "../common/CustomLabel";
-import {CustomTextField} from "../common/text";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { styled } from "@mui/material/styles";
+import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Tooltip from '@mui/material/Tooltip';
+import { CustomDropdown } from "../common/CustomDrowDown";
+import { CustomLabel } from "../common/CustomLabel";
 
-function Filter() {
+function Filter({ allTravelOptions }) {
     const [selection, setSelection] = useState({
         first: "",
         city: "",
         package: "",
-        room: null,
-        adults: "",
+        room: "",
         date: null,
     });
 
-    const [activeStep, setActiveStep] = useState(1);
-    const [submitted, setSubmitted] = useState(false);
+    const [tripTypes, setTripTypes] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [packages, setPackages] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [availableDates, setAvailableDates] = useState([]);
 
-    const availabilityRules = {
-        London: {
-            Standard: [6], // Saturdays
-            Deluxe: [0, 6], // Sundays and Saturdays
-            Premium: [1, 3, 5], // Mondays, Wednesdays, Fridays
-        },
-        Paris: {
-            Standard: [2], // Tuesdays
-            Deluxe: [2, 4], // Tuesdays and Thursdays
-            Premium: [5, 6], // Fridays and Saturdays
-        },
-        // Add more cities and rules as needed
-    };
+    useEffect(() => {
+        if (allTravelOptions?.length > 0) {
+            const uniqueTripTypes = [...new Set(allTravelOptions.map(option => option.tripTypes))].filter(Boolean);
+            const uniqueCities = [...new Set(allTravelOptions.map(option => option.city))].filter(Boolean);
+            const uniquePackages = [...new Set(allTravelOptions.map(option => option.package))].filter(Boolean);
+            const uniqueRooms = [...new Set(allTravelOptions.map(option => option.roomType))].filter(Boolean);
+
+            setTripTypes(uniqueTripTypes);
+            setCities(uniqueCities);
+            setPackages(uniquePackages);
+            setRooms(uniqueRooms);
+        }
+    }, [allTravelOptions]);
 
     useEffect(() => {
         if (selection.city && selection.package) {
@@ -62,8 +57,7 @@ function Filter() {
     }, [selection.room]);
 
     const handleSelection = (e, step) => {
-        setSelection({...selection, [e.target.name]: e.target.value});
-        setActiveStep(step);
+        setSelection({ ...selection, [e.target.name]: e.target.value });
     };
 
     const updateAvailableDates = () => {
@@ -71,45 +65,17 @@ function Filter() {
         const selectedPackage = selection.package;
 
         if (selectedCity && selectedPackage) {
-            console.log(`Selected City: ${selectedCity}, Selected Package: ${selectedPackage}`);
+            const dateSpots = allTravelOptions?.filter(option => option.city === selectedCity && option.package === selectedPackage)
+                .flatMap(option => 
+                    option.departureDate.map(dateObj => ({
+                        date: dateObj.date,
+                        spots: dateObj.availableSpots || 0
+                    }))
+                );
 
-            const days = availabilityRules[selectedCity]?.[selectedPackage];
-            if (!days) {
-                console.error("No available dates found for the selected city and package combination.");
-                setAvailableDates([]);
-                return;
-            }
-
-            const dates = generateRandomDates(days);
-            setAvailableDates(dates);
+            const uniqueDateSpots = [...new Map(dateSpots.map(d => [d.date, d])).values()];
+            setAvailableDates(uniqueDateSpots);
         }
-    };
-
-    const generateRandomDates = (days) => {
-        let dates = [];
-        let currentDate = new Date();
-        let endDate = new Date("2024-12-31");
-
-        while (currentDate <= endDate) {
-            if (days.includes(currentDate.getDay())) {
-                dates.push(new Date(currentDate));
-            }
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        // Limit dates to 5 per month
-        const limitedDates = dates.reduce((acc, date) => {
-            const monthYear = `${date.getMonth()}-${date.getFullYear()}`;
-            if (!acc[monthYear]) {
-                acc[monthYear] = [];
-            }
-            if (acc[monthYear].length < 5) {
-                acc[monthYear].push(date.toISOString().split("T")[0]);
-            }
-            return acc;
-        }, {});
-
-        return Object.values(limitedDates).flat();
     };
 
     const updateAdultsBasedOnRoom = () => {
@@ -125,105 +91,86 @@ function Filter() {
                 adults = 3;
                 break;
             case "Quad":
-                adults = ""; // Leave it to user input
+                adults = "";
                 break;
             default:
                 adults = "";
         }
-        setSelection((prev) => ({...prev, adults}));
+        setSelection((prev) => ({ ...prev, adults }));
     };
 
-    const handleSearch = () => {
-        setSubmitted(true);
-    };
-
-    const HighlightedDay = styled(PickersDay)(({theme}) => ({
+    const HighlightedDay = styled(PickersDay)(({ theme }) => ({
         "&.Mui-selected": {
             backgroundColor: theme.palette.primary.main,
             color: theme.palette.primary.contrastText,
         },
+        "&:hover": {
+            backgroundColor: theme.palette.primary.light,
+        },
     }));
 
-
     const Day = (props) => {
-        const {highlightedDays = [], day, outsideCurrentMonth, ...other} = props;
-
+        const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+        const dateObj = availableDates.find(d => dayjs(d.date).isSame(day, 'day'));
         const isSelected =
             !props.outsideCurrentMonth &&
             highlightedDays.includes(day.format("YYYY-MM-DD"));
 
         return (
-            <HighlightedDay
-                {...other}
-                outsideCurrentMonth={outsideCurrentMonth}
-                day={day}
-                selected={isSelected}
+            <Tooltip
+                title={dateObj && dateObj.spots > 0 ? `${dateObj.spots} spots available` : "0 spots available"}
+                arrow
+                placement="top"
+            >
+                <HighlightedDay
+                    {...other}
+                    outsideCurrentMonth={outsideCurrentMonth}
+                    day={day}
+                    selected={isSelected}
+                >
+                    {/* Optional: Add any additional styling or content here */}
+                </HighlightedDay>
+            </Tooltip>
+        );
+    };
+
+    const renderSelect = (label, name, options, step, disabled) => {
+        return (
+            <CustomDropdown
+                value={selection[name]}
+                name={name}
+                container={options.map((list) => (
+                    <MenuItem key={list} value={list}>
+                        <CustomLabel text={list} />
+                    </MenuItem>
+                ))}
+                placeholder={label}
+                onChange={(e) => handleSelection(e, step + 1)}
+                disabled={disabled}
             />
         );
     };
 
-    const renderSelect = (label, name, options, step) => {
-
-        const TourListContainer = options.map((list) =>
-            <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-        return (
-            <CustomDropdown
-                value={selection[name]}
-                container={TourListContainer}
-                name={name}
-                placeholder={label}
-                onChange={(e) => handleSelection(e, step + 1)}
-            />
-        )
-    }
-    console.log(availableDates)
-
-
-    const TourListContainer = ["Umrah", "Hajj", "Umrah Ramadan"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const CityListContainer = ["London", "Paris", "Berlin", "Rome"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const PackageListContainer = ["Standard", "Deluxe", "Premium"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
-    const RoomListContainer = ["Single", "Double", "Triple", "Quad"].map((list) =>
-        <MenuItem value={list}><CustomLabel text={list}/></MenuItem>)
-
-
     return (
-        <Grid container justifyContent={"space-between"} style={{width: "100%"}}>
-            <Grid container justifyContent={"space-between"}>
-                <Grid item xs={2}>
-
-
-                    {renderSelect("First Selection", "first", ["Umrah", "Hajj", "Umrah Ramadan"], 1)}
-
+        <Grid container spacing={2} justifyContent="center" sx={{ width: "100%", padding: { xs: 1, sm: 2, md: 3 } }}>
+            <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={12} sm={6} md={2}>
+                    {renderSelect("Trip Type", "first", tripTypes, 1, false)}
                 </Grid>
 
-                <Grid item xs={2}>
-                    {renderSelect("City", "city", ["London", "Paris", "Berlin", "Rome"], 2)}
-
+                <Grid item xs={12} sm={6} md={2}>
+                    {renderSelect("City", "city", cities, 2, !selection.first)}
                 </Grid>
 
-                <Grid item xs={2}>
-                    {renderSelect("Package", "package", ["Standard", "Deluxe", "Premium"], 3)}
-
+                <Grid item xs={12} sm={6} md={2}>
+                    {renderSelect("Package", "package", packages, 3, !selection.city)}
                 </Grid>
 
-
-                <Grid item xs={2}>
-                    {renderSelect("Room Option", "room", ["Single", "Double", "Triple", "Quad"], 4)}
-
+                <Grid item xs={12} sm={6} md={2}>
+                    {renderSelect("Room Option", "room", rooms, 4, !selection.package)}
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={12} sm={6} md={2}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             slots={{
@@ -231,33 +178,45 @@ function Filter() {
                             }}
                             slotProps={{
                                 day: {
-                                    highlightedDays: availableDates,
+                                    highlightedDays: availableDates.map(d => d.date),
                                 },
                             }}
                             value={selection.date}
-                            onChange={(newValue) => handleSelection({
-                                target: {
-                                    name: "date",
-                                    value: newValue?.toISOString().split("T")[0]
-                                }
-                            }, 5)}
-
+                            onChange={(newValue) =>
+                                handleSelection({
+                                    target: {
+                                        name: "date",
+                                        value: newValue?.toISOString().split("T")[0],
+                                    },
+                                }, 5)
+                            }
                             sx={{
-                                background: "white",
+                                background: "#FAF3E0",
                                 borderRadius: "5px",
+                                color: "#004225",
+                                width: '100%', // Ensure full width on smaller screens
                             }}
-
-                            shouldDisableDate={(date) => !availableDates.includes(dayjs(date).format("YYYY-MM-DD"))}
-                            renderInput={(params) => <TextField
-                                style={{height: "40px", background: "white"}} {...params}
-
-                            />}
+                            shouldDisableDate={(date) =>
+                                !availableDates.some(d => dayjs(d.date).isSame(date, 'day'))
+                            }
+                            disabled={!selection.room}
+                            renderInput={(params) => (
+                                <TextField
+                                    fullWidth
+                                    style={{
+                                        height: "40px",
+                                        background: "#FFFFFF",
+                                        color: "#004225",
+                                        borderRadius: "5px",
+                                    }}
+                                    {...params}
+                                />
+                            )}
                         />
                     </LocalizationProvider>
                 </Grid>
             </Grid>
         </Grid>
-
     );
 }
 

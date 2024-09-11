@@ -74,16 +74,16 @@ const getAllHotelsApi = createAsyncThunk("getAllHotelsApi", async (data, {reject
 
 
 
-const getHotelTravelCardsApi = createAsyncThunk("getHotelTravelCardsApi", async (data, {rejectWithValue}) => {
-        try {
-            const response = await axios.get(`${baseUl}hotels/travel-cards`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
-            return response.data.data;
-        } catch (e) {
-            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
-            return rejectWithValue(errorResponse);
-        }
+const getHotelTravelCardsApi = createAsyncThunk("getHotelTravelCardsApi", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`${baseUl}hotels/travel-cards`, { headers: { "Authorization": `Bearer ${getAccessToken()}` } });
+        console.log('API Response:', response.data); // Add this line to check the response
+        return response.data.data;
+    } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        return rejectWithValue(errorResponse);
     }
-)
+});
 
 
 
