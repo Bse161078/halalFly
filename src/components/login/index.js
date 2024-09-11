@@ -16,12 +16,12 @@ import {CustomButtonLarge} from "../common/CustomButton";
 import {validateUserInput, transformValidateObject} from "src/utils";
 import Loader from "../common/Loader";
 import {useDispatch, useSelector} from "react-redux";
-import {validateAdmin} from "../../services";
 import ResponsiveConfirmationDialog from "src/components/common/ResponsiveConfirmation";
 import Button from "@mui/material/Button/Button";
 import {saveToken, getToken} from "src/utils";
-import {validateUserSliceReset} from "../../reducers";
 import Paper from "@mui/material/Paper/Paper";
+import {logUserApiReset} from "../../reducers";
+import {logUserApi} from "../../services";
 
 const initialConfirmation = {
     show: false,
@@ -45,7 +45,7 @@ const Login = () => {
 
     const [user, setUser] = useState(initialLogin);
     const [count, setCount] = useState(0);
-    const {data, loading, error} = useSelector((state) => state.validateUserReducer);
+    const {data, loading, error} = useSelector((state) => state.logUserApiReducer);
 
     const location = useLocation().pathname;
     let navigate = useNavigate();
@@ -53,7 +53,7 @@ const Login = () => {
 
     useEffect(() => {
         return function cleanup() {
-            dispatch(validateUserSliceReset());
+            dispatch(logUserApiReset());
         };
     }, [])
 
@@ -63,7 +63,7 @@ const Login = () => {
             setConfirmation({
                 show: true,
                 title: "Error",
-                text: "Invalid email or password"
+                text: error
                 ,
                 data: {},
                 isUpdate: false,
@@ -73,15 +73,14 @@ const Login = () => {
                     }}>ok</Button>,
                 buttonNo: null
             });
-            dispatch(validateUserSliceReset())
+            dispatch(logUserApiReset())
         } else if (data) {
 
-            console.log("data = ", data);
             const user = data.data;
 
             saveToken(JSON.stringify(user.access_token));
             navigate('/home', {replace: true});
-            dispatch(validateUserSliceReset())
+            //dispatch(logUserApiReset())
 
         }
     }, [data, loading, error]);
@@ -98,7 +97,7 @@ const Login = () => {
         const validate = validateUserInput(user);
         if (validate.isValid) {
             const data = transformValidateObject(validate.data)
-            dispatch(validateAdmin(data));
+            dispatch(logUserApi(data));
         } else {
             setUser(validate.data);
             setCount(count + 1);
@@ -184,7 +183,7 @@ const Login = () => {
                             </Grid>
                         </Grid>
                         <Grid item container justifyContent={"center"}>
-                            <Grid item xs={8} style={{marginTop: "40px"}} onClick={(e)=>navigate('/home')}>
+                            <Grid item xs={8} style={{marginTop: "40px"}} onClick={handleValidateUser}>
                                 <CustomButtonLarge text={"Sign In"} background={"#37386C"}
                                                    borderRadius={25} />
                             </Grid>

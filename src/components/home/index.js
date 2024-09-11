@@ -34,6 +34,17 @@ import MasterCardIcon from "src/assets/images/mastercard.svg";
 import ApplePayIcon from "src/assets/images/applepay.svg";
 import {useLocation, useNavigate, Outlet} from "react-router-dom"
 import Filter from "../filter/Filter";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getAllHotelsApiReset, getHotelTravelCardsApiReset,
+    getHotelTravelOptionsApiReducer, getHotelTravelOptionsApiReset,
+    getUserApiReducer,
+    getUserApiReset,
+    logUserApiReset
+} from "../../reducers";
+import {getAllHotelsApi, getHotelTravelCardsApi, getHotelTravelOptionsApi, getUserApi} from "../../services";
+import {removeAccessToken} from "../../utils";
+import Loader from "../common/Loader";
 
 
 const responsive = {
@@ -58,14 +69,57 @@ const responsive = {
 
 const Home = () => {
     let navigate = useNavigate();
+    const dispatch = useDispatch()
+
+
+    const {data, loading, error} = useSelector((state) => state.getUserApiReducer);
+    const {data: allHotels, loading: allHotelsLoading, error: allHotelsError} =
+        useSelector((state) => state.getAllHotelsApiReducer);
+    const {data: allTravelCards, loading: allTravelCardsLoading, error: allTravelCardsError} =
+        useSelector((state) => state.getHotelTravelCardsApiReducer);
+    const {data: allTravelOptions, loading: allTravelOptionsLoading, error: allTravelOptionsError} =
+        useSelector((state) => state.getHotelTravelOptionsApiReducer);
 
 
     useEffect(() => {
+        dispatch(getUserApi())
+        dispatch(getAllHotelsApi())
+        dispatch(getHotelTravelCardsApi())
+        dispatch(getHotelTravelOptionsApi())
 
-    }, [])
+        return function cleanup() {
+            dispatch(getUserApiReset());
+            dispatch(getAllHotelsApiReset());
+            dispatch(getHotelTravelCardsApiReset());
+            dispatch(getHotelTravelOptionsApiReset());
+
+        };
+    }, []);
+
+
+    useEffect(() => {
+        if (error) {
+            if (error === "Please authenticate") {
+                removeAccessToken();
+                navigate(`/login`);
+                dispatch(getUserApiReset());
+
+            }
+        }
+    }, [data, loading, error]);
+
+
+    console.log("user profile = ",data);
+    console.log("hotels = ",allHotels);
+    console.log("travel cards = ",allTravelCards);
+    console.log("travel options = ",allTravelOptions);
+
+
+
 
     return (
-        <Grid container style={{width: "100%",overflow:"hidden"}}>
+        <Grid container style={{width: "100%", overflow: "hidden"}}>
+            {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading) && <Loader/>}
 
             <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
             <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>
@@ -104,7 +158,8 @@ const Home = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={"auto"} container alignItems={"center"} style={{marginLeft: "10px"}} onClick={(e)=>navigate('/login')}>
+                        <Grid item xs={"auto"} container alignItems={"center"} style={{marginLeft: "10px"}}
+                              onClick={(e) => navigate('/login')}>
                             <Grid item style={{marginLeft: 5}}>
                                 <img src={AvatarLogin} style={{width: 24, height: 24}}/>
                             </Grid>
@@ -160,7 +215,7 @@ const Home = () => {
                 </Grid>
 
 
-                <Grid item container xs={10} style={{marginTop:"30px"}}>
+                <Grid item container xs={10} style={{marginTop: "30px"}}>
                     <Filter/>
                 </Grid>
 
@@ -174,8 +229,9 @@ const Home = () => {
                     >
                         <Paper style={{borderRadius: "10px"}}>
                             <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
+                                <Grid item xs={12} style={{height: "80%"}}>
+                                    <img src={SampleImage}
+                                         style={{width: "100%", height: "100%", borderRadius: "10px"}}/>
                                 </Grid>
                                 <Grid item container style={{padding: "5px 10px"}}>
                                     <CustomLabelCardHeader color={"black"}
@@ -274,7 +330,8 @@ const Home = () => {
                                                                      fontWeight={"bold"}/>
                                             </Grid>
                                         </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
+                                        <Grid xs={5} item container alignItems={"flex-end"}
+                                              onClick={(e) => navigate("/package/id/details")}>
                                             <CustomButtonLarge text={"View Detail"} background={"#37386C"}
                                                                borderRadius={15}/>
                                         </Grid>
@@ -288,8 +345,9 @@ const Home = () => {
 
                         <Paper style={{borderRadius: "10px"}}>
                             <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
+                                <Grid item xs={12} style={{height: "80%"}}>
+                                    <img src={SampleImage}
+                                         style={{width: "100%", height: "100%", borderRadius: "10px"}}/>
                                 </Grid>
                                 <Grid item container style={{padding: "5px 10px"}}>
                                     <CustomLabelCardHeader color={"black"}
@@ -388,7 +446,8 @@ const Home = () => {
                                                                      fontWeight={"bold"}/>
                                             </Grid>
                                         </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
+                                        <Grid xs={5} item container alignItems={"flex-end"}
+                                              onClick={(e) => navigate("/package/id/details")}>
                                             <CustomButtonLarge text={"View Detail"} background={"#37386C"}
                                                                borderRadius={15}/>
                                         </Grid>
@@ -402,8 +461,9 @@ const Home = () => {
 
                         <Paper style={{borderRadius: "10px"}}>
                             <Grid container>
-                                <Grid item xs={12} style={{height:"80%"}}>
-                                    <img src={SampleImage} style={{width: "100%",height:"100%", borderRadius: "10px"}}/>
+                                <Grid item xs={12} style={{height: "80%"}}>
+                                    <img src={SampleImage}
+                                         style={{width: "100%", height: "100%", borderRadius: "10px"}}/>
                                 </Grid>
                                 <Grid item container style={{padding: "5px 10px"}}>
                                     <CustomLabelCardHeader color={"black"}
@@ -502,7 +562,8 @@ const Home = () => {
                                                                      fontWeight={"bold"}/>
                                             </Grid>
                                         </Grid>
-                                        <Grid xs={5} item container alignItems={"flex-end"} onClick={(e)=>navigate("/package/id/details")}>
+                                        <Grid xs={5} item container alignItems={"flex-end"}
+                                              onClick={(e) => navigate("/package/id/details")}>
                                             <CustomButtonLarge text={"View Detail"} background={"#37386C"}
                                                                borderRadius={15}/>
                                         </Grid>
@@ -611,28 +672,28 @@ const Home = () => {
                                 <CustomLabelCurrency text={"Quick Links"} color={"black"} fontWeight={"bold"}/>
                             </Grid>
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Home"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Home"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Privacy Policy"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Privacy Policy"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"FAQS"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"FAQS"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Contact Us"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Contact Us"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Terms Of Use"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Terms Of Use"} color={"#78829D"}/>
                             </Grid>
 
                         </Grid>
@@ -643,23 +704,22 @@ const Home = () => {
                                 <CustomLabelCurrency text={"Company"} color={"black"} fontWeight={"bold"}/>
                             </Grid>
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Blogs"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Blogs"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"About Us"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"About Us"} color={"#78829D"}/>
                             </Grid>
 
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Carrer"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Carrer"} color={"#78829D"}/>
                             </Grid>
 
 
                         </Grid>
-
 
 
                         <Grid item container xs={"auto"} direction={"column"}>
@@ -667,13 +727,12 @@ const Home = () => {
                                 <CustomLabelCurrency text={"Resources"} color={"black"} fontWeight={"bold"}/>
                             </Grid>
 
-                            <Grid item style={{marginTop:"20px"}}>
-                                <CustomLabelCurrency text={"Packages"} color={"#78829D"} />
+                            <Grid item style={{marginTop: "20px"}}>
+                                <CustomLabelCurrency text={"Packages"} color={"#78829D"}/>
                             </Grid>
 
 
                         </Grid>
-
 
 
                     </Grid>

@@ -1,4 +1,4 @@
-const baseUl="http://waive-pro-8360c99e6626.herokuapp.com/";
+const baseUl="https://halalfly-admin-729476ebbf2f.herokuapp.com/";
 const baseFileUrl="http://musicpassonline.com:3000/images"
 
 

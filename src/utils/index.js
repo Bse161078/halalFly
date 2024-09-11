@@ -59,8 +59,8 @@ export const transformValidateObject = (obejctToTransform) => {
 }
 
 
-export const saveToken = (token) => {
-    localStorage.setItem("token", token)
+export const saveToken = async (token) => {
+    await localStorage.setItem("token", token)
 }
 
 export const getToken = () => {
@@ -71,7 +71,6 @@ export const getToken = () => {
 export const getAccessToken=()=>{
     try {
         const token = getToken().replaceAll('"','')  || "";
-        console.log(token.replaceAll('"',''))
         return token
     }catch (e) {
         return "";
