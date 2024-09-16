@@ -36,6 +36,8 @@ import {useLocation, useNavigate, Outlet} from "react-router-dom"
 import Filter from "../filter/Filter";
 import {useDispatch, useSelector} from "react-redux";
 import {
+    createPaymentLinkApiReset,
+    createPaymentLinkApiSliceReducer,
     getAllHotelsApiReset, getHotelTravelCardsApiReset,
     getHotelTravelOptionsApiReducer, getHotelTravelOptionsApiReset,
     getUserApiReducer,
@@ -43,6 +45,7 @@ import {
     logUserApiReset, searchPackagesApiReset, searchPackagesApiSliceReducer
 } from "../../reducers";
 import {
+    createPaymentLinkApi,
     getAllHotelsApi,
     getHotelTravelCardsApi,
     getHotelTravelOptionsApi,
@@ -87,6 +90,8 @@ const Home = () => {
         useSelector((state) => state.getHotelTravelOptionsApiReducer);
     const {data: searchPackages, loading: searchPackagesLoading, error: searchPackagesError} =
         useSelector((state) => state.searchPackagesApiSliceReducer);
+    const {data: createPaymentLink, loading: createPaymentLinkLoading, error: createPaymentLinkError} =
+        useSelector((state) => state.createPaymentLinkApiSliceReducer);
 
 
     useEffect(() => {
@@ -94,7 +99,8 @@ const Home = () => {
         dispatch(getAllHotelsApi())
         dispatch(getHotelTravelCardsApi())
         dispatch(getHotelTravelOptionsApi())
-        dispatch(searchPackagesApi({search:"UmrahPrime"}))
+        dispatch(searchPackagesApi({search: "UmrahPrime"}))
+        dispatch(createPaymentLinkApi({package: "Package1"}))
 
         return function cleanup() {
             dispatch(getUserApiReset());
@@ -102,6 +108,7 @@ const Home = () => {
             dispatch(getHotelTravelCardsApiReset());
             dispatch(getHotelTravelOptionsApiReset());
             dispatch(searchPackagesApiReset());
+            dispatch(createPaymentLinkApiReset());
 
         };
     }, []);
@@ -119,18 +126,18 @@ const Home = () => {
     }, [data, loading, error]);
 
 
-    console.log("user profile = ",data);
-    console.log("hotels = ",allHotels);
-    console.log("travel cards = ",allTravelCards);
-    console.log("travel options = ",allTravelOptions);
-    console.log("search packages = ",searchPackages);
-
-
+    console.log("user profile = ", data);
+    console.log("hotels = ", allHotels);
+    console.log("travel cards = ", allTravelCards);
+    console.log("travel options = ", allTravelOptions);
+    console.log("search packages = ", searchPackages);
+    console.log("open this link in current tab for payment = ", createPaymentLink?.url);
 
 
     return (
         <Grid container style={{width: "100%", overflow: "hidden"}}>
-            {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading ||searchPackagesLoading) && <Loader/>}
+            {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading
+                || searchPackagesLoading || createPaymentLinkLoading) && <Loader/>}
 
             <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
             <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>

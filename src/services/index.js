@@ -112,6 +112,18 @@ const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {re
 )
 
 
+
+const createPaymentLinkApi = createAsyncThunk("createPaymentLinkApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`${baseUl}package/create-payment-link`,data,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
 export {
     registerUserApi,
     logUserApi,
@@ -119,5 +131,6 @@ export {
     getAllHotelsApi,
     getHotelTravelCardsApi,
     getHotelTravelOptionsApi,
-    searchPackagesApi
+    searchPackagesApi,
+    createPaymentLinkApi
 }

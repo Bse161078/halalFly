@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
-    getHotelTravelOptionsApi,searchPackagesApi
+    getHotelTravelOptionsApi,searchPackagesApi,createPaymentLinkApi
 
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
@@ -229,6 +229,33 @@ export const searchPackagesApiSlice = createSlice({
 });
 
 
+export const createPaymentLinkApiSlice = createSlice({
+    name: 'createPaymentLinkApiSlice',
+    initialState,
+    reducers: {
+        createPaymentLinkApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [createPaymentLinkApi.pending]: (state) => {
+            state.loading = true
+        },
+        [createPaymentLinkApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [createPaymentLinkApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+
 export const {registerUserApiReset} = registerUserApiSlice.actions
 export const {logUserApiReset} = logUserApiSlice.actions;
 export const {getUserApiReset} = getUserApiSlice.actions;
@@ -236,6 +263,7 @@ export const {getAllHotelsApiReset} = getAllHotelsApiSlice.actions;
 export const {getHotelTravelCardsApiReset} = getHotelTravelCardsApiSlice.actions;
 export const {getHotelTravelOptionsApiReset} = getHotelTravelOptionsApiSlice.actions;
 export const {searchPackagesApiReset} = searchPackagesApiSlice.actions;
+export const {createPaymentLinkApiReset} = createPaymentLinkApiSlice.actions;
 
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
@@ -245,3 +273,4 @@ export const getAllHotelsApiReducer = getAllHotelsApiSlice.reducer;
 export const getHotelTravelCardsApiReducer = getHotelTravelCardsApiSlice.reducer;
 export const getHotelTravelOptionsApiReducer = getHotelTravelOptionsApiSlice.reducer;
 export const searchPackagesApiSliceReducer = searchPackagesApiSlice.reducer;
+export const createPaymentLinkApiSliceReducer = createPaymentLinkApiSlice.reducer;
