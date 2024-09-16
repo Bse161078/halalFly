@@ -99,11 +99,25 @@ const getHotelTravelOptionsApi = createAsyncThunk("getHotelTravelOptionsApi", as
 )
 
 
+
+const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${baseUl}package/search?search=${data.search}`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
+
 export {
     registerUserApi,
     logUserApi,
     getUserApi,
     getAllHotelsApi,
     getHotelTravelCardsApi,
-    getHotelTravelOptionsApi
+    getHotelTravelOptionsApi,
+    searchPackagesApi
 }

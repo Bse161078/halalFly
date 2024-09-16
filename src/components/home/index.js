@@ -40,9 +40,15 @@ import {
     getHotelTravelOptionsApiReducer, getHotelTravelOptionsApiReset,
     getUserApiReducer,
     getUserApiReset,
-    logUserApiReset
+    logUserApiReset, searchPackagesApiReset, searchPackagesApiSliceReducer
 } from "../../reducers";
-import {getAllHotelsApi, getHotelTravelCardsApi, getHotelTravelOptionsApi, getUserApi} from "../../services";
+import {
+    getAllHotelsApi,
+    getHotelTravelCardsApi,
+    getHotelTravelOptionsApi,
+    getUserApi,
+    searchPackagesApi
+} from "../../services";
 import {removeAccessToken} from "../../utils";
 import Loader from "../common/Loader";
 
@@ -79,6 +85,8 @@ const Home = () => {
         useSelector((state) => state.getHotelTravelCardsApiReducer);
     const {data: allTravelOptions, loading: allTravelOptionsLoading, error: allTravelOptionsError} =
         useSelector((state) => state.getHotelTravelOptionsApiReducer);
+    const {data: searchPackages, loading: searchPackagesLoading, error: searchPackagesError} =
+        useSelector((state) => state.searchPackagesApiSliceReducer);
 
 
     useEffect(() => {
@@ -86,12 +94,14 @@ const Home = () => {
         dispatch(getAllHotelsApi())
         dispatch(getHotelTravelCardsApi())
         dispatch(getHotelTravelOptionsApi())
+        dispatch(searchPackagesApi({search:"UmrahPrime"}))
 
         return function cleanup() {
             dispatch(getUserApiReset());
             dispatch(getAllHotelsApiReset());
             dispatch(getHotelTravelCardsApiReset());
             dispatch(getHotelTravelOptionsApiReset());
+            dispatch(searchPackagesApiReset());
 
         };
     }, []);
@@ -113,13 +123,14 @@ const Home = () => {
     console.log("hotels = ",allHotels);
     console.log("travel cards = ",allTravelCards);
     console.log("travel options = ",allTravelOptions);
+    console.log("search packages = ",searchPackages);
 
 
 
 
     return (
         <Grid container style={{width: "100%", overflow: "hidden"}}>
-            {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading) && <Loader/>}
+            {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading ||searchPackagesLoading) && <Loader/>}
 
             <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
             <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>

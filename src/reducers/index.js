@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
-    getHotelTravelOptionsApi
+    getHotelTravelOptionsApi,searchPackagesApi
 
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
@@ -202,12 +202,40 @@ export const getHotelTravelOptionsApiSlice = createSlice({
 
 
 
+export const searchPackagesApiSlice = createSlice({
+    name: 'searchPackagesApiSlice',
+    initialState,
+    reducers: {
+        searchPackagesApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [searchPackagesApi.pending]: (state) => {
+            state.loading = true
+        },
+        [searchPackagesApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [searchPackagesApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+
 export const {registerUserApiReset} = registerUserApiSlice.actions
 export const {logUserApiReset} = logUserApiSlice.actions;
 export const {getUserApiReset} = getUserApiSlice.actions;
 export const {getAllHotelsApiReset} = getAllHotelsApiSlice.actions;
 export const {getHotelTravelCardsApiReset} = getHotelTravelCardsApiSlice.actions;
 export const {getHotelTravelOptionsApiReset} = getHotelTravelOptionsApiSlice.actions;
+export const {searchPackagesApiReset} = searchPackagesApiSlice.actions;
 
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
@@ -216,3 +244,4 @@ export const getUserApiReducer = getUserApiSlice.reducer;
 export const getAllHotelsApiReducer = getAllHotelsApiSlice.reducer;
 export const getHotelTravelCardsApiReducer = getHotelTravelCardsApiSlice.reducer;
 export const getHotelTravelOptionsApiReducer = getHotelTravelOptionsApiSlice.reducer;
+export const searchPackagesApiSliceReducer = searchPackagesApiSlice.reducer;
