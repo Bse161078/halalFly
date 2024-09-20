@@ -124,6 +124,35 @@ const createPaymentLinkApi = createAsyncThunk("createPaymentLinkApi", async (dat
     }
 )
 
+
+
+
+const getTravelFormsApi = createAsyncThunk("getTravelFormsApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${baseUl}hotels/travel-forms`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
+
+
+const getLandOptionsApi = createAsyncThunk("getLandOptionsApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${baseUl}hotels/land-options`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
+
+
 export {
     registerUserApi,
     logUserApi,
@@ -132,5 +161,7 @@ export {
     getHotelTravelCardsApi,
     getHotelTravelOptionsApi,
     searchPackagesApi,
-    createPaymentLinkApi
+    createPaymentLinkApi,
+    getTravelFormsApi,
+    getLandOptionsApi
 }

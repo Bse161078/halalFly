@@ -38,17 +38,24 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     createPaymentLinkApiReset,
     createPaymentLinkApiSliceReducer,
-    getAllHotelsApiReset, getHotelTravelCardsApiReset,
-    getHotelTravelOptionsApiReducer, getHotelTravelOptionsApiReset,
+    getAllHotelsApiReset,
+    getHotelTravelCardsApiReset,
+    getHotelTravelOptionsApiReducer,
+    getHotelTravelOptionsApiReset,
+    getLandOptionsApiReducer, getLandOptionsApiReset,
+    getTravelFormsApiReducer,
+    getTravelFormsApiReset,
     getUserApiReducer,
     getUserApiReset,
-    logUserApiReset, searchPackagesApiReset, searchPackagesApiSliceReducer
+    logUserApiReset,
+    searchPackagesApiReset,
+    searchPackagesApiSliceReducer
 } from "../../reducers";
 import {
     createPaymentLinkApi,
     getAllHotelsApi,
     getHotelTravelCardsApi,
-    getHotelTravelOptionsApi,
+    getHotelTravelOptionsApi, getLandOptionsApi, getTravelFormsApi,
     getUserApi,
     searchPackagesApi
 } from "../../services";
@@ -92,6 +99,10 @@ const Home = () => {
         useSelector((state) => state.searchPackagesApiSliceReducer);
     const {data: createPaymentLink, loading: createPaymentLinkLoading, error: createPaymentLinkError} =
         useSelector((state) => state.createPaymentLinkApiSliceReducer);
+    const {data: travelForms, loading: travelFormsLoading, error: travelFormsError} =
+        useSelector((state) => state.getTravelFormsApiReducer);
+    const {data: landOptions, loading: landOptionsLoading, error: landOptionsError} =
+        useSelector((state) => state.getLandOptionsApiReducer);
 
 
     useEffect(() => {
@@ -101,6 +112,8 @@ const Home = () => {
         dispatch(getHotelTravelOptionsApi())
         dispatch(searchPackagesApi({search: "UmrahPrime"}))
         dispatch(createPaymentLinkApi({package: "Package1"}))
+        dispatch(getTravelFormsApi())
+        dispatch(getLandOptionsApi())
 
         return function cleanup() {
             dispatch(getUserApiReset());
@@ -109,6 +122,8 @@ const Home = () => {
             dispatch(getHotelTravelOptionsApiReset());
             dispatch(searchPackagesApiReset());
             dispatch(createPaymentLinkApiReset());
+            dispatch(getTravelFormsApiReset());
+            dispatch(getLandOptionsApiReset());
 
         };
     }, []);
@@ -132,12 +147,14 @@ const Home = () => {
     console.log("travel options = ", allTravelOptions);
     console.log("search packages = ", searchPackages);
     console.log("open this link in current tab for payment = ", createPaymentLink?.url);
+    console.log("travel forms = ", travelForms);
+    console.log("land options = ", landOptions);
 
 
     return (
         <Grid container style={{width: "100%", overflow: "hidden"}}>
             {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading
-                || searchPackagesLoading || createPaymentLinkLoading) && <Loader/>}
+                || searchPackagesLoading || createPaymentLinkLoading || travelFormsLoading || landOptionsLoading) && <Loader/>}
 
             <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
             <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>
