@@ -36,8 +36,9 @@ import {useLocation, useNavigate, Outlet} from "react-router-dom"
 import Filter from "../filter/Filter";
 import {useDispatch, useSelector} from "react-redux";
 import {
+    createHotelPaymentLinkApiReducer, createHotelPaymentLinkApiReset,
     createPaymentLinkApiReset,
-    createPaymentLinkApiSliceReducer,
+    createPaymentLinkApiSliceReducer, createTravelCardPaymentLinkApiReducer, createTravelCardPaymentLinkApiReset,
     getAllHotelsApiReset,
     getHotelTravelCardsApiReset,
     getHotelTravelOptionsApiReducer,
@@ -52,7 +53,8 @@ import {
     searchPackagesApiSliceReducer
 } from "../../reducers";
 import {
-    createPaymentLinkApi,
+    createHotelPaymentLinkApi,
+    createPaymentLinkApi, createTravelCardPaymentLinkApi,
     getAllHotelsApi,
     getHotelTravelCardsApi,
     getHotelTravelOptionsApi, getLandOptionsApi, getTravelFormsApi,
@@ -97,12 +99,14 @@ const Home = () => {
         useSelector((state) => state.getHotelTravelOptionsApiReducer);
     const {data: searchPackages, loading: searchPackagesLoading, error: searchPackagesError} =
         useSelector((state) => state.searchPackagesApiSliceReducer);
-    const {data: createPaymentLink, loading: createPaymentLinkLoading, error: createPaymentLinkError} =
-        useSelector((state) => state.createPaymentLinkApiSliceReducer);
     const {data: travelForms, loading: travelFormsLoading, error: travelFormsError} =
         useSelector((state) => state.getTravelFormsApiReducer);
     const {data: landOptions, loading: landOptionsLoading, error: landOptionsError} =
         useSelector((state) => state.getLandOptionsApiReducer);
+    const {data: createTravelCardPaymentLink, loading: createTravelCardPaymentLinkLoading, error: createTravelCardPaymentLinkError} =
+        useSelector((state) => state.createTravelCardPaymentLinkApiReducer);
+    const {data: createHotelPaymentLink, loading: createHotelPaymentLinkLoading, error: createHotelPaymentLinkError} =
+        useSelector((state) => state.createHotelPaymentLinkApiReducer);
 
 
     useEffect(() => {
@@ -111,9 +115,29 @@ const Home = () => {
         dispatch(getHotelTravelCardsApi())
         dispatch(getHotelTravelOptionsApi())
         dispatch(searchPackagesApi({search: "UmrahPrime"}))
-        dispatch(createPaymentLinkApi({package: "Package1"}))
         dispatch(getTravelFormsApi())
         dispatch(getLandOptionsApi())
+        dispatch(createTravelCardPaymentLinkApi({
+            travel_card: "66eacaeff0344d76494e156f",
+            price:"66eacaeff0344d76494e1570",
+            room:"66eacbd1f0344d76494e158e",
+            flight:"66eacbd2f0344d76494e1594",
+            activity:"66eacaf1f0344d76494e1580",
+            transfer:"66eacaf1f0344d76494e1582",
+            images:["https://dibbz.s3.amazonaws.com/sixth_out_ot_06_1_2c5b36118e.jpg"],
+
+        }))
+
+
+        dispatch(createHotelPaymentLinkApi({
+            hotel:"66ed756c877e8b8f1fdeeb26",
+            price:"66ef626a62c3cca3f476e9f0",
+            room:"66ed756c877e8b8f1fdeeb2b",
+            activity:"66ed756d877e8b8f1fdeeb2f",
+            transfer:"66ed756d877e8b8f1fdeeb2d",
+            images:["https://dibbz.s3.amazonaws.com/sixth_out_ot_06_1_2c5b36118e.jpg"]
+
+        }))
 
         return function cleanup() {
             dispatch(getUserApiReset());
@@ -121,10 +145,10 @@ const Home = () => {
             dispatch(getHotelTravelCardsApiReset());
             dispatch(getHotelTravelOptionsApiReset());
             dispatch(searchPackagesApiReset());
-            dispatch(createPaymentLinkApiReset());
             dispatch(getTravelFormsApiReset());
             dispatch(getLandOptionsApiReset());
-
+            dispatch(createTravelCardPaymentLinkApiReset());
+            dispatch(createHotelPaymentLinkApiReset());
         };
     }, []);
 
@@ -146,15 +170,18 @@ const Home = () => {
     console.log("travel cards = ", allTravelCards);
     console.log("travel options = ", allTravelOptions);
     console.log("search packages = ", searchPackages);
-    console.log("open this link in current tab for payment = ", createPaymentLink?.url);
     console.log("travel forms = ", travelForms);
     console.log("land options = ", landOptions);
+    console.log("travel card payment link = ", createTravelCardPaymentLink?.url);
+    console.log("hotel payment link = ", createHotelPaymentLink?.url);
 
 
     return (
         <Grid container style={{width: "100%", overflow: "hidden"}}>
             {(loading || allHotelsLoading || allTravelCardsLoading || allTravelOptionsLoading
-                || searchPackagesLoading || createPaymentLinkLoading || travelFormsLoading || landOptionsLoading) && <Loader/>}
+                || searchPackagesLoading || createTravelCardPaymentLinkLoading || travelFormsLoading
+                || landOptionsLoading || createHotelPaymentLinkLoading) &&
+            <Loader/>}
 
             <Grid container style={{background: "#140442", height: "100vh", position: "absolute"}}></Grid>
             <Grid container style={{background: "#F1F3F8", top: "100vh", height: "100vh", position: "absolute"}}></Grid>

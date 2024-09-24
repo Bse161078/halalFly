@@ -2,9 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
     getHotelTravelOptionsApi,searchPackagesApi,createPaymentLinkApi,    getTravelFormsApi,
-    getLandOptionsApi
-
-
+    getLandOptionsApi,createTravelCardPaymentLinkApi, createHotelPaymentLinkApi
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
 
@@ -313,6 +311,63 @@ export const getLandOptionsApiSlice = createSlice({
 });
 
 
+
+
+export const createTravelCardPaymentLinkApiSlice = createSlice({
+    name: 'createTravelCardPaymentLinkApiSlice',
+    initialState,
+    reducers: {
+        createTravelCardPaymentLinkApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [createTravelCardPaymentLinkApi.pending]: (state) => {
+            state.loading = true
+        },
+        [createTravelCardPaymentLinkApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [createTravelCardPaymentLinkApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+
+
+export const createHotelPaymentLinkApiSlice = createSlice({
+    name: 'createHotelPaymentLinkApiSlice',
+    initialState,
+    reducers: {
+        createHotelPaymentLinkApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [createHotelPaymentLinkApi.pending]: (state) => {
+            state.loading = true
+        },
+        [createHotelPaymentLinkApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [createHotelPaymentLinkApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+
 export const {registerUserApiReset} = registerUserApiSlice.actions
 export const {logUserApiReset} = logUserApiSlice.actions;
 export const {getUserApiReset} = getUserApiSlice.actions;
@@ -323,6 +378,8 @@ export const {searchPackagesApiReset} = searchPackagesApiSlice.actions;
 export const {createPaymentLinkApiReset} = createPaymentLinkApiSlice.actions;
 export const {getTravelFormsApiReset} = getTravelFormsApiSlice.actions;
 export const {getLandOptionsApiReset} = getLandOptionsApiSlice.actions;
+export const {createTravelCardPaymentLinkApiReset} = createTravelCardPaymentLinkApiSlice.actions;
+export const {createHotelPaymentLinkApiReset} = createHotelPaymentLinkApiSlice.actions;
 
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
@@ -335,3 +392,5 @@ export const searchPackagesApiSliceReducer = searchPackagesApiSlice.reducer;
 export const createPaymentLinkApiSliceReducer = createPaymentLinkApiSlice.reducer;
 export const getTravelFormsApiReducer = getTravelFormsApiSlice.reducer;
 export const getLandOptionsApiReducer = getLandOptionsApiSlice.reducer;
+export const createTravelCardPaymentLinkApiReducer = createTravelCardPaymentLinkApiSlice.reducer;
+export const createHotelPaymentLinkApiReducer = createHotelPaymentLinkApiSlice.reducer;

@@ -115,7 +115,7 @@ const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {re
 
 const createPaymentLinkApi = createAsyncThunk("createPaymentLinkApi", async (data, {rejectWithValue}) => {
         try {
-            const response = await axios.post(`${baseUl}package/create-payment-link`,data,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            const response = await axios.post(`${baseUl}package/create-payment-travel-cards`,data,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
             return response.data.data;
         } catch (e) {
             const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
@@ -153,6 +153,31 @@ const getLandOptionsApi = createAsyncThunk("getLandOptionsApi", async (data, {re
 
 
 
+
+const createTravelCardPaymentLinkApi = createAsyncThunk("createTravelCardPaymentLinkApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`${baseUl}package/create-payment-travel-cards`,data,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
+
+const createHotelPaymentLinkApi = createAsyncThunk("createHotelPaymentLinkApi", async (data, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`${baseUl}package/create-payment-hotel`,data,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+)
+
+
 export {
     registerUserApi,
     logUserApi,
@@ -163,5 +188,7 @@ export {
     searchPackagesApi,
     createPaymentLinkApi,
     getTravelFormsApi,
-    getLandOptionsApi
+    getLandOptionsApi,
+    createTravelCardPaymentLinkApi,
+    createHotelPaymentLinkApi
 }
