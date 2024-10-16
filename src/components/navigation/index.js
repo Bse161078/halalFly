@@ -2,6 +2,8 @@ import {useLocation, useNavigate, Outlet} from "react-router-dom"
 import {useEffect} from "react";
 import React from "react";
 import {getAccessToken, getToken} from "../../utils";
+import Header from "../Header";
+import Footer from "../Footer";
 
 
 const Navigation = () => {
@@ -9,18 +11,19 @@ const Navigation = () => {
     let navigate = useNavigate();
 
 
-    const token = getAccessToken();
 
     useEffect(() => {
-        navigate(`/home`,{replace:true});
+        navigate(`/home`);
 
     }, []);
 
 
     return (
         <>
+            <Header/>
             <div style={{position: 'relative',width:"100vw",height:"100vh",background: "white"}}>
                 <Outlet/>
+                <Footer/>
             </div>
         </>
     )

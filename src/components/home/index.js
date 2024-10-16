@@ -1,122 +1,197 @@
 import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Divider from "@mui/material/Divider";
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import {
-    useLocation,
-    useNavigate
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    getAllHotelsApiReset,
-    getHotelTravelOptionsApiReset,
-    getUserApiReset
+  getAllHotelsApiReset,
+  getHotelTravelOptionsApiReset,
+  getUserApiReset,
+  getLandOptionsApiReset,
+  getHotelTravelCardsApiReset,
+  getFormOptionsApiReset,
 } from "../../reducers";
-import { getAllHotelsApi, getHotelTravelOptionsApi, getUserApi } from "../../services";
+import {
+  getAllHotelsApi,
+  getFormOptionsApi,
+  getHotelTravelOptionsApi,
+  getUserApi,
+  getLandOptions,
+  getHotelTravelCardsApi,
+} from "../../services";
 import { removeAccessToken } from "../../utils";
 import Loader from "../common/Loader";
-import Footer from "../Footer";
-import Filter from "../filter/Filter";
-import UmrahHajjCarousel from "../hotelCarousel/hotelCarousel";
-
-// Importing Icons and Images
-import HomeIcon from '@mui/icons-material/Home';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import HotelIcon from '@mui/icons-material/Hotel';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AvatarLogin from "src/assets/images/avatar-login.png";
-import UaeCurrencyIcon from "src/assets/images/uae-icon.png";
-import EnglandIcon from "src/assets/images/england.png";
-import LogoImage from "src/assets/images/logo.png";
+import Filter from "../filter/index";
+import { CircularProgress,Typography,Box } from "@mui/material";
+import UmrahHajjCarousel from "../UmrahPackages/UmrahPackages";
 import PartnerInfo from "../PartnerInfo/Index";
-import Header from "../Header";
-// Custom Labels and Buttons
-import { CustomLabelCurrency, CustomLabelHeaderLarge, CustomLabelCardHeader } from "../common/CustomLabel";
-import HeaderAndFilterSection from "../HeaderAndFilterSection";
 import NavigationButton from "../NavigationButton";
-
-const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3 },
-    tablet: { breakpoint: { max: 1024, min: 464 }, items: 2 },
-    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 }
-};
+import HeaderAndFilterSection from "../HeaderAndFilterSection";
+import LandPackages from "../LandPackages/LandPackages";
+import WhatsAppButton from "src/WhatsappButton";
+import FAQs from "../FAQs";  // Import the FAQs component
+import OurServices from "../OurServices";
 
 const Home = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const { data, loading, error } = useSelector((state) => state.getUserApiReducer);
-    const { data: allHotels, loading: allHotelsLoading, error: allHotelsError } = useSelector((state) => state.getAllHotelsApiReducer);
-    const { data: allTravelOptions, loading: allTravelOptionsLoading, error: allTravelOptionsError } = useSelector((state) => state.getHotelTravelOptionsApiReducer);
+  const { data, loading, error } = useSelector((state) => state.getUserApiReducer);
+  const { data: allHotels, loading: allHotelsLoading } = useSelector((state) => state.getAllHotelsApiReducer);
+  const { data: allUmrahPackages, loading: allUmrahPackagesLoading } = useSelector((state) => state.getHotelTravelCardsApiReducer);
+  const umrahPackages = allUmrahPackages?.map((umrah) => ({
+    packageType: umrah?.packages?.PackageTypes,   // Get PackageTypes
+    hotelInfo: umrah?.hotelTypes?.map((hotelType) => ({
+      hotel: hotelType?.HotelNames,   // Get the hotel name
+      totalDays: hotelType?.totalDays // Get totalDays from hotelTypes
+    }))
+  }));
+  const landPackages = allHotels?.map((landpkg) => ({
+    packageType: landpkg?.packages?.LandPackages,   // Get PackageTypes
+    hotelInfo: landpkg?.hotelTypes?.map((hotelType) => ({
+      hotel: hotelType?.HotelNames,   // Get the hotel name
+      totalDays: hotelType?.totalDays // Get totalDays from hotelTypes
+    }))
+  }));
+  useEffect(() => {
+    dispatch(getUserApi());
+    dispatch(getAllHotelsApi());
+    dispatch(getHotelTravelOptionsApi());
+    dispatch(getLandOptions());
+    dispatch(getHotelTravelCardsApi());
+    dispatch(getFormOptionsApi());
 
-    useEffect(() => {
-        dispatch(getUserApi());
-        dispatch(getAllHotelsApi());
-        dispatch(getHotelTravelOptionsApi());
+    return () => {
+      dispatch(getUserApiReset());
+      dispatch(getAllHotelsApiReset());
+      dispatch(getHotelTravelOptionsApiReset());
+      dispatch(getLandOptionsApiReset());
+      dispatch(getHotelTravelCardsApiReset());
+      dispatch(getFormOptionsApiReset());
+    };
+  }, [dispatch]);
 
-        return () => {
-            dispatch(getUserApiReset());
-            dispatch(getAllHotelsApiReset());
-            dispatch(getHotelTravelOptionsApiReset());
-        };
-    }, [dispatch]);
+  useEffect(() => {
+    if (error === "Please authenticate") {
+      removeAccessToken();
+      navigate(`/login`);
+      dispatch(getUserApiReset());
+    }
+  }, [error, dispatch, navigate]);
 
-    useEffect(() => {
-        if (error === "Please authenticate") {
-            removeAccessToken();
-            navigate(`/login`);
-            dispatch(getUserApiReset());
-        }
-    }, [error, dispatch, navigate]);
 
-    return (
-        <Grid container style={{ width: "100%", overflow: "hidden" }}>
-            {(loading || allHotelsLoading || allTravelOptionsLoading) && <Loader />}
 
-            <Grid container style={{ background: "#004225", minHeight: "100vh", position: "absolute" }}></Grid>
-            <Grid container style={{ background: "#FAF3E0", top: "100vh", minHeight: "100vh", position: "absolute" }}></Grid>
+return (
+  <Grid container sx={{ width: "100%", overflow: "hidden", position: "relative" }}>
+    <WhatsAppButton />
+    {(loading || allHotelsLoading || allUmrahPackagesLoading) && <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark transparent background
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999, // Ensures loader stays on top
+      }}
+    >
+      <CircularProgress
+        size={80}
+        sx={{
+          color: '#FF8C42', // Use Orange for the loader
+        }}
+      />
+      <Typography
+        variant="h6"
+        sx={{
+          color: '#FAF3E0', // Light text
+          marginTop: 2,
+          fontWeight: 'bold',
+        }}
+      >
+        Loading, please wait...
+      </Typography>
+    </Box>}
 
-            <Grid container justifyContent="center" style={{ position: "relative" }}>
-                <Grid container item xs={10} justifyContent="space-between" alignItems="center" style={{ marginTop: 10 }}>
-                    <Header/>
-                </Grid>
+    {/* Hero Section */}
+    <Grid
+      container
+      sx={{
+        background: "linear-gradient(to right, #0C0C0C, #004e8c)", // Updated to black and dark blue gradient
+        minHeight: "100vh",
+        width: "100%",
+        color: "#D5B782", // Gold text color for hero section
+        position: "relative",
+        padding: { xs: 2, sm: 3, md: 5 },
+        textAlign: "center",
+      }}
+      alignItems="center"
+    >
+      <Grid item xs={12}>
+        <NavigationButton umrahPackages={umrahPackages} landPackages={landPackages} />
+      </Grid>
 
-                {/* Navigation Buttons */}
-                <Grid item xs={10} container style={{ marginTop: 30 }}>
-                 <NavigationButton allHotels={allHotels} />
-                </Grid>
+      <Grid item xs={12}>
+        <HeaderAndFilterSection />
+      </Grid>
 
-                {/* Header and Filter Section */}
-                <Grid item container xs={10} style={{ marginTop: 30 }}>
-                    <HeaderAndFilterSection />
-                </Grid>
+      <Grid item container xs={10} justifyContent="center" sx={{ marginTop: 4, marginLeft: 14 }}>
+        <Filter allUmrahPackages={allUmrahPackages} allLandPackages={allHotels} />
+      </Grid>
+    </Grid>
 
-                <Grid item container xs={10} style={{ marginTop: 30 }}>
-                    <Filter allTravelOptions={allTravelOptions} />
-                </Grid>
+    {/* Our Services */}
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        padding: { xs: 4, sm: 6, md: 8 },
+        textAlign: "center",
+        color: "#D5B782", // Gold text color for services
+      }}
+    >
+      <Grid item xs={12} md={10}>
+        <OurServices />
+      </Grid>
+    </Grid>
 
-                {/* Carousel Section */}
-                <Grid container spacing={2} sx={{ marginTop: 10 }}>
-                    <Grid item xs={12} sx={{ height: 'auto', marginBottom: 4, overflow: 'visible', position: 'relative' }}>
-                        <UmrahHajjCarousel />
-                    </Grid>
+    {/* Features and Packages Section */}
+    <Grid
+      container
+      sx={{
+        background: "#FFFFFF", // Keep white background for clarity
+        padding: { xs: 4, sm: 6, md: 8 },
+        textAlign: "center",
+        color: "#0C0C0C", // Use black text for clarity on white background
+      }}
+    >
+      <Grid item xs={12}>
+        <UmrahHajjCarousel packages={allUmrahPackages} />
+      </Grid>
 
-                    {/* Partner Information */}
-                    <Grid container sx={{ padding: "20px", background: "#004225", borderRadius: "10px", color: "white", marginTop: 2, zIndex: 1 }} justifyContent="space-between">
-                        <PartnerInfo />
-                    </Grid>
-                </Grid>
+      <Grid item xs={12} sx={{ marginTop: 4 }}>
+        <LandPackages hotels={allHotels} />
+      </Grid>
+    </Grid>
 
-                {/* Footer Section */}
-                <Grid item xs={12} container style={{ background: "#FAF3E0", marginTop: "40px", padding: "20px" }} justifyContent="center">
-                    <Footer />
-                </Grid>
-            </Grid>
-        </Grid>
-    );
-}
+    {/* FAQs Section */}
+    <Grid
+      container
+      sx={{
+        padding: { xs: 4, sm: 6, md: 8 },
+        textAlign: "center",
+      }}
+    >
+      <FAQs />
+    </Grid>
+
+    {/* Footer Section */}
+    
+  </Grid>
+  );
+};
 
 export default Home;

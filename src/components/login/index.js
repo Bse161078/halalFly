@@ -78,7 +78,7 @@ const Login = () => {
 
             const user = data.data;
 
-            saveToken(JSON.stringify(user.access_token));
+            saveToken(JSON.stringify(user?.access_token));
             navigate('/home', {replace: true});
             //dispatch(logUserApiReset())
 

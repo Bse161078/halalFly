@@ -1,13 +1,13 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
-    getHotelTravelOptionsApi
+    getHotelTravelOptionsApi,searchPackagesApi,getLandOptions,getFormOptionsApi
 
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
 
 const initialState = {
-    data: null,
+    data: [],
     loading: false,
     error: null
 }
@@ -200,6 +200,91 @@ export const getHotelTravelOptionsApiSlice = createSlice({
     },
 });
 
+export const searchPackagesApiSlice = createSlice({
+    name: 'searchPackagesApiSlice',
+    initialState,
+    reducers: {
+        searchPackagesApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = [];
+        }
+    },
+    extraReducers: {
+        [searchPackagesApi.pending]: (state) => {
+            state.loading = true
+        },
+        [searchPackagesApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [searchPackagesApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+ const getLandOptionsApiSlice = createSlice({
+    name: 'getLandOptionsApiSlice',
+    initialState,
+    reducers: {
+        // Reset action to clear data and errors
+        getLandOptionsApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        // Handle the pending state of the thunk
+        [getLandOptions.pending]: (state) => {
+            state.loading = true;
+            state.error = null;  // Clear any previous errors
+        },
+        // Handle the fulfilled state of the thunk
+        [getLandOptions.fulfilled]: (state, { payload }) => {
+            state.loading = false;
+            state.data = payload;  // Store the response data
+        },
+        // Handle the rejected state of the thunk
+        [getLandOptions.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;  // Store the error message
+        },
+    },
+});
+const getFormOptionsApiSlice = createSlice({
+    name: 'getFormOptionsApiSlice',
+    initialState,
+    reducers: {
+        // Reset action to clear data and errors
+        getFormOptionsApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        // Handle the pending state of the thunk
+        [getFormOptionsApi.pending]: (state) => {
+            state.loading = true;
+            state.error = null;  // Clear any previous errors
+        },
+        // Handle the fulfilled state of the thunk
+        [getFormOptionsApi.fulfilled]: (state, { payload }) => {
+            state.loading = false;
+            state.data = payload;  // Store the response data
+        },
+        // Handle the rejected state of the thunk
+        [getFormOptionsApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;  // Store the error message
+        },
+    },
+});
+
 
 
 export const {registerUserApiReset} = registerUserApiSlice.actions
@@ -208,6 +293,10 @@ export const {getUserApiReset} = getUserApiSlice.actions;
 export const {getAllHotelsApiReset} = getAllHotelsApiSlice.actions;
 export const {getHotelTravelCardsApiReset} = getHotelTravelCardsApiSlice.actions;
 export const {getHotelTravelOptionsApiReset} = getHotelTravelOptionsApiSlice.actions;
+export const {searchPackagesApiReset} = searchPackagesApiSlice.actions;
+export const { getLandOptionsApiReset } = getLandOptionsApiSlice.actions;
+export const { getFormOptionsApiReset } = getFormOptionsApiSlice.actions;
+
 
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
@@ -216,3 +305,7 @@ export const getUserApiReducer = getUserApiSlice.reducer;
 export const getAllHotelsApiReducer = getAllHotelsApiSlice.reducer;
 export const getHotelTravelCardsApiReducer = getHotelTravelCardsApiSlice.reducer;
 export const getHotelTravelOptionsApiReducer = getHotelTravelOptionsApiSlice.reducer;
+export const searchPackagesApiSliceReducer = searchPackagesApiSlice.reducer;
+export const landOptionsApiSliceReducer = getLandOptionsApiSlice.reducer;
+export const formOptionsApiSliceReducer = getFormOptionsApiSlice.reducer;
+

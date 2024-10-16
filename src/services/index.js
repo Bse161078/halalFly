@@ -50,6 +50,7 @@ const logUserApi = createAsyncThunk("validateUserApi", async (data, {rejectWithV
 const getUserApi = createAsyncThunk("getUserApi", async (data, {rejectWithValue}) => {
         try {
             const response = await axios.get(`${baseUl}user/profile`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+
             return response.data.data;
         } catch (e) {
             const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
@@ -77,7 +78,6 @@ const getAllHotelsApi = createAsyncThunk("getAllHotelsApi", async (data, {reject
 const getHotelTravelCardsApi = createAsyncThunk("getHotelTravelCardsApi", async (_, { rejectWithValue }) => {
     try {
         const response = await axios.get(`${baseUl}hotels/travel-cards`, { headers: { "Authorization": `Bearer ${getAccessToken()}` } });
-        console.log('API Response:', response.data); // Add this line to check the response
         return response.data.data;
     } catch (e) {
         const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
@@ -97,13 +97,60 @@ const getHotelTravelOptionsApi = createAsyncThunk("getHotelTravelOptionsApi", as
         }
     }
 )
+export const getLandOptions = createAsyncThunk(
+    "landOptions/getLandOptions", 
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${baseUl}hotels/land-options`, {
+                headers: { 
+                    "Authorization": `Bearer ${getAccessToken()}` 
+                }
+            
+            });
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+);
+
+export const getFormOptionsApi = createAsyncThunk(
+    "formOptions/getFormOptions", 
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${baseUl}hotels/travel-forms`, {
+                headers: { 
+                    "Authorization": `Bearer ${getAccessToken()}` 
+                }
+            
+            });
+            return response.data.data;
+        } catch (e) {
+            const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+            return rejectWithValue(errorResponse);
+        }
+    }
+);
+
+const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {rejectWithValue}) => {
+    try {
+        const response = await axios.get(`${baseUl}package/search?search=${data.search}`,{headers: {"Authorization": `Bearer ${getAccessToken()}`}});
+        return response.data.data;
+    } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        return rejectWithValue(errorResponse);
+    }
+}
+)
 
 
 export {
-    registerUserApi,
-    logUserApi,
-    getUserApi,
-    getAllHotelsApi,
-    getHotelTravelCardsApi,
-    getHotelTravelOptionsApi
+registerUserApi,
+logUserApi,
+getUserApi,
+getAllHotelsApi,
+getHotelTravelCardsApi,
+getHotelTravelOptionsApi,
+searchPackagesApi,
 }

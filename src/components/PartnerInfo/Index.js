@@ -37,7 +37,7 @@ const CustomLabelCurrency = ({ text, color, fontWeight }) => (
 
 const PartnerInfo = () => {
     return (
-        <Grid container sx={{ padding: "20px", background: "#004225", borderRadius: "10px", color: "white", marginTop: 2, zIndex: 1 }} justifyContent="space-between">
+        <Grid container sx={{ padding: "20px", background: "#FF8C42", borderRadius: "10px", color: "white", marginTop: 2, zIndex: 1 }} justifyContent="space-between">
             <Grid item xs={12} md={9} sx={{ marginBottom: { xs: 2, md: 0 } }}>
                 <CustomLabelCardHeader
                     text="We are an accredited NUSUK partner with experience of servicing more than 4 Million Umrah pilgrims through our platforms."

@@ -1,131 +1,143 @@
 import React from 'react';
-import { Grid, Divider } from '@mui/material';
-import Typography from '@mui/material/Typography';
-
-// Sample imports for images, replace with actual paths
-import LogoLargeIcon from 'src/assets/images/logo-large.png';
-import MinistryIcon from "src/assets/images/ministry-gray.svg";
-import NusukIcon from "src/assets/images/nusuk-gray.svg";
-import SisaLogoIcon from 'src/assets/images/sisa-logo.png';
-import PaypalIcon from "src/assets/images/paypal.svg";
-import MasterCardIcon from "src/assets/images/mastercard.svg";
-import ApplePayIcon from "src/assets/images/applepay.svg";
-
-const CustomLabelCurrency = ({ text, color, fontWeight }) => {
-    return (
-        <Typography
-            sx={{
-                color: color || 'black',
-                fontWeight: fontWeight || 'normal',
-                fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem', lg: '1.25rem' },
-            }}
-        >
-            {text}
-        </Typography>
-    );
-};
+import { Grid, Typography, Box, TextField, Button, IconButton } from '@mui/material';
+import PhoneIcon from '@mui/icons-material/Phone';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TikTokIcon from '@mui/icons-material/MusicNote'; // Placeholder for TikTok icon
 
 const Footer = () => {
-    return (
-        <Grid
-            container
-            spacing={4}
-            justifyContent="space-between"
-            sx={{ padding: { xs: '20px', sm: '40px 20px', md: '40px 40px', lg: '40px 60px' } }}
-        >
-            {/* First Column */}
-            <Grid item xs={12} sm={6} md={3} container direction="column" alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                <Grid item>
-                    <img src={LogoLargeIcon} alt="Logo" style={{ width: '180px', maxWidth: '100%' }} />
-                </Grid>
-                <Grid item container spacing={1} alignItems="center" justifyContent={{ xs: 'center', sm: 'flex-start' }} sx={{ mt: 1 }}>
-                    <Grid item>
-                        <img src={MinistryIcon} alt="Ministry Icon" style={{ width: 'auto', maxWidth: '100%' }} />
-                    </Grid>
-                    <Grid item>
-                        <Divider orientation="vertical" flexItem sx={{ height: '40px', background: '#F1F3F8' }} />
-                    </Grid>
-                    <Grid item>
-                        <img src={NusukIcon} alt="Nusuk Icon" style={{ width: 'auto', maxWidth: '100%' }} />
-                    </Grid>
-                </Grid>
-                <Grid item sx={{ mt: 1 }}>
-                    <img src={SisaLogoIcon} alt="Sisa Logo" style={{ width: '70px', maxWidth: '100%' }} />
-                </Grid>
-                <Grid item container spacing={1} alignItems="center" justifyContent={{ xs: 'center', sm: 'flex-start' }} sx={{ mt: 1 }}>
-                    <Grid item>
-                        <img src={ApplePayIcon} alt="Apple Pay" style={{ width: 'auto', maxWidth: '100%' }} />
-                    </Grid>
-                    <Grid item>
-                        <Divider orientation="vertical" flexItem sx={{ height: '40px', background: '#F1F3F8' }} />
-                    </Grid>
-                    <Grid item>
-                        <img src={MasterCardIcon} alt="MasterCard" style={{ width: 'auto', maxWidth: '100%' }} />
-                    </Grid>
-                    <Grid item>
-                        <Divider orientation="vertical" flexItem sx={{ height: '40px', background: '#F1F3F8' }} />
-                    </Grid>
-                    <Grid item>
-                        <img src={PaypalIcon} alt="PayPal" style={{ width: 'auto', maxWidth: '100%' }} />
-                    </Grid>
-                </Grid>
-                <Grid item sx={{ mt: 2, textAlign: { xs: 'center', sm: 'left' } }}>
-                    <CustomLabelCurrency text="Contact Us" color="black" fontWeight="bold" />
-                </Grid>
-                <Grid item container spacing={0.5} alignItems="center" justifyContent={{ xs: 'center', sm: 'flex-start' }} sx={{ mt: 1 }}>
-                    <Grid item>
-                        <CustomLabelCurrency text="Call Us: " color="black" />
-                    </Grid>
-                    <Grid item>
-                        <CustomLabelCurrency text="+971 42457300" color="#494b90" fontWeight="bold" />
-                    </Grid>
-                </Grid>
-                <Grid item sx={{ mt: 2, textAlign: { xs: 'center', sm: 'left' } }}>
-                    <CustomLabelCurrency text="Traveazy DMCC (Registered Office), Unit No." color="black" fontWeight="bold" />
-                </Grid>
-                <Grid item>
-                    <CustomLabelCurrency text="1503, Swiss Tower, Cluster-Y, JLT, Dubai UAE." color="black" fontWeight="bold" />
-                </Grid>
-                <Grid item>
-                    <CustomLabelCurrency text="P.O. Box no. 938533" color="black" fontWeight="bold" />
-                </Grid>
-            </Grid>
-
-            {/* Second Column */}
-            <Grid item xs={12} sm={6} md={3} container direction="column" alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                <Grid item>
-                    <CustomLabelCurrency text="Quick Links" color="black" fontWeight="bold" />
-                </Grid>
-                {["Home", "Privacy Policy", "FAQS", "Contact Us", "Terms Of Use"].map((link, index) => (
-                    <Grid item key={index} sx={{ mt: 2 }}>
-                        <CustomLabelCurrency text={link} color="#78829D" />
-                    </Grid>
-                ))}
-            </Grid>
-
-            {/* Third Column */}
-            <Grid item xs={12} sm={6} md={3} container direction="column" alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                <Grid item>
-                    <CustomLabelCurrency text="Company" color="black" fontWeight="bold" />
-                </Grid>
-                {["Blogs", "About Us", "Career"].map((link, index) => (
-                    <Grid item key={index} sx={{ mt: 2 }}>
-                        <CustomLabelCurrency text={link} color="#78829D" />
-                    </Grid>
-                ))}
-            </Grid>
-
-            {/* Fourth Column */}
-            <Grid item xs={12} sm={6} md={3} container direction="column" alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                <Grid item>
-                    <CustomLabelCurrency text="Resources" color="black" fontWeight="bold" />
-                </Grid>
-                <Grid item sx={{ mt: 2 }}>
-                    <CustomLabelCurrency text="Packages" color="#78829D" />
-                </Grid>
-            </Grid>
+  return (
+    <Box sx={{ width: '100%', maxWidth: 'none', margin: 0, padding: 0, backgroundColor: '#004e8c', color: '#FAF3E0', padding: '40px 0' }}>
+      {/* Contact Info Section */}
+      <Box sx={{ backgroundColor: '#FF8C42', padding: '20px 0', display: 'flex', justifyContent: 'center' }}>
+        <Grid container justifyContent="center" spacing={2} sx={{ textAlign: 'center', color: '#FAF3E0', width: '90%' }}>
+          <Grid item xs={12} sm={4}>
+            <PhoneIcon sx={{ fontSize: '32px', color: '#FFFFFF' }} />
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF' }}>
+              Call Now
+            </Typography>
+            <Typography variant="body2">+49 177 9365929</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <AccessTimeIcon sx={{ fontSize: '32px', color: '#FFFFFF' }} />
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF' }}>
+              Time Operational
+            </Typography>
+            <Typography variant="body2">09:00 AM - 05:00 PM</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocationOnIcon sx={{ fontSize: '32px', color: '#FFFFFF' }} />
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF' }}>
+              Location
+            </Typography>
+            <Typography variant="body2">Germany</Typography>
+          </Grid>
         </Grid>
-    );
+      </Box>
+
+      {/* Main Footer Section */}
+      <Grid container justifyContent="space-between" spacing={2} sx={{ padding: '40px 20px', maxWidth: '1200px', margin: 'auto' }}>
+        {/* Logo and Social Media */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#FFFFFF' }}>
+            HalalFly
+          </Typography>
+          <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 2, color: '#FAF3E0' }}>
+            HalalFly is committed to providing exceptional Hajj and Umrah travel experiences, ensuring a smooth journey with top-quality services tailored to your needs.
+          </Typography>
+          <Box>
+            <IconButton
+              sx={{ color: '#FAF3E0', mx: 1 }}
+              component="a"
+              href="https://www.facebook.com"
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <FacebookIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: '#FAF3E0', mx: 1 }}
+              component="a"
+              href="https://www.instagram.com/halalfly/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <InstagramIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: '#FAF3E0', mx: 1 }}
+              component="a"
+              href={`https://wa.me/491779365929`} 
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <WhatsAppIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: '#FAF3E0', mx: 1 }}
+              component="a"
+              href="https://www.tiktok.com/@halal.fly"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+            >
+              <TikTokIcon />
+            </IconButton>
+          </Box>
+        </Grid>
+
+        {/* Quick Links */}
+        <Grid item xs={12} sm={4} md={3}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#FFFFFF' }}>
+            Quick Links
+          </Typography>
+          <Typography variant="body2" sx={{ marginBottom: '8px', cursor: 'pointer', color: '#FAF3E0' }}>About Us</Typography>
+          <Typography variant="body2" sx={{ marginBottom: '8px', cursor: 'pointer', color: '#FAF3E0' }}>Our Services</Typography>
+          <Typography variant="body2" sx={{ marginBottom: '8px', cursor: 'pointer', color: '#FAF3E0' }}>Packages</Typography>
+          <Typography variant="body2" sx={{ marginBottom: '8px', cursor: 'pointer', color: '#FAF3E0' }}>FAQs</Typography>
+          <Typography variant="body2" sx={{ cursor: 'pointer', color: '#FAF3E0' }}>Blog</Typography>
+        </Grid>
+
+        {/* Subscribe to Newsletter */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#FFFFFF' }}>
+            Subscribe to Our Newsletter
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 2, color: '#FAF3E0' }}>
+            Stay updated with our latest offers and services.
+          </Typography>
+          <TextField
+            variant="outlined"
+            placeholder="Enter your email"
+            fullWidth
+            sx={{
+              input: { backgroundColor: '#FFFFFF', borderRadius: '4px', padding: '10px' },
+              marginBottom: '16px',
+            }}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ backgroundColor: '#FF8C42', color: '#FFFFFF', '&:hover': { backgroundColor: '#004e8c' } }}
+          >
+            SUBSCRIBE NOW
+          </Button>
+        </Grid>
+      </Grid>
+
+      {/* Bottom Footer Section */}
+      <Box sx={{ textAlign: 'center', padding: '20px 0', backgroundColor: '#004e8c', color: '#FAF3E0' }}>
+        <Typography variant="body2">© Copyright 2023. All Rights Reserved. Designed by HalalFly</Typography>
+      </Box>
+    </Box>
+  );
 };
 
 export default Footer;
