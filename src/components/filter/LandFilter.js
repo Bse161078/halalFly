@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, MenuItem, TextField, Tooltip, IconButton, Typography } from "@mui/material";
+import { Box,useMediaQuery,useTheme,Grid, MenuItem, TextField, Tooltip, IconButton, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -14,19 +14,24 @@ import { useNavigate } from 'react-router-dom';
 
 const HighlightedDay = styled(PickersDay)(({ theme }) => ({
   "&.Mui-selected": {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
+    backgroundColor: '#004e8c',
+  color: '#FFFFFF',
   },
   "&:hover": {
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: '#003b6e'
   },
 }));
 
 const inputStyle = {
+  backgroundColor: '#FFFFFF',
+  border: '1px solid #004e8c',
+  borderRadius: '5px'
   // Add your custom input styling here
 };
 
 function LandPackageFilter({ travelData }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const [selection, setSelection] = useState({
     tripType: "",
@@ -217,17 +222,32 @@ function LandPackageFilter({ travelData }) {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" sx={{ width: "100%", padding: { xs: 1, sm: 2, md: 3 } }}>
-      <Grid item xs={12} sm={6} md={2}>
+    <Box sx={{ padding: isMobile ? "0rem" : "2rem", width: "100%" }}>
+
+    <Grid
+        container
+        spacing={isMobile ? 0 : 2}
+        justifyContent="center"
+        sx={{
+          width: "100%",
+          maxWidth: isMobile ? "100%" : "80%",
+          margin: "auto",
+          padding: isMobile ? "1rem" : "2rem",
+        }}
+      >        <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{ fontSize:isMobile?'0.7rem':'',color: "#004e8c", fontWeight: "bold" }}>Trip Type</Typography>
         {renderSelect("Trip Type", "tripType", tripTypes, false)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{fontSize:isMobile?'0.7rem':'', color: selection.tripType ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>City</Typography>
         {renderSelect("City", "city", cities, !selection.tripType)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{ fontSize:isMobile?'0.7rem':'',color: selection.city ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Package</Typography>
         {renderSelect("Package", "package", packages, !selection.city)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{fontSize:isMobile?'0.7rem':'', color: selection.package ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Room Type</Typography>
         <CustomDropdown
           value={selection.room}
           name="room"
@@ -306,7 +326,8 @@ function LandPackageFilter({ travelData }) {
         />
       </Grid>
       {/* Other components like DatePicker */}
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{ fontSize:isMobile?'0.7rem':'',color: selection.room ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Date</Typography>
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DatePicker
     sx={{
@@ -400,7 +421,7 @@ function LandPackageFilter({ travelData }) {
             console.error("No matching date range found for the selected date.");
             return;
           }
-      
+          
           // Navigate to the package details page, passing the selected date range, activity, and transfer prices
           navigate(`/land-package/${filteredPackageData.id}/details`, {
             state: {
@@ -445,6 +466,7 @@ function LandPackageFilter({ travelData }) {
 </LocalizationProvider>
 </Grid>
     </Grid>
+    </Box>
   );
 }
 

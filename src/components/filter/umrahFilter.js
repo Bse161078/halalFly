@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Grid, MenuItem, TextField, Tooltip, IconButton, Typography } from "@mui/material";
+import {Box,useMediaQuery, Grid, MenuItem, TextField, Tooltip, IconButton, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { styled } from "@mui/material/styles";
+import { styled,useTheme } from "@mui/material/styles";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomDropdown } from "../common/CustomDrowDown";
@@ -14,19 +14,28 @@ import { useNavigate } from 'react-router-dom';
 
 const HighlightedDay = styled(PickersDay)(({ theme }) => ({
   "&.Mui-selected": {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
+    backgroundColor: '#004e8c',
+  color: '#FFFFFF',
   },
   "&:hover": {
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: '#003b6e'
   },
 }));
 
-const inputStyle = {
-  // Add your custom input styling here
-};
+
 
 function Filter({ travelData }) {
+  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const inputStyle = {
+    backgroundColor: '#FFFFFF',
+    border: '1px solid #004e8c',
+    borderRadius: isMobile ? '2px' : '5px',
+    width: isMobile ? '80%' : '100%',
+    fontSize: isMobile ? '0.7rem' : '1rem',
+    marginLeft: isMobile ? '0' : '0', // Reduced or removed margin on mobile
+  };
   const navigate = useNavigate();
   const [selection, setSelection] = useState({
     tripType: "",
@@ -34,10 +43,10 @@ function Filter({ travelData }) {
     package: "",
     room: "",
     date: null,
-    adults: 1,
+    adults: 0,
     infants: 0,
   });
-  console.log("travelData",travelData)
+  console.log("selection",selection)
   const [tripTypes, setTripTypes] = useState([]);
   const [cities, setCities] = useState([]);
   const [packages, setPackages] = useState([]);
@@ -47,6 +56,8 @@ function Filter({ travelData }) {
   const [maxInfants, setMaxInfants] = useState(0);
   const [adultsError, setAdultsError] = useState(false);
   const [infantsError, setInfantsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null); // New state for error messages
+
   useEffect(() => {
     if (Array.isArray(travelData) && travelData.length > 0) {
       const allTripTypes = new Set();
@@ -106,9 +117,10 @@ function Filter({ travelData }) {
 
       filterDates(newSelection.tripType, newSelection.city, newSelection.package, value);
     }
-    console.log("newSelection",newSelection)
 
     setSelection(newSelection);
+    setErrorMessage(null);
+
   };
 
   const filterCities = (tripType) => {
@@ -134,7 +146,6 @@ function Filter({ travelData }) {
       filteredPackages.add(item.packages.PackageTypes);
     });
     setPackages(Array.from(filteredPackages));
-    console.log("filteredPackages",filteredPackages)
     setRooms([]);
     setAvailableDates([]);
   };
@@ -166,7 +177,7 @@ function Filter({ travelData }) {
           hotel.hotelRoomPrice.some((room) => room.RoomTypes === roomType)
         )
     ).forEach((item) => {
-      item.packageDateRange?.forEach((date) => {
+      item?.packageDateRange?.forEach((date) => {
         const priceInEuro = item.price.find((p) => p.currency === "Euro");
         filteredDates.push({
           date: date.dateFrom,
@@ -205,32 +216,77 @@ function Filter({ travelData }) {
 
   const renderSelect = (label, name, options, disabled) => (
     <CustomDropdown
-      sx={{ inputStyle, ...(adultsError || infantsError ? { borderColor: "red" } : {}) }}
-      value={selection[name]}
-      name={name}
-      container={options?.map((option) => (
-        <MenuItem key={option} value={option}>
-          <CustomLabel text={option} />
-        </MenuItem>
-      ))}
-      placeholder={label}
-      onChange={(e) => handleSelection(name, e.target.value)}
-      disabled={disabled}
-    />
+  sx={{
+    width: isMobile ? '100%' : '100%', // Adjust width for mobile
+    marginLeft: isMobile ? 3 : 0,     // Margin-left for mobile
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: '#FFFFFF',
+      borderRadius: '5px',
+      borderColor: adultsError || infantsError ? '#004e8c' : '#D9D9D9', // Apply the border color
+      '& fieldset': {
+        borderColor: adultsError || infantsError ? '#004e8c' : '#D9D9D9',
+      },
+      '&:hover fieldset': {
+        borderColor: '#004e8c',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#004e8c',
+      },
+    },
+    '& .MuiSelect-select': {
+      color: '#004e8c',
+      fontSize: isMobile ? '0.8rem' : '1rem',
+    },
+  }}
+  value={selection[name]}
+  name={name}
+  container={options?.map((option) => (
+    <MenuItem key={option} value={option}>
+      <CustomLabel text={option} />
+    </MenuItem>
+  ))}
+  placeholder={label}
+  onChange={(e) => handleSelection(name, e.target.value)}
+  disabled={disabled}
+/>
+
+
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" sx={{ width: "100%", padding: { xs: 1, sm: 2, md: 3 } }}>
-      <Grid item xs={12} sm={6} md={2}>
-        {renderSelect("Trip Type", "tripType", tripTypes, false)}
+    <Box sx={{ padding: isMobile ? "0rem" : "2rem", width: "100%" }}>
+
+      <Grid
+        container
+        spacing={isMobile ? 0 : 2}
+        justifyContent="center"
+        sx={{
+          width: "100%",
+          maxWidth: isMobile ? "100%" : "80%",
+          margin: "auto",
+          padding: isMobile ? "1rem" : "2rem",
+        }}
+      >      {errorMessage && (
+        <Grid item xs={12}>
+          <Typography variant="body2" color="error" align="center">
+            {errorMessage}
+          </Typography>
+        </Grid>
+      )}
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{fontSize:isMobile?'0.7rem':'', color: "#004e8c", fontWeight: "bold" }}>Trip Type</Typography>
+        {renderSelect("", "tripType", tripTypes, false)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
-        {renderSelect("City", "city", cities, !selection.tripType)}
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{fontSize:isMobile?'0.7rem':'', color: selection.tripType ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>City</Typography>
+        {renderSelect("", "city", cities, !selection.tripType)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
-        {renderSelect("Package", "package", packages, !selection.city)}
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{fontSize:isMobile?'0.7rem':'', color: selection.city ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Package</Typography>
+        {renderSelect("", "package", packages, !selection.city)}
       </Grid>
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{ fontSize:isMobile?'0.7rem':'',color: selection.package ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Room Type</Typography>
         <CustomDropdown
           value={selection.room}
           name="room"
@@ -309,14 +365,16 @@ function Filter({ travelData }) {
         />
       </Grid>
       {/* Other components like DatePicker */}
-      <Grid item xs={12} sm={6} md={2}>
+      <Grid item xs={12} sm={6} md={3}>
+      <Typography sx={{ fontSize:isMobile?'0.7rem':'', color: selection.room ? "#004e8c" : "#A0B6D4", fontWeight: "bold" }}>Date</Typography>
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DatePicker
     sx={{
       background: "#FAF3E0",
       borderRadius: "5px",
       color: "#004225",
-      width: "100%",
+      width: isMobile?'60%':"100%",
+      marginLeft:isMobile?4:0
     }}
     slots={{ day: (props) => {
       const { day, outsideCurrentMonth, ...other } = props;
@@ -348,9 +406,10 @@ function Filter({ travelData }) {
       );
     }}}
     value={selection.date}
-    onChange={(newValue) => {
-      console.log('newValue',newValue)
-      handleSelection("date", newValue);
+    onChange={(value) => {
+      setSelection(prev => ({ ...prev, date: value }));
+      console.log('newValue',value)
+      handleSelection("date", value);
       if (Array.isArray(travelData) && travelData.length > 0) {
         const filteredPackageData = travelData.find((item) =>
           item.tripTypes?.some((type) => type.TripTypes === selection.tripType) &&
@@ -358,7 +417,7 @@ function Filter({ travelData }) {
           item.packages?.PackageTypes === selection.package
           
         );
-        if (newValue && filteredPackageData) {
+        if (value && filteredPackageData) {
           console.log("filteredPackageData",filteredPackageData)
 
           let totalPrice = 0;
@@ -386,18 +445,20 @@ function Filter({ travelData }) {
             }
           });
           const selectedDateRange = filteredPackageData.packageDateRange?.find((dateRange) =>
-            dayjs(newValue).isBetween(dayjs(dateRange.dateFrom), dayjs(dateRange.dateTo), null, "[]")
+            dayjs(value).isBetween(dayjs(dateRange.dateFrom), dayjs(dateRange.dateTo), null, "[]")
           );
-      
+          const selDateRange = filteredPackageData?.packageDateRange[0]
+            console.log("selDateRange",dayjs(selDateRange.dateFrom), dayjs(selDateRange.dateTo))
+           console.log("selectedDateRange",selectedDateRange)
           if (!selectedDateRange) {
 
-            console.error("No matching date range found for the selected date.");
+            setErrorMessage("No matching date range found for the selected date.");
             return;
           }
           
           if (!isValid) {
 
-            console.error("Selected number of adults or infants exceeds the room's capacity.");
+            setErrorMessage("Selected number of adults or infants exceeds the room's capacity.");
             return; // Stop the process if the selection is invalid
           }
       
@@ -412,7 +473,7 @@ function Filter({ travelData }) {
           navigate(`/umrah-package/${filteredPackageData.id}/details`, {
             state: {
               packageData: filteredPackageData,
-              selectedDate: newValue,
+              selectedDate: value,
               filterAdults: selection.adults,
               filterInfants: selection.infants,
               totalPrice: totalPrice,
@@ -421,16 +482,16 @@ function Filter({ travelData }) {
               filterRoom: selectedRoom, // Pass the selected room
               filterHotel: selectedHotel, // Pass the selected hotel
               selectedDateRange:selectedDateRange,
-              price: availableDates.find((d) => dayjs(d.date).isSame(newValue, "day"))?.price || 0,
+              price: availableDates.find((d) => dayjs(d.date).isSame(value, "day"))?.price || 0,
             },
           });
         } else {
 
-          console.error("No matching package found for the selected filters.");
+          setErrorMessage("No matching package found for the selected filters.");
         }
       } else {
 
-        console.error("travelData is not properly structured.");
+        setErrorMessage("travelData is not properly structured.");
       }
       
       
@@ -441,10 +502,10 @@ function Filter({ travelData }) {
       <TextField
         fullWidth
         style={{
-          height: "40px",
+          height: isMobile ? "30px" : "40px",
           background: "#FFFFFF",
           color: "#004225",
-          borderRadius: "5px",
+          borderRadius: isMobile ? "2px" : "5px",
         }}
         {...params}
       />
@@ -453,6 +514,7 @@ function Filter({ travelData }) {
 </LocalizationProvider>
 </Grid>
     </Grid>
+    </Box>
   );
 }
 

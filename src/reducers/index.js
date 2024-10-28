@@ -1,7 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
-    getHotelTravelOptionsApi,searchPackagesApi,getLandOptions,getFormOptionsApi
+    getHotelTravelOptionsApi,searchPackagesApi,getLandOptions
+    ,getFormOptionsApi,createHotelPaymentLinkApi,createTravelCardPaymentLinkApi,
+    getStaticHomeApi,validateCouponApi
 
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
@@ -285,8 +287,108 @@ const getFormOptionsApiSlice = createSlice({
     },
 });
 
+export const createTravelCardPaymentLinkApiSlice = createSlice({
+    name: 'createTravelCardPaymentLinkApiSlice',
+    initialState,
+    reducers: {
+        createTravelCardPaymentLinkApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [createTravelCardPaymentLinkApi.pending]: (state) => {
+            state.loading = true
+        },
+        [createTravelCardPaymentLinkApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [createTravelCardPaymentLinkApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
 
 
+
+export const createHotelPaymentLinkApiSlice = createSlice({
+    name: 'createHotelPaymentLinkApiSlice',
+    initialState,
+    reducers: {
+        createHotelPaymentLinkApiReset: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
+    extraReducers: {
+        [createHotelPaymentLinkApi.pending]: (state) => {
+            state.loading = true
+        },
+        [createHotelPaymentLinkApi.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.data = payload
+
+        },
+        [createHotelPaymentLinkApi.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload
+        },
+    },
+});
+
+export const getStaticHomeApiSlice = createSlice({
+    name: 'getStaticHomeApiSlice',
+    initialState,
+    reducers: {
+      getStaticHomeApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [getStaticHomeApi.pending]: (state) => {
+        state.loading = true;
+      },
+      [getStaticHomeApi.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [getStaticHomeApi.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+  export const validateCouponApiSlice = createSlice({
+    name: 'validateCouponApiSlice',
+    initialState,
+    reducers: {
+      validateCouponApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [validateCouponApi.pending]: (state) => {
+        state.loading = true;
+      },
+      [validateCouponApi.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [validateCouponApi.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
 export const {registerUserApiReset} = registerUserApiSlice.actions
 export const {logUserApiReset} = logUserApiSlice.actions;
 export const {getUserApiReset} = getUserApiSlice.actions;
@@ -296,8 +398,10 @@ export const {getHotelTravelOptionsApiReset} = getHotelTravelOptionsApiSlice.act
 export const {searchPackagesApiReset} = searchPackagesApiSlice.actions;
 export const { getLandOptionsApiReset } = getLandOptionsApiSlice.actions;
 export const { getFormOptionsApiReset } = getFormOptionsApiSlice.actions;
-
-
+export const {createTravelCardPaymentLinkApiReset} = createTravelCardPaymentLinkApiSlice.actions;
+export const {createHotelPaymentLinkApiReset} = createHotelPaymentLinkApiSlice.actions;
+export const {validateCouponApiReset} = validateCouponApiSlice.actions;
+export const {getStaticHomeApiReset} =  getStaticHomeApiSlice.actions;
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
 export const logUserApiReducer = logUserApiSlice.reducer;
@@ -308,4 +412,7 @@ export const getHotelTravelOptionsApiReducer = getHotelTravelOptionsApiSlice.red
 export const searchPackagesApiSliceReducer = searchPackagesApiSlice.reducer;
 export const landOptionsApiSliceReducer = getLandOptionsApiSlice.reducer;
 export const formOptionsApiSliceReducer = getFormOptionsApiSlice.reducer;
-
+export const createTravelCardPaymentLinkApiReducer = createTravelCardPaymentLinkApiSlice.reducer;
+export const createHotelPaymentLinkApiReducer = createHotelPaymentLinkApiSlice.reducer;
+export const validateCouponApiReducer= validateCouponApiSlice.reducer;
+export const getStaticHomeApiReducer = getStaticHomeApiSlice.reducer;

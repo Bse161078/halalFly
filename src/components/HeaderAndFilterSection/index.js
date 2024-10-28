@@ -1,52 +1,59 @@
 import React from 'react';
-import { Grid } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { Grid, Typography } from '@mui/material';
 
 // Define CustomLabelHeaderLarge component
 const CustomLabelHeaderLarge = ({ text, color }) => (
     <Typography
         sx={{
-            fontSize: { xs: '1.4rem', sm: '1.8rem', md: '2.4rem', lg: '2.8rem' }, // Updated sizes for better emphasis
-            color: color || '#FF8C42', // Default to Orange color for main headers
+            fontSize: { xs: '1rem', sm: '1.4rem', md: '2.2rem', lg: '2.8rem' },
+            color: color || '#FF8C42',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 'bold',
             textAlign: 'center',
-            marginBottom: { xs: '0.5rem', md: '1rem' }, // Add margin for spacing
-            lineHeight: '1.5', // Improved line-height for readability
-            padding: { xs: '0 15px', sm: '0 20px' }, // Responsive padding for mobile and desktop
+            marginBottom: { xs: '0.3rem', md: '1rem' },
+            lineHeight: { xs: '1.3', md: '1.5' },
+            padding: { xs: '0 10px', sm: '0 20px' },
         }}
     >
         {text}
     </Typography>
 );
 
+// Function to remove special characters
+const sanitizeText = (text) => text.replace(/[^a-zA-Z0-9\s]/g, '');
+
 // Define HeaderAndFilterSection component
-const HeaderAndFilterSection = () => {
+const HeaderAndFilterSection = ({ mainText }) => {
+    const sanitizedText = sanitizeText(mainText);
+    const lines = sanitizedText ? sanitizedText.split('\n').filter((line) => line.trim() !== '') : [];
+    const firstLine = lines[0] || '';
+    const secondLine = lines[1] || '';
+
     return (
         <Grid
             container
             direction="column"
             alignItems="center"
             justifyContent="center"
-            spacing={3} // Add more space between elements
+            spacing={{ xs: 1, md: 3 }}
             sx={{
-                padding: { xs: '30px 20px', md: '60px 40px' }, // Increase padding for better spacing on larger screens
-                borderRadius: '10px', // Keep border-radius for smooth corners
+                padding: { xs: '20px 15px', sm: '30px 20px', md: '60px 40px' },
+                borderRadius: '10px',
             }}
         >
             {/* Main Heading */}
             <Grid item>
                 <CustomLabelHeaderLarge
-                    text="Begin Your Spiritual Journey with Us."
-                    color="#FF8C42" // Use Orange for the main heading for contrast
+                    text={firstLine}
+                    color="#FF8C42"
                 />
             </Grid>
 
             {/* Subheading */}
             <Grid item>
                 <CustomLabelHeaderLarge
-                    text="Discover our affordable Umrah packages and let us guide you every step of the way."
-                    color="#FFFFFF" // White for the subheading to maintain balance with the background
+                    text={secondLine}
+                    color="#FFFFFF"
                 />
             </Grid>
         </Grid>

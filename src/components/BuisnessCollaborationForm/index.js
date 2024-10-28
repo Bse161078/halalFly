@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import {ListSubheader, Container, TextField, Button, Grid, Typography, Paper, FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel } from '@mui/material';
+import {useTheme,useMediaQuery,ListSubheader, Container, TextField, Button, Grid, Typography, Paper, FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel } from '@mui/material';
 
 const BusinessCollaborationForm = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
-
+  const { umrahPackages, landPackages } = location.state || {};
+  console.log("umrahPackages",umrahPackages,"landPackages",landPackages)
   const [consent, setConsent] = useState(false);
 
   const handleConsentChange = (event) => {
@@ -31,7 +34,6 @@ const BusinessCollaborationForm = () => {
     setTotalDays(totalDays); // Assuming you have a state for total days
   };
   
-  const { umrahPackages, landPackages } = location.state || {};
 
   return (
     <Container maxWidth="md" sx={{ mt: 5, padding: { xs: 3, md: 6 }, borderRadius: 0, backgroundColor: '#fff' }}>
@@ -45,7 +47,7 @@ const BusinessCollaborationForm = () => {
     marginLeft: { xs: 0, md: 10 }, // Responsive margin
     letterSpacing: '0.5px',
     textTransform: 'uppercase',
-    fontSize: { xs: '2rem', md: '3rem' }, // Responsive font size
+    fontSize: { xs: isMobile&&'1.3rem', sm:isMobile&&'1.7rem', md: '3rem' }, // Responsive font size
   }}
 >
   Get In Touch With Us
@@ -65,7 +67,7 @@ const BusinessCollaborationForm = () => {
 >
   {/* Title */}
   <Typography
-    variant="h4"
+    variant={isMobile?'h6':"h4"}
     gutterBottom
     sx={{
       textAlign: 'center',
@@ -82,7 +84,7 @@ const BusinessCollaborationForm = () => {
 
   {/* Organization Information */}
   <Typography
-    variant="h6"
+    variant={isMobile?"body2":"h6"}
     sx={{
       marginTop: '30px',
       color: '#FF8C42', // Gold color to visually break up sections
@@ -100,15 +102,15 @@ const BusinessCollaborationForm = () => {
       <TextField
         label="Organization Name"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize:isMobile&&'0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
-            '& fieldset': { borderColor: '#D5B782' }, // Gold border
+            '& fieldset': { borderColor: '#D5B782', }, // Gold border
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange border on hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red on focus
           },
-          '& .MuiInputBase-root': { color: '#333' }, // Dark text
+          '& .MuiInputBase-root': { color: '#333',fontSize:isMobile&&'0.7rem' }, // Dark text
         }}
       />
     </Grid>
@@ -116,7 +118,13 @@ const BusinessCollaborationForm = () => {
     {/* Type of Organization */}
     <Grid item xs={12}>
       <FormControl fullWidth variant="outlined">
-        <InputLabel sx={{ color: '#004e8c' }}>Type of Organization</InputLabel>
+        {/* Label with conditional font size */}
+        <InputLabel 
+          sx={{ color: '#004e8c', fontSize: isMobile && '0.7rem' }}
+        >
+          Type of Organization
+        </InputLabel>
+        
         <Select
           label="Type of Organization"
           sx={{
@@ -127,9 +135,16 @@ const BusinessCollaborationForm = () => {
             '& .MuiSelect-select': { color: '#333' }, // Dark text for select options
           }}
         >
-          <MenuItem value="TravelAgency">Travel Agency</MenuItem>
-          <MenuItem value="Corporate">Corporate</MenuItem>
-          <MenuItem value="NGO">NGO</MenuItem>
+          {/* MenuItems with conditional font size */}
+          <MenuItem sx={{ color: '#004e8c', fontSize: isMobile && '0.7rem' }} value="TravelAgency">
+            Travel Agency
+          </MenuItem>
+          <MenuItem sx={{ fontSize: isMobile && '0.7rem' }} value="Corporate">
+            Corporate
+          </MenuItem>
+          <MenuItem sx={{ fontSize: isMobile && '0.7rem' }} value="NGO">
+            NGO
+          </MenuItem>
         </Select>
       </FormControl>
     </Grid>
@@ -139,7 +154,7 @@ const BusinessCollaborationForm = () => {
       <TextField
         label="Organization Address"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c', fontSize: isMobile && '0.7rem'  } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -147,7 +162,7 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover border
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
@@ -157,7 +172,7 @@ const BusinessCollaborationForm = () => {
       <TextField
         label="Contact Name"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize: isMobile && '0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -165,7 +180,7 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
@@ -176,7 +191,7 @@ const BusinessCollaborationForm = () => {
         label="Email"
         type="email"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize: isMobile && '0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -184,7 +199,7 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
@@ -195,7 +210,7 @@ const BusinessCollaborationForm = () => {
         label="Mobile Number"
         type="tel"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize: isMobile && '0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -203,7 +218,7 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
@@ -228,7 +243,7 @@ const BusinessCollaborationForm = () => {
       <TextField
         label="Departure City"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize: isMobile && '0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -236,21 +251,21 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
 
     <Grid item xs={12}>
     <FormControl fullWidth variant="outlined" sx={{ marginBottom: 3 }}>
-  <InputLabel>Select Package</InputLabel>
+  <InputLabel sx={{fontSize: isMobile && '0.7rem'}}>Select Package</InputLabel>
   <Select
     value={selectedPackage}
     onChange={handlePackageChange}
     label="Select Package"
   >
     {/* Umrah Packages Header */}
-    <ListSubheader>Umrah Packages</ListSubheader>
+    <ListSubheader sx={{fontSize: isMobile && '0.7rem'}}>Umrah Packages</ListSubheader>
     {umrahPackages?.map((umrah, index) => (
       <MenuItem key={index} value={`Umrah-${umrah.packageType}`}>
         {`${umrah.packageType} - ${umrah.hotelInfo?.map((hotel) => hotel.hotel).join(', ')}`}
@@ -258,7 +273,7 @@ const BusinessCollaborationForm = () => {
     ))}
 
     {/* Land Packages Header */}
-    <ListSubheader>Land Packages</ListSubheader>
+    <ListSubheader sx={{fontSize: isMobile && '0.7rem'}}>Land Packages</ListSubheader>
     {landPackages?.map((land, index) => (
       <MenuItem key={index} value={`Land-${land.packageType }`}>
         {`${land.packageType} - ${land.hotelInfo?.map((hotel) => hotel.hotel).join(', ')}`}
@@ -269,7 +284,7 @@ const BusinessCollaborationForm = () => {
 </FormControl>
 {/* Display total days */}
 {selectedPackage && (
-  <Typography variant="body1" sx={{ marginTop: 2, fontWeight: 'bold', color: '#C01718' }}>
+  <Typography variant="body1" sx={{ fontSize: isMobile && '0.7rem',marginTop: 2, fontWeight: 'bold', color: '#C01718' }}>
     Total Days: {totalDays}
   </Typography>
 )}
@@ -280,7 +295,7 @@ const BusinessCollaborationForm = () => {
         label="Number of Pilgrims"
         type="number"
         fullWidth
-        InputLabelProps={{ style: { color: '#004e8c' } }} // Blue label
+        InputLabelProps={{ style: { color: '#004e8c',fontSize: isMobile && '0.7rem' } }} // Blue label
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -288,7 +303,7 @@ const BusinessCollaborationForm = () => {
             '&:hover fieldset': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused fieldset': { borderColor: '#C01718' }, // Red border on focus
           },
-          '& .MuiInputBase-root': { color: '#333' },
+          '& .MuiInputBase-root': { color: '#333',fontSize: isMobile && '0.7rem' },
         }}
       />
     </Grid>
@@ -296,7 +311,7 @@ const BusinessCollaborationForm = () => {
     {/* Visa Required */}
     <Grid item xs={12}>
       <FormControl fullWidth variant="outlined">
-        <InputLabel sx={{ color: '#004e8c' }}>Visa Required</InputLabel>
+        <InputLabel sx={{ color: '#004e8c',fontSize: isMobile && '0.7rem' }}>Visa Required</InputLabel>
         <Select
           label="Visa Required"
           sx={{
@@ -304,11 +319,11 @@ const BusinessCollaborationForm = () => {
             '& .MuiOutlinedInput-notchedOutline': { borderColor: '#D5B782' }, // Gold border
             '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#FF8C42' }, // Orange hover
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#C01718' }, // Red border on focus
-            '& .MuiSelect-select': { color: '#333' },
+            '& .MuiSelect-select': { color: '#333',fontSize: isMobile && '0.7rem' },
           }}
         >
-          <MenuItem value="Yes">Yes</MenuItem>
-          <MenuItem value="No">No</MenuItem>
+          <MenuItem sx={{fontSize: isMobile && '0.7rem'}} value="Yes">Yes</MenuItem>
+          <MenuItem sx={{fontSize: isMobile && '0.7rem'}} value="No">No</MenuItem>
         </Select>
       </FormControl>
     </Grid>
@@ -319,6 +334,7 @@ const BusinessCollaborationForm = () => {
     variant="contained"
     fullWidth
     sx={{
+      fontSize: isMobile && '0.7rem',
       marginTop: '30px',
       backgroundColor: '#FF8C42', // Blue button
       color: '#FAF3E0', // Light text

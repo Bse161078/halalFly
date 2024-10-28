@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { Container, Typography, Accordion, AccordionSummary, AccordionDetails, Box } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const FAQItem = ({ question, answer }) => {
+const FAQItem = ({ question, answer, number, isMobile }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => {
@@ -14,66 +24,93 @@ const FAQItem = ({ question, answer }) => {
       expanded={expanded}
       onChange={handleToggle}
       sx={{
-        backgroundColor: '#F0F0F0', // Light gray for the accordion body for readability
-        marginBottom: 2,
+        backgroundColor: expanded ? '#FAFAFA' : '#FFFFFF',
+        marginBottom: isMobile ? 1 : 2,
         borderRadius: '8px',
-        boxShadow: expanded ? '0px 4px 10px rgba(0, 0, 0, 0.15)' : '0px 2px 5px rgba(0, 0, 0, 0.1)', // Softer shadow when expanded
-        '&:hover': { boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)' }, // Slight hover effect for interaction
+        boxShadow: expanded ? '0px 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
+        border: '1px solid #E0E0E0',
       }}
     >
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon sx={{ color: '#FF8C42' }} />} // Orange for the expand icon
+        expandIcon={<ExpandMoreIcon sx={{ color: '#004e8c', fontSize: isMobile ? '1.2rem' : 'default' }} />}
         sx={{
-          backgroundColor: '#004e8c', // Dark blue for the accordion header
-          color: '#FFFFFF', // White text for better contrast
-          fontWeight: 'bold',
-          fontSize: { xs: '1rem', sm: '1.25rem' },
-          padding: '10px 20px', // More spacious padding
-          borderRadius: '8px 8px 0 0',
+          display: 'flex',
+          alignItems: 'center',
+          padding: isMobile ? '10px 15px' : '15px 20px',
         }}
       >
-        {question}
+        <Typography
+          variant="body1"
+          sx={{
+            width: '30px',
+            fontWeight: 'bold',
+            color: '#004e8c',
+            fontSize: isMobile ? '0.9rem' : '1.1rem',
+          }}
+        >
+          {number}
+        </Typography>
+        <Typography
+          sx={{
+            flexGrow: 1,
+            fontWeight: 'bold',
+            color: expanded ? '#004e8c' : '#000',
+            fontSize: isMobile ? '0.95rem' : '1rem',
+          }}
+        >
+          {question}
+        </Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ padding: 2, color: '#0C0C0C' }}> {/* Darker text for the answer */}
+      <AccordionDetails sx={{ padding: isMobile ? '10px 15px' : '20px', color: '#4A4A4A', fontSize: '0.9rem' }}>
         {answer}
       </AccordionDetails>
     </Accordion>
   );
 };
 
-const FAQs = () => {
+const FAQs = ({faqs}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const faqList = [
     {
-      question: 'How can I book a package?',
-      answer: 'You can easily book any package by clicking on the "View Details" button and following the steps to complete the booking process.',
+      question: 'How do I make a reservation on your website?',
+      answer: 'Provide a step-by-step guide on how users can browse and book travel services on your platform.',
     },
     {
-      question: 'Do you offer group discounts?',
-      answer: 'Yes, we offer group discounts. Please contact our customer service for more details.',
+      question: 'What documents do I need for my trip, and how do I obtain them?',
+      answer: 'Provide the necessary documentation required for international travel, such as passports, visas, and insurance.',
     },
     {
-      question: 'Can I customize my Umrah or Hajj package?',
-      answer: 'Yes, we offer customizable packages based on your preferences and budget.',
+      question: 'In the event that I need to modify or cancel my reservation, what are the policies?',
+      answer: 'Outline the cancellation and modification policies, including any fees that may apply.',
     },
     {
-      question: 'Are flights included in the packages?',
-      answer: 'Some packages include flights, while others don’t. Please check the package details for more information.',
+      question: 'Can you specify the types of credit/debit cards, digital wallets, or other payment methods accepted?',
+      answer: 'List the accepted payment methods available on your website.',
     },
   ];
 
   return (
-    <Container maxWidth="md" sx={{ padding: '50px 20px', backgroundColor: '#FFFFFF', borderRadius: '12px', boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.1)' }}> {/* White background for better readability */}
+    <Container sx={{ py: 5 }}>
+      {/* Title and Subtitle */}
       <Typography
-        variant="h4"
+        variant={isMobile ? 'h5' : 'h4'}
         align="center"
-        gutterBottom
-        sx={{ color: '#FF8C42', fontWeight: 'bold', marginBottom: '30px', letterSpacing: '1px' }} // Orange heading text with spacing
+        sx={{
+          color: '#004e8c',
+          fontWeight: 'bold',
+          mb: isMobile ? 2 : 3,
+        }}
       >
         Frequently Asked Questions
       </Typography>
+  
+
+      {/* FAQ Items */}
       <Box>
-        {faqList.map((faq, index) => (
-          <FAQItem key={index} question={faq.question} answer={faq.answer} />
+        {faqs?.length>0&&faqs.map((faq, index) => (
+          <FAQItem key={index} question={faq.Question} answer={faq.Answer} number={`0${index + 1}`} isMobile={isMobile} />
         ))}
       </Box>
     </Container>

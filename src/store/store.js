@@ -1,14 +1,35 @@
 import {configureStore} from '@reduxjs/toolkit'
 
 import {
-    registerUserApiReducer,logUserApiReducer,formOptionsApiSliceReducer,getUserApiReducer,getAllHotelsApiReducer,getHotelTravelCardsApiReducer,getHotelTravelOptionsApiReducer,searchPackagesApiSliceReducer,landOptionsApiSliceReducer
+    registerUserApiReducer,
+    logUserApiReducer,
+    getUserApiReducer,
+    getAllHotelsApiReducer,
+    getHotelTravelCardsApiReducer
+    ,
+    getHotelTravelOptionsApiReducer,
+    searchPackagesApiSliceReducer,
+    formOptionsApiSliceReducer,  createHotelPaymentLinkApiReducer,
+    createTravelCardPaymentLinkApiReducer,validateCouponApiReducer,
+    getStaticHomeApiReducer
+    
 } from '../reducers';
 import {setupListeners} from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
     reducer: {
-        registerUserApiReducer,logUserApiReducer,getUserApiReducer,getAllHotelsApiReducer,getHotelTravelCardsApiReducer,
-        getHotelTravelOptionsApiReducer,searchPackagesApiSliceReducer,landOptionsApiSliceReducer,formOptionsApiSliceReducer
+        registerUserApiReducer,
+        logUserApiReducer,
+        getUserApiReducer,
+        getAllHotelsApiReducer,
+        getHotelTravelCardsApiReducer,
+        getHotelTravelOptionsApiReducer,
+        searchPackagesApiSliceReducer,
+        formOptionsApiSliceReducer,
+        createHotelPaymentLinkApiReducer,
+        createTravelCardPaymentLinkApiReducer,
+        validateCouponApiReducer,
+        getStaticHomeApiReducer
     },
 });
 setupListeners(store.dispatch)

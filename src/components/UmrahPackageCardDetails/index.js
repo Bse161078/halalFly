@@ -7,7 +7,12 @@ import DateRangePickerComponent from './DateRangeComponent';
 import RoomAndOccupantsSelection from './RoomAndOccupantsSelection';
 import AdditionalOptions from './AdditionalOption';
 import PriceDetails from './PriceDetails';
-import DetailsSection from './DetailsSection';
+import DetailsSection from './DetailsSection/DetailsSection';
+import FloatingButtonWithPrice from './FloatingButtonWithPrice';
+import Coupons from './Coupons';
+import { validateCouponApi } from 'src/services';
+import { validateCouponApiReset } from 'src/reducers';
+import { useDispatch, useSelector } from 'react-redux';
 
 const UmrahPackageCardDetails = () => {
   const navigate = useNavigate();
@@ -18,13 +23,104 @@ const UmrahPackageCardDetails = () => {
   const [selectedRoom, setSelectedRoom] = useState(filterRoom || null);
   const [adults, setAdults] = useState(filterAdults || 1);
   const [infants, setInfants] = useState(filterInfants || 0);
-  const [selectedActivity, setSelectedActivity] = useState(packageData?.activityDetails?.[0] || null);
-  const [selectedTransfer, setSelectedTransfer] = useState(packageData?.transferDetails?.[0] || null);
-  const [selectedFlights,setSelectedFlights] = useState(packageData?.flightDetails?.[0] || null);
+  const [selectedActivity, setSelectedActivity] = useState(0);
+  const [selectedTransfer, setSelectedTransfer] = useState(0);
+  const [selectedFlights,setSelectedFlights] = useState(0);
   const [selectedMealPlan, setSelectedMealPlan] = useState('');
   const [availableMealPlans, setAvailableMealPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'));
+  const [activityInsurance, setActivityInsurance] = useState(null); // null, 'yes', 'no'
+  const [transferInsurance, setTransferInsurance] = useState(null);
+  const [flightInsurance, setFlightInsurance] = useState(null);
+  const [travelInsurance, setTravelInsurance] = useState('no');
+  const [selectedInsurances, setSelectedInsurances] = useState([]);  // Array to hold selected insurance types
+  const [discount,setDiscount] = useState(0)
+  const [couponCode, setCouponCode] = useState('');
+
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
+  const dispatch = useDispatch();
+
+  const couponsApi = async (couponCode) => {
+    try {
+      // Dispatch the API call with the coupon code in the required format
+      const response = await dispatch(validateCouponApi({ coupon: couponCode }));
+      console.log("responsbbe",response.payload)
+      // Check if the response contains a valid coupon and discount
+      if (response.payload?.CouponName) {
+        setDiscount(response?.payload?.DiscountPrice) ;
+        return { isValid: true };
+
+      }
+      else
+      {
+
+        setDiscount(0)
+        return { isValid: false };
+
+
+      }
+    } catch (error) {
+
+      setDiscount(0)
+    } finally {
+      dispatch(validateCouponApiReset());  // Always reset the validation state after the API call completes
+    }
+  };
+  
+
+
+ 
+  const handleActivityInsuranceChange = (event) => {
+    const value = event.target.value;
+    setActivityInsurance(value);
+    if (value === 'no') {
+      setActivityInsurance('no');
+    }
+  };
+  
+  const handleTransferInsuranceChange = (event) => {
+    const value = event.target.value;
+    setTransferInsurance(value);
+    if (value === 'no') {
+      setTransferInsurance('no');
+    }
+  };
+  
+  const handleFlightInsuranceChange = (event) => {
+    const value = event.target.value;
+    setFlightInsurance(value);
+    if (value === 'no') {
+      setFlightInsurance('no');
+    }
+  };
+
+  const handleAddInsurance = (selectedOption) => {
+    setSelectedInsurances([...selectedInsurances, selectedOption]);
+    totalPrice()
+  };
+
+  const handleRemoveInsurance = (index) => {
+    const updatedInsurances = selectedInsurances.filter((_, idx) => idx !== index);
+    setSelectedInsurances(updatedInsurances);
+  };
+
+  const handleInsuranceTypeChange = (index, value) => {
+    const selectedOption = insuranceOptions.find(option => option.type === value);
+    const updatedInsurances = selectedInsurances.map((insurance, idx) => 
+      idx === index ? { type: value, price: selectedOption ? selectedOption.price : 0 } : insurance
+
+  );
+    setSelectedInsurances(updatedInsurances);
+  };
+  const handleTravelInsuranceChange = (event) => {
+    const value = event.target.value;
+    setTravelInsurance(value);
+    if (value === 'no') {
+      setSelectedInsurances([]);
+    }
+  };
+
+  const insuranceOptions = packageData?.insurance;
   const {
     title,
     description,
@@ -38,14 +134,14 @@ const UmrahPackageCardDetails = () => {
     packages,
     flightDetails
   } = packageData;
+
   useEffect(() => {
-    if (packageData?.packageDateRange?.[0]) {
+    if (packageData?.packageDateRange[0]) {
       setDateRange({
-        start: dayjs(selectedDateRange?.dateFrom?selectedDateRange?.dateFrom:packageData?.packageDateRange?.[0].dateFrom),
-        end: dayjs(selectedDateRange?.dateTo?selectedDateRange?.dateTo:packageData?.packageDateRange?.[0].dateTo),
+        start: dayjs(selectedDateRange?.length>0?selectedDateRange?.dateFrom:packageData?.packageDateRange[0].dateFrom),
+        end: dayjs(selectedDateRange?.dateTo?selectedDateRange?.dateTo:packageData?.packageDateRange[0].dateTo),
       });
     }
-
     setAdults(filterAdults ? filterAdults : 1);
   }, [packageData]);
 
@@ -83,7 +179,7 @@ const handleIncrease = (type) => {
 
   if (type === 'adults') {
     if (selectedRoom.RoomTypes !== 'Custom' && adults >= selectedRoom.totalAdults) {
-      setErrorMessage(`You can't add more than ${selectedRoom.totalAdults} adults.`);
+      setErrorMessage(`You can't add more than ${selectedRoom.totalAdults} adults.`); 
       return;
     }
     setAdults(adults + 1);
@@ -122,12 +218,14 @@ const handleMealPlanChange = (event) => {
 };
 
   const findPriceInEuro = (priceArray) => {
-    return priceArray?.find((p) => p.currency === 'Euro')?.value || 0;
+    return priceArray?.find((p) => p.currency === 'eur')?.value || 0;
   };
   const handleActivityChange = (event) => {
-    const selected = activityDetails.find((activity) => activity.id === event.target.value);
-    setSelectedActivity(selected);
+    const activityId = event.target.value;
+    const activity = activityDetails.find(act => act.id === activityId);
+    setSelectedActivity(activity || null);
   };
+
   const handleFlightChanges = (event) => {
     const selected = flightDetails.find((flight) => flight.id === event.target.value);
     setSelectedFlights(selected);
@@ -137,7 +235,6 @@ const handleMealPlanChange = (event) => {
     setSelectedTransfer(selected);
   };
   const basePriceEuro = findPriceInEuro(price);
-  console.log("transferoptions",transferDetails)
   const totalPrice = () => {
     let totalRoomPrice = 0;      // To store the total room price for all hotels
     let totalDays = 0;           // To track total days (in case it's needed separately)
@@ -145,7 +242,15 @@ const handleMealPlanChange = (event) => {
     const activityPrice = selectedActivity?.price || 0;  // Activity price
     const transferPrice = selectedTransfer?.Price || 0;  // Transfer price
     const mealPrice = selectedMealPlan?.Meal_Price || 0;
-    const flightPrice = selectedFlights.Price || 0;
+    const flightPrice = selectedFlights?.Price || 0;
+    let insurancePrice = 0
+    if(selectedInsurances)
+    {
+      selectedInsurances?.map((insurance)=>{
+        insurancePrice = insurance?.InsurancePrice
+      })
+
+    }
     if (selectedRoom) {
         // Loop through each hotel in the package
         packageData?.hotelTypes?.forEach((hotel) => {
@@ -173,8 +278,10 @@ const handleMealPlanChange = (event) => {
         Number(activityPrice || 0) +       // Activity price
         Number(transferPrice || 0) +       // Transfer price
         Number(mealPrice || 0)+
-        Number(flightPrice||0);
-    console.log("PRICE",selectedMealPlan,mealPrice,basePriceEuro,totalRoomPrice,infantsTotalPrice,activityPrice,transferPrice)
+        Number(flightPrice||0)+
+        Number(insurancePrice||0)-
+        discount *adults
+    console.log("PRICE",mealPrice,basePriceEuro,totalRoomPrice,infantsTotalPrice,activityPrice,transferPrice,flightPrice)
     // Return the total price, ensuring it's valid and not NaN
     return isNaN(total) ? 0 : total;
 };
@@ -210,20 +317,44 @@ const handleMealPlanChange = (event) => {
       <Box sx={{ width: '100%', mt: 4 }}>
 
         {/* Title and Description */}
-        <Typography variant="h2" sx={{ color: '#004e8c', fontWeight: 'bold' }} gutterBottom>
+        <Typography
+  variant={isMobile?'h5':"h3"} // Change to h3 for a more balanced title size
+  sx={{
+    color: '#004e8c',
+    fontWeight: isMobile?900:'bold',
+    textAlign: 'center', // Centering the title for a more balanced look
+    textTransform: 'capitalize', // Ensures the title looks neat
+    letterSpacing: isMobile?'0.3px':'1px', // Add letter spacing for a refined look
+    mt: isMobile?0:4, // Add margin on top for breathing room
+    mb: 2, // Add bottom margin to space it out
+    lineHeight: 1.3, // Line height for better readability
+  }}
+  gutterBottom
+>
   {title}
 </Typography>
 
-<Typography variant="body1" sx={{ mb: 2, color: '#FF8C42' }}>
+<Typography
+  variant="subtitle1" // Use subtitle1 for a cleaner look
+  sx={{
+    mb: 3, // Add margin below for spacing
+    color: '#FF8C42', // Keep the theme color for description
+    textAlign: 'center', // Center-align to match the title
+    fontSize: isMobile?'0.75rem':'1.1rem', // Slightly larger font size
+    lineHeight: '1.6', // Improve readability with line height
+    maxWidth: '800px', // Limit width for better focus
+    mx: 'auto', // Center the description by using auto margins
+  }}
+>
   {description}
 </Typography>
+
 
 <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
 
 
-        <DetailsSection cities={cities} hotelTypes={hotelTypes} tripTypes={tripTypes} packages={packages}/>
-        <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
+        
 
         {/* Room Selection */}
         <RoomAndOccupantsSelection
@@ -240,10 +371,29 @@ const handleMealPlanChange = (event) => {
         handleMealPlanChange={handleMealPlanChange}
       />
 
+<DetailsSection 
+        packages={packages} hotelTypes={hotelTypes} 
+        tripTypes={tripTypes}
+        flightDetails={flightDetails}/>
 <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
         {/* Additional Options */}
-        <AdditionalOptions selectedFlights={selectedFlights} flightDetails={flightDetails}  handleFlightChanges={handleFlightChanges} selectedActivity={selectedActivity} selectedTransfer={selectedTransfer} activityDetails={activityDetails} transferDetails={transferDetails} handleTransferChange={handleTransferChange} handleActivityChange={handleActivityChange}/>
+        <AdditionalOptions 
+        selectedFlights={selectedFlights} flightDetails={flightDetails}  
+        handleFlightChanges={handleFlightChanges} selectedActivity={selectedActivity} 
+        selectedTransfer={selectedTransfer} activityDetails={activityDetails} 
+        transferDetails={transferDetails} handleTransferChange={handleTransferChange} 
+        handleActivityChange={handleActivityChange} activityInsurance={activityInsurance} 
+        handleActivityInsuranceChange={handleActivityInsuranceChange} transferInsurance={transferInsurance}
+        handleTransferInsuranceChange={handleTransferInsuranceChange} flightInsurance={flightInsurance}
+        handleFlightInsuranceChange={handleFlightInsuranceChange}
+        insuranceOptions={insuranceOptions}
+      selectedInsurances={selectedInsurances}
+      handleAddInsurance={handleAddInsurance}
+      handleRemoveInsurance={handleRemoveInsurance}
+      travelInsurance={travelInsurance}
+      handleTravelInsuranceChange={handleTravelInsuranceChange}
+        />
 
         <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
@@ -252,39 +402,60 @@ const handleMealPlanChange = (event) => {
         <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
         {/* Proceed to Book Button */}
-        <Button
-      variant="contained"
-      fullWidth
-      sx={{
-        background: 'linear-gradient(90deg, #004e8c 0%, #0070ba 100%)', // Gradient effect for more visual appeal
-        color: '#FAF3E0',
-        borderRadius: '50px', // Increased border-radius for a more rounded button
-        textTransform: 'none',
-        fontWeight: 'bold',
-        py: isMobile ? 2.5 : 2, // Adjusted padding for better spacing on mobile and desktop
-        fontSize: isMobile ? '1.4rem' : '1.2rem', // Slightly larger text for better readability
-        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)', // Adding shadow for depth
-        transition: 'all 0.3s ease', // Smooth transition effect
-        '&:hover': {
-          background: 'linear-gradient(90deg, #00336a 0%, #00508c 100%)', // Slightly darker gradient on hover
-          transform: 'scale(1.05)', // Button grows slightly on hover for interaction feedback
-        },
-      }}
-      onClick={() =>
-        navigate('/booking-details', {
-          state: {
-            packageData,
-            finalPrice,
-            adults,
-            infants,
-            selectedActivity,
-            selectedTransfer,
-          },
-        })
-      }
-    >
-      Proceed to Book
-      </Button>
+        <FloatingButtonWithPrice 
+        finalPrice={finalPrice}
+        packageData={packageData}
+        adults={adults}
+        infants={infants}
+        selectedActivity={selectedActivity}
+        selectedTransfer={selectedTransfer}
+      />
+      <Coupons setCouponCode={setCouponCode}
+       setDiscount={setDiscount} 
+       discount={discount} couponCode={couponCode}
+       couponsApi={couponsApi}  // Pass the wrapped API function
+       />
+      <Button
+  variant="contained"
+  fullWidth
+  sx={{
+    background: 'linear-gradient(90deg, #004e8c 0%, #005b99 50%, #0070ba 100%)',
+    color: '#FAF3E0',
+    borderRadius: isMobile ? '30px' : '50px', // Slightly less rounded on mobile for compactness
+    textTransform: 'none',
+    fontWeight: 'bold',
+    py: isMobile ? 1.5 : 2, // Reduced padding for mobile to fit smaller screens
+    fontSize: isMobile ? '1rem' : '1.2rem', // Adjusted font size for better readability on small screens
+    boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      background: 'linear-gradient(90deg, #00336a 0%, #004c88 50%, #00508c 100%)',
+      transform: 'scale(1.05)', // Adds an interactive hover effect
+      boxShadow: '0px 8px 18px rgba(0, 0, 0, 0.2)',
+    },
+    ...(isMobile && {
+      py: 1.5, // Slightly smaller padding for mobile devices
+      fontSize: '1rem', // Adjusted font size for mobile readability
+      minWidth: '90%', // Ensures button width fits nicely on mobile
+    }),
+  }}
+  onClick={() =>
+    navigate('/booking-details', {
+      state: {
+        packageData,
+        finalPrice,
+        adults,
+        infants,
+        selectedActivity,
+        selectedTransfer,
+      },
+    })
+  }
+>
+  Proceed to Book
+</Button>
+
+
 
       </Box>
     </Paper>

@@ -9,6 +9,8 @@ import {
   getLandOptionsApiReset,
   getHotelTravelCardsApiReset,
   getFormOptionsApiReset,
+  validateCouponApiReset,
+  getStaticHomeApiReset
 } from "../../reducers";
 import {
   getAllHotelsApi,
@@ -17,9 +19,11 @@ import {
   getUserApi,
   getLandOptions,
   getHotelTravelCardsApi,
+  validateCouponApi,
+  getStaticHomeApi
 } from "../../services";
 import { removeAccessToken } from "../../utils";
-import Loader from "../common/Loader";
+import LoadingScreen from "../LoadingScreen";
 import Filter from "../filter/index";
 import { CircularProgress,Typography,Box } from "@mui/material";
 import UmrahHajjCarousel from "../UmrahPackages/UmrahPackages";
@@ -29,13 +33,14 @@ import HeaderAndFilterSection from "../HeaderAndFilterSection";
 import LandPackages from "../LandPackages/LandPackages";
 import WhatsAppButton from "src/WhatsappButton";
 import FAQs from "../FAQs";  // Import the FAQs component
-import OurServices from "../OurServices";
-
+import Servides from "../OurServices";
+import {useMediaQuery, useTheme } from '@mui/material';
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { data, loading, error } = useSelector((state) => state.getUserApiReducer);
   const { data: allHotels, loading: allHotelsLoading } = useSelector((state) => state.getAllHotelsApiReducer);
   const { data: allUmrahPackages, loading: allUmrahPackagesLoading } = useSelector((state) => state.getHotelTravelCardsApiReducer);
   const umrahPackages = allUmrahPackages?.map((umrah) => ({
@@ -52,80 +57,58 @@ const Home = () => {
       totalDays: hotelType?.totalDays // Get totalDays from hotelTypes
     }))
   }));
+
+  const {data:homePage, loading: homePageLoading} = useSelector((state)=> state.getStaticHomeApiReducer);
+console.log("homepage",homePage)
   useEffect(() => {
-    dispatch(getUserApi());
     dispatch(getAllHotelsApi());
     dispatch(getHotelTravelOptionsApi());
     dispatch(getLandOptions());
     dispatch(getHotelTravelCardsApi());
     dispatch(getFormOptionsApi());
+    dispatch(getStaticHomeApi());
+
+  
 
     return () => {
-      dispatch(getUserApiReset());
       dispatch(getAllHotelsApiReset());
       dispatch(getHotelTravelOptionsApiReset());
       dispatch(getLandOptionsApiReset());
       dispatch(getHotelTravelCardsApiReset());
       dispatch(getFormOptionsApiReset());
+      dispatch(getStaticHomeApiReset());
     };
   }, [dispatch]);
 
   useEffect(() => {
-    if (error === "Please authenticate") {
-      removeAccessToken();
-      navigate(`/login`);
-      dispatch(getUserApiReset());
-    }
-  }, [error, dispatch, navigate]);
-
+    
+  }, [ dispatch, navigate]);
+ 
+ 
+ 
 
 
 return (
-  <Grid container sx={{ width: "100%", overflow: "hidden", position: "relative" }}>
+  <Grid container sx={{ width: "100%",
+   overflow: "hidden", position: "relative" }}>
     <WhatsAppButton />
-    {(loading || allHotelsLoading || allUmrahPackagesLoading) && <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark transparent background
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 9999, // Ensures loader stays on top
-      }}
-    >
-      <CircularProgress
-        size={80}
-        sx={{
-          color: '#FF8C42', // Use Orange for the loader
-        }}
-      />
-      <Typography
-        variant="h6"
-        sx={{
-          color: '#FAF3E0', // Light text
-          marginTop: 2,
-          fontWeight: 'bold',
-        }}
-      >
-        Loading, please wait...
-      </Typography>
-    </Box>}
+    {(allHotelsLoading || allUmrahPackagesLoading && homePageLoading) && 
+    <LoadingScreen/>}
 
     {/* Hero Section */}
     <Grid
       container
       sx={{
-        background: "linear-gradient(to right, #0C0C0C, #004e8c)", // Updated to black and dark blue gradient
-        minHeight: "100vh",
-        width: "100%",
-        color: "#D5B782", // Gold text color for hero section
-        position: "relative",
+        backgroundImage: `linear-gradient(to right, rgba(12, 12, 12, 0.8), rgba(0, 78, 140, 0.8)), url(${homePage?.length>0 ?homePage[0]?.MainImage[0].url:""})`,
+        backgroundSize: 'cover', // Ensures the image covers the whole section
+        backgroundPosition: 'center', // Centers the background image
+        backgroundRepeat: 'no-repeat',
+        minHeight: isMobile?'70vh':'100vh',
+        width: '100%',
+        color: '#D5B782', // Gold text color for hero section
+        position: 'relative',
         padding: { xs: 2, sm: 3, md: 5 },
-        textAlign: "center",
+        textAlign: 'center',
       }}
       alignItems="center"
     >
@@ -133,15 +116,28 @@ return (
         <NavigationButton umrahPackages={umrahPackages} landPackages={landPackages} />
       </Grid>
 
-      <Grid item xs={12}>
-        <HeaderAndFilterSection />
+      <Grid item xs={12} sx={{marginTop:isMobile?-50:0}}>
+        <HeaderAndFilterSection mainText={homePage?.length>0?homePage[0].MainText:""} />
       </Grid>
 
-      <Grid item container xs={10} justifyContent="center" sx={{ marginTop: 4, marginLeft: 14 }}>
-        <Filter allUmrahPackages={allUmrahPackages} allLandPackages={allHotels} />
-      </Grid>
+      
     </Grid>
-
+    <Grid
+        item
+        container
+        xs={12} // Use full width on mobile for better alignment
+        md={10} // Adjust to a narrower width on larger screens
+        justifyContent="center"
+        sx={{
+          marginTop: { xs: -20, sm: -7, md: -10 }, // Responsive margin for different screen sizes
+          marginX: { xs: 2, sm: 5, md: 10 }, // Horizontal margin, responsive for all screens
+          paddingX: { xs: 1, sm: 2, md: 3 }, // Responsive horizontal padding for spacing
+        }}
+      >
+        <Filter umrahIcon = {homePage?.length>0&&homePage[0].UmrahPackageIcon.url}
+        landPackageIcon = {homePage?.length>0&& homePage[0].LandPackageIcon.url} 
+        allUmrahPackages={allUmrahPackages} allLandPackages={allHotels} />
+      </Grid>
     {/* Our Services */}
     <Grid
       container
@@ -154,7 +150,7 @@ return (
       }}
     >
       <Grid item xs={12} md={10}>
-        <OurServices />
+        <Servides services= {homePage?.length>0? homePage[0].OurServices:[] } />
       </Grid>
     </Grid>
 
@@ -185,7 +181,7 @@ return (
         textAlign: "center",
       }}
     >
-      <FAQs />
+      <FAQs faqs={homePage?.length>0?homePage[0].FAQS:[]} />
     </Grid>
 
     {/* Footer Section */}

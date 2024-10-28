@@ -1,47 +1,50 @@
 import React, { useState } from 'react';
-import { Card, Paper, CardContent, Typography, Button, Select, MenuItem, Grid, Box } from '@mui/material';
+import { useTheme,useMediaQuery,Card, CardContent, Typography, IconButton, Box, Grid, Paper, Select, MenuItem } from '@mui/material';
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import { useNavigate } from 'react-router-dom';
 import FlagIcon from '@mui/icons-material/Flag';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useNavigate } from 'react-router-dom';
 
 const LandPackageCard = ({ packageData }) => {
+  const theme= useTheme();
+  const isMobile =  useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
+
   const {
     name,
-    image,
-    cities,
-    packages,
-    date_from_to,
-    hotelTypes,
+    image = [],
+    cities = [],
+    date_from_to = [],
+    hotelTypes = [],
     transferDetails,
     activityDetails,
-    PackagePrice,
-    tripTypes
-  } = packageData;
+    PackagePrice = [],
+    tripTypes = [],
+  } = packageData || {};
 
-  const [selectedCurrency, setSelectedCurrency] = useState(PackagePrice[0]?.currency || 'USD');
-
-  // Currency symbol mapping
   const currencySymbols = {
-    USD: '$',
-    Euro: '€',
-    GBP: '£',
-    PKR: '₨',
-    AED: 'د.إ', // UAE Dirham
-    SAR: '﷼',   // Saudi Riyal
+    usd: '$',
+    eur: '€',
+    gbp: '£',
+    pkr: '₨',
+    aed: 'د.إ', // UAE Dirham
+    sar: '﷼',   // Saudi Riyal
   };
 
-  const selectedPrice = PackagePrice.find(price => price.currency === selectedCurrency)?.value || 'N/A';
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    PackagePrice.length > 0 ? PackagePrice[0].currency : 'USD'
+  );
+  const selectedPrice = PackagePrice?.find(price => price.currency === selectedCurrency)?.value || 'N/A';
 
   const handleCurrencyChange = (event) => {
     setSelectedCurrency(event.target.value);
   };
 
   const handleViewDetails = () => {
-    navigate(`/land-package/${packageData.id}/details`, {
-      state: { packageData }
+    navigate(`/land-package/${packageData?.id}/details`, {
+      state: { packageData },
     });
   };
 
@@ -51,29 +54,32 @@ const LandPackageCard = ({ packageData }) => {
         margin: { xs: '10px', sm: '20px' },
         width: '100%',
         maxWidth: '500px',
-        backgroundColor: "#FFFFFF",  // White background for a clean look
-        borderRadius: 2,
+        backgroundColor: "#FFFFFF",  // White background for the card
+        borderRadius: '12px',  // Rounded corners
         overflow: 'hidden',
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow
+        position: 'relative',
         transition: 'transform 0.2s ease-in-out',
         '&:hover': {
-          transform: 'scale(1.05)', // Slight scaling on hover
-          boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.15)', // Add shadow on hover
+          transform: 'scale(1.03)', // Slight scaling on hover
+          boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)', // Light shadow on hover
         }
       }}
     >
       <img
-        src={image[0]?.url}
-        alt={image[0]?.name}
+        src={image.length > 0 ? image[0].url : '/default.jpg'}
+        alt={image.length > 0 ? image[0].name : 'No image available'}
         style={{
           width: '100%',
           height: '200px',
-          objectFit: 'cover',
+          objectFit: 'contain',
+          borderTopLeftRadius: '12px',
+          borderTopRightRadius: '12px',
         }}
       />
 
-      <CardContent sx={{ padding: 3 }}>
-        {/* Package Title */}
+      <CardContent sx={{ paddingBottom: '60px' }}>
+        {/* Title and City Names */}
         <Typography
           variant="h6"
           component="h2"
@@ -82,71 +88,67 @@ const LandPackageCard = ({ packageData }) => {
           {name} - {cities.map(city => city.cityTypes).join(', ')}
         </Typography>
 
-        {/* Package Label */}
-        {packages && (
-          <Typography
-            variant="subtitle1"
-            sx={{ color: '#555555', fontSize: { xs: '0.9rem', sm: '1rem' }, mt: 1 }}
-          >
-            {packages?.LandPackages}
+        {/* Trip Types */}
+        {tripTypes.length > 0 && (
+          <Box sx={{ mt: 1, mb: 1 }}>
+            {tripTypes.map(trip => (
+              <Paper
+                key={trip._id}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  px: 1,
+                  py: 0.5,
+                  bgcolor: "#004e8c", // Blue background
+                  borderRadius: 2,
+                  mr: 1,
+                }}
+              >
+                <FlagIcon sx={{ color: "#FFFFFF", mr: 0.5, fontSize: 'small' }} />
+                <Typography color="#FFFFFF" fontWeight="bold" variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.85rem' } }}>
+                  {trip.TripTypes}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+        )}
+
+        {/* Dates */}
+        {date_from_to.length > 0 && (
+          <Typography variant="body2" sx={{ color: '#666666', mt: 1 }}>
+            {date_from_to[0]?.dateFrom} - {date_from_to[0]?.dateTo}
           </Typography>
         )}
 
-        {/* Trip Types */}
-        <Box sx={{ mt: 1, mb: 1 }}>
-          {tripTypes.map(trip => (
-            <Paper
-              key={trip._id}
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                px: 1,
-                py: 0.5,
-                bgcolor: "#004e8c", // Gold background
-                borderRadius: 2,
-                mr: 1,
-              }}
-            >
-              <FlagIcon sx={{ color: "white", mr: 0.5, fontSize: 'small' }} />
-              <Typography color="white" fontWeight="bold" variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.85rem' } }}>
-                {trip.TripTypes}
-              </Typography>
-            </Paper>
-          ))}
-        </Box>
+        {/* Accommodation */}
+        {!isMobile&&hotelTypes?.length > 0 && (
+          <Typography variant="body2" sx={{ color: '#666666', mt: 1 }}>
+            Accommodation: {hotelTypes[0]?.hotelRoomPrice?.map(room => room.RoomTypes).join(', ')}
+          </Typography>
+        )}
 
-        {/* Dates */}
-        <Typography variant="body2" sx={{ color: '#004e8c', mt: 1 }}>
-          {date_from_to[0].dateFrom} - {date_from_to[0].dateTo}
-        </Typography>
-
-        {/* Accommodation Options */}
-        <Typography variant="body2" sx={{ color: '#004e8c', mt: 1 }}>
-          Accommodation: {hotelTypes[0]?.hotelRoomPrice?.map(room => room.RoomTypes).join(', ')}
-        </Typography>
-
-        {/* Included Services Icons */}
+        {/* Included Services */}
         <Grid container spacing={1} sx={{ mt: 2 }}>
-          {transferDetails.length > 0 && (
+          {transferDetails?.isTransferIncluded && (
             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-              <DirectionsCarFilledIcon sx={{ color: "#FF8C42", mr: 0.5, fontSize: 'large' }} />
-              <Typography color="#FF8C42" variant="caption">
+              <DirectionsCarFilledIcon sx={{ color: "#004e8c", mr: 0.5, fontSize: 'large' }} />
+              <Typography color="#666666" variant="caption">
                 Transfers
               </Typography>
             </Grid>
           )}
           {hotelTypes.length > 0 && (
             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-              <HotelIcon sx={{ color: "#FF8C42", mr: 0.5, fontSize: 'large' }} />
-              <Typography color="#FF8C42" variant="caption">
+              <HotelIcon sx={{ color: "#004e8c", mr: 0.5, fontSize: 'large' }} />
+              <Typography color="#666666" variant="caption">
                 Hotels
               </Typography>
             </Grid>
           )}
-          {activityDetails.length > 0 && (
+          {activityDetails?.length > 0 && (
             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-              <LocalActivityIcon sx={{ color: "#FF8C42", mr: 0.5, fontSize: 'large' }} />
-              <Typography color="#FF8C42" variant="caption">
+              <LocalActivityIcon sx={{ color: "#004e8c", mr: 0.5, fontSize: 'large' }} />
+              <Typography color="#666666" variant="caption">
                 Activities
               </Typography>
             </Grid>
@@ -154,47 +156,47 @@ const LandPackageCard = ({ packageData }) => {
         </Grid>
 
         {/* Price and Currency Selector */}
-        {PackagePrice.length > 0 && (
+        {!isMobile&&PackagePrice.length > 0 && (
           <>
-            <Typography variant="body1" sx={{ color: '#004e8c', mt: 1 }}>
+            <Typography variant="body1" sx={{ color: '#333333', mt: 1 }}>
               Price:
               <Select
                 value={selectedCurrency}
                 onChange={handleCurrencyChange}
-                sx={{ ml: 2, minWidth: 100, backgroundColor: '#FFFFFF', color: '#004e8c' }}
+                sx={{ ml: 2, minWidth: 100, backgroundColor: '#F0F0F0', color: '#004e8c' }}
                 size="small"
               >
                 {PackagePrice.map(price => (
                   <MenuItem key={price.currency} value={price.currency}>
-                    {price.currency}
+                    {price.currency.toUpperCase()}
                   </MenuItem>
                 ))}
               </Select>
             </Typography>
 
             <Typography variant="h6" sx={{ color: '#004e8c', mt: 1 }}>
-              {currencySymbols[selectedCurrency] || selectedCurrency}:{selectedPrice}
+              {currencySymbols[selectedCurrency] || selectedCurrency}: {selectedPrice}
             </Typography>
           </>
         )}
-
-        {/* View Details Button */}
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#FF8C42', // Orange background
-            mt: 2,
-            width: '100%',
-            fontSize: { xs: '0.9rem', sm: '1rem' },
-            '&:hover': {
-              backgroundColor: '#E57435', // Slightly darker orange on hover
-            }
-          }}
-          onClick={handleViewDetails}
-        >
-          View Details
-        </Button>
       </CardContent>
+
+      {/* Right Arrow Button */}
+      <IconButton
+        sx={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          backgroundColor: '#004e8c',
+          color: '#FFFFFF',
+          '&:hover': {
+            backgroundColor: '#003b6e',
+          },
+        }}
+        onClick={handleViewDetails}
+      >
+        <ArrowForwardIcon />
+      </IconButton>
     </Card>
   );
 };

@@ -84,7 +84,7 @@ const PackageCard = ({ title, imageUrl, prices, packageId, selectedCurrency, onC
         height="200"
         image={imageUrl}
         alt={title}
-        sx={{ width: '100%', height: { xs: '150px', sm: '200px' }, objectFit: 'cover' }}
+        sx={{ width: '100%', height: { xs: '150px', sm: '200px' }, objectFit: 'contain' }}
       />
       <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         {/* Title */}

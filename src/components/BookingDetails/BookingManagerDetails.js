@@ -1,13 +1,32 @@
 import React from 'react';
-import { Grid, TextField, FormControl, InputLabel, Select, MenuItem, Typography } from '@mui/material';
+import { Grid, TextField, FormControl, InputLabel, Select, MenuItem, Typography, useMediaQuery, useTheme } from '@mui/material';
 
-const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails, visaCountries }) => {
+const BookingManagerDetails = ({ 
+  bookingManagerDetails, 
+  setBookingManagerDetails, 
+  visaCountries,
+  countryList 
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
-      <Typography variant="h4" color="#004e8c" fontWeight="bold" gutterBottom>
+      <Typography 
+        variant={isMobile ? 'h5' : 'h4'}
+        color="#004e8c" 
+        fontWeight="bold" 
+        gutterBottom
+        sx={{
+          fontSize: isMobile ? '1.5rem' : '2rem',
+          textAlign: isMobile ? 'center' : 'left',
+          mb: 2,
+        }}
+      >
         Booking Manager Details
       </Typography>
-      <Grid container spacing={3}>
+
+      <Grid container spacing={isMobile ? 2 : 3}>
         {/* Manager Name Field */}
         <Grid item xs={12} sm={6}>
           <TextField
@@ -15,24 +34,25 @@ const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails
             value={bookingManagerDetails.name}
             onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, name: e.target.value })}
             fullWidth
+            required
             sx={{
-              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold' }, // Blue label with bold font
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
-                  borderColor: '#004e8c', // Blue border
-                  borderRadius: '12px', // Rounded corners for a softer look
+                  borderColor: '#004e8c',
+                  borderRadius: '12px',
                 },
                 '&:hover fieldset': {
-                  borderColor: '#FF8C42', // Orange border on hover
+                  borderColor: '#FF8C42',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#C01718', // Red border when focused
+                  borderColor: '#C01718',
                 },
-                color: '#0C0C0C', // Dark text color inside the input
+                color: '#0C0C0C',
+                padding: isMobile ? '4px 8px' : '6px 12px',
               },
-              backgroundColor: '#ffffff', // White background for the text field
-              borderRadius: '12px', // Softened corners for the entire input field
-              padding: '6px 12px', // Extra padding for a more spacious feel
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
             }}
           />
         </Grid>
@@ -44,8 +64,9 @@ const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails
             value={bookingManagerDetails.phone}
             onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, phone: e.target.value })}
             fullWidth
+            required
             sx={{
-              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold' },
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   borderColor: '#004e8c',
@@ -58,10 +79,10 @@ const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails
                   borderColor: '#C01718',
                 },
                 color: '#0C0C0C',
+                padding: isMobile ? '4px 8px' : '6px 12px',
               },
               backgroundColor: '#ffffff',
               borderRadius: '12px',
-              padding: '6px 12px',
             }}
           />
         </Grid>
@@ -73,8 +94,10 @@ const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails
             value={bookingManagerDetails.email}
             onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, email: e.target.value })}
             fullWidth
+            required
+            type="email"
             sx={{
-              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold' },
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   borderColor: '#004e8c',
@@ -87,45 +110,105 @@ const BookingManagerDetails = ({ bookingManagerDetails, setBookingManagerDetails
                   borderColor: '#C01718',
                 },
                 color: '#0C0C0C',
+                padding: isMobile ? '4px 8px' : '6px 12px',
               },
               backgroundColor: '#ffffff',
               borderRadius: '12px',
-              padding: '6px 12px',
             }}
           />
         </Grid>
 
-        {/* Nationality Select Field */}
+        {/* Address Field */}
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth sx={{ '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold' } }}>
-            <InputLabel>Nationality</InputLabel>
-            <Select
-              value={bookingManagerDetails.nationality}
-              onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, nationality: e.target.value })}
-              sx={{
-                '& .MuiOutlinedInput-notchedOutline': {
+          <TextField
+            label="Address"
+            value={bookingManagerDetails.address}
+            onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, address: e.target.value })}
+            fullWidth
+            required
+            multiline
+            rows={1}
+            sx={{
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
                   borderColor: '#004e8c',
                   borderRadius: '12px',
                 },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
+                '&:hover fieldset': {
                   borderColor: '#FF8C42',
                 },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                '&.Mui-focused fieldset': {
                   borderColor: '#C01718',
                 },
                 color: '#0C0C0C',
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '6px 12px',
-              }}
-            >
-              {visaCountries.map((country, index) => (
-                <MenuItem key={index} value={country}>
-                  {country}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                padding: isMobile ? '4px 8px' : '6px 12px',
+              },
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+            }}
+          />
+        </Grid>
+
+        {/* City Field */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="City"
+            value={bookingManagerDetails.city}
+            onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, city: e.target.value })}
+            fullWidth
+            required
+            sx={{
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#004e8c',
+                  borderRadius: '12px',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#FF8C42',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#C01718',
+                },
+                color: '#0C0C0C',
+                padding: isMobile ? '4px 8px' : '6px 12px',
+              },
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+            }}
+          />
+        </Grid>
+
+        {/* ZIP Code Field */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="ZIP Code"
+            value={bookingManagerDetails.zipCode}
+            onChange={(e) => setBookingManagerDetails({ ...bookingManagerDetails, zipCode: e.target.value })}
+            fullWidth
+            required
+            type="number"
+            sx={{
+              '& .MuiInputLabel-root': { color: '#004e8c', fontWeight: 'bold', fontSize: isMobile ? '0.85rem' : '1rem' },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#004e8c',
+                  borderRadius: '12px',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#FF8C42',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#C01718',
+                },
+                color: '#0C0C0C',
+                padding: isMobile ? '4px 8px' : '6px 12px',
+              },
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+            }}
+          />
         </Grid>
       </Grid>
     </>

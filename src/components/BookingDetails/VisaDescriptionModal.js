@@ -45,7 +45,7 @@ const VisaDescriptionModal = ({ visaDescriptionOpen, handleClose, visaDescriptio
     {tourismVisaCountries && tourismVisaCountries.length > 0 ? (
       <Grid container spacing={2}>
         {tourismVisaCountries.map((country, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid item xs={6} sm={6} md={4} key={index}>
             <Typography variant="body2" sx={{ color: '#004e8c' }}>
               {country}
             </Typography>

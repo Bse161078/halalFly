@@ -44,7 +44,6 @@ const CustomDropdown = (props) => {
     const classes = useStyles();
     return (
         <FormControl fullWidth>
-            <InputLabel style={{marginTop: "-8px",color:"white",fontWeight:"bold"}}>{props.placeholder}</InputLabel>
             <Select
                 MenuProps={{
                     classes: {

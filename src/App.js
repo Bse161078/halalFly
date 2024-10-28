@@ -9,7 +9,8 @@ import Home from "src/components/home";
 import {store} from "src/store/store";
 import {Provider} from 'react-redux'
 import 'src/assets/css/index.css'
-
+import { useTheme } from '@emotion/react';
+import useMediaQuery from '@mui/material';
 import PackageDetails from "./components/package-details";
 import Register from "./components/register";
 import { CssBaseline, Box } from "@mui/material";

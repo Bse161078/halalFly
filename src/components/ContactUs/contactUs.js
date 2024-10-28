@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Container, MenuItem, Select, Grid, Typography, Box } from '@mui/material';
+import { Container, useTheme, useMediaQuery, Grid, Typography, Box } from '@mui/material';
 import ContactUsForm from './index'; // Import your ContactUsForm component
 import BusinessCollaborationForm from '../BuisnessCollaborationForm'; // Import your BusinessCollaborationForm component
 
 const ContactUs = () => {
   // State to manage which form is selected
   const [selectedForm, setSelectedForm] = useState('contactUs');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Handle form selection from the dropdown menu
   const handleFormChange = (event) => {
@@ -13,20 +15,26 @@ const ContactUs = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 5, padding: { xs: 3, md: 6 }, borderRadius: 0, backgroundColor: '#fff' }}>
+    <Container maxWidth="md"  sx={{
+      width: '100%',
+      mt: isMobile ? 3 : 5,
+      padding: isMobile ? 0 : { xs: 2, md: 6 },
+      borderRadius: isMobile ? 0 : 3,
+      backgroundColor: '#fff',
+    }}>
     {/* Main Heading */}
   {/* Main Heading */}
   <Typography
-  variant="h4"
+  variant={isMobile?'h6':"h4"}
   align="center"
   sx={{
     color: '#FF8C42', // Vibrant orange to stand out
     fontWeight: 'bold',
     marginBottom: 4,
     marginLeft: { xs: 0, md: 10 }, // Responsive margin
-    letterSpacing: '0.5px',
+    letterSpacing: isMobile?'0px':'0.5px',
     textTransform: 'uppercase',
-    fontSize: { xs: '2rem', md: '3rem' }, // Responsive font size
+    fontSize: { xs: '1.5rem', md: '3rem' }, // Responsive font size
   }}
 >
   Get In Touch With Us
@@ -71,7 +79,7 @@ const ContactUs = () => {
       {/* Animated Form Appearance */}
       <Box
         sx={{
-          mt: 4,
+          mt: isMobile?2:4,
           opacity: 1,
           transform:  'translateY(-20px)',
           transition: 'all 0.5s ease',

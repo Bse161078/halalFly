@@ -1,74 +1,97 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Box, MenuItem } from '@mui/material';
-import UmrahFilter from './umrahFilter'; // Ensure the correct path to the UmrahFilter component
-import { CustomDropdown } from "../common/CustomDrowDown";
-import { CustomLabel } from "../common/CustomLabel";
+import { Box, Tabs, Tab, useMediaQuery, useTheme } from '@mui/material';
+import UmrahFilter from './umrahFilter';
 import LandFilter from './LandFilter';
 
-function Index({ allUmrahPackages, allLandPackages }) {
-  // Set the initial state to "Umrah Packages"
-  const [selectedValue, setSelectedValue] = useState("Umrah Packages"); // State to store the selected value
+function Index({ umrahIcon, landPackageIcon, allUmrahPackages, allLandPackages }) {
+  const [selectedTab, setSelectedTab] = useState("Umrah Packages");
   const [selectedComponent, setSelectedComponent] = useState(<UmrahFilter travelData={allUmrahPackages} />);
-  console.log("allUmrahPackages",allUmrahPackages)
-  // Handle selection changes
-  const handleSelection = (name, value) => {
-    setSelectedValue(value); // Update the selected value state
 
-    // Update the selected component based on the selected value
-    if (value === 'Umrah Packages') {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+    if (newValue === 'Umrah Packages') {
       setSelectedComponent(<UmrahFilter travelData={allUmrahPackages} />);
-    } else if (value === 'Land Packages') {
+    } else {
       setSelectedComponent(<LandFilter travelData={allLandPackages} />);
     }
   };
 
-  // Automatically set the Umrah packages on initial load
   useEffect(() => {
-    // Ensure UmrahFilter is displayed as default
     setSelectedComponent(<UmrahFilter travelData={allUmrahPackages} />);
   }, [allUmrahPackages]);
 
   return (
     <Box
       sx={{
-        p: 2,
+        p: isMobile ? 1 : 2,
         width: '100%',
-        position: 'relative', // Ensure the Box stays positioned
-        zIndex: 10, // Set a higher z-index to stay above other elements
+        backgroundColor: "#FFFFFF",
+        borderRadius: "15px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        zIndex: 10,
       }}
     >
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-        sx={{ maxWidth: '100%', margin: '0 auto' }}
+      {/* Tab Section */}
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          mb: isMobile ? 2 : 3,
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
+        }}
       >
-        {/* CustomDropdown component wrapped inside a responsive Grid item */}
-        <Grid item xs={12} sm={8} md={6} lg={4}>
-          <CustomDropdown
-            value={selectedValue} // Set the value prop to reflect the current selection
-            name="packageSelect"
-            container={['Umrah Packages', 'Land Packages'].map((option) => (
-              <MenuItem
-                key={option}
-                value={option}
-                onClick={() => handleSelection('packageSelect', option)}
-              >
-                <CustomLabel text={option} /> {/* Replace with your actual label component */}
-              </MenuItem>
-            ))}
-            placeholder="Select a Package"
-            onChange={(e) => handleSelection('packageSelect', e.target.value)}
-            disabled={false} // Adjust if needed
+        <Tabs
+          value={selectedTab}
+          onChange={handleTabChange}
+          centered
+          TabIndicatorProps={{
+            style: {
+              backgroundColor: "#FF8C42", // Orange for active tab indicator
+            },
+          }}
+          variant={isMobile ? 'fullWidth' : 'standard'}
+          sx={{
+            width: isMobile ? '100%' : 'auto',
+          }}
+        >
+          <Tab
+            icon={<Box component="img" src={umrahIcon} alt="Umrah Icon" sx={{ width: 24, height: 24 }} />}
+            iconPosition="start"
+            label="Umrah Packages"
+            value="Umrah Packages"
+            sx={{
+              color: selectedTab === "Umrah Packages" ? "#004e8c" : "#999999",
+              fontWeight: selectedTab === "Umrah Packages" ? "bold" : "normal",
+              textTransform: "none",
+              fontSize: isMobile ? "0.75rem" : "1rem",
+              width: isMobile ? '100%' : 'auto', // Full width on mobile
+            }}
           />
-        </Grid>
+          <Tab
+            icon={<Box component="img" src={landPackageIcon} alt="Land Package Icon" sx={{ width: 24, height: 24 }} />}
+            iconPosition="start"
+            label="Land Packages"
+            value="Land Packages"
+            sx={{
+              color: selectedTab === "Land Packages" ? "#004e8c" : "#999999",
+              fontWeight: selectedTab === "Land Packages" ? "bold" : "normal",
+              textTransform: "none",
+              fontSize: isMobile ? "0.875rem" : "1rem",
+              width: isMobile ? '100%' : 'auto', // Full width on mobile
+            }}
+          />
+        </Tabs>
+      </Box>
 
-        {/* Render the selected component (UmrahFilter or LandFilter) */}
-        <Grid item xs={12}>
-          {selectedComponent}
-        </Grid>
-      </Grid>
+      {/* Render Selected Component */}
+      <Box sx={{ mt: isMobile ? 2 : 3 }}>
+        {selectedComponent}
+      </Box>
     </Box>
   );
 }

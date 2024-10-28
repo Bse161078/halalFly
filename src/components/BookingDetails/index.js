@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, Grid, Paper, Button, TextField, Divider, Modal,
-  InputLabel, FormControl, RadioGroup, FormControlLabel, Radio, Select, MenuItem
+  Box, Typography, Grid, Paper, useTheme, useMediaQuery, Divider,Select
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +12,10 @@ import InfantsDetails from './InfantsDetails';
 import PreferredContactMethod from './PreferredContactMethod';
 import VisaDescriptionModal from './VisaDescriptionModal';
 import { styled } from '@mui/material/styles';
+import {createHotelPaymentLinkApiReducer, createHotelPaymentLinkApiReset,
+  createTravelCardPaymentLinkApiReducer, createTravelCardPaymentLinkApiReset} from '../../reducers'
+import {createHotelPaymentLinkApi, createTravelCardPaymentLinkApi,} from '../../services'
+import PaymentOptions from './PaymentOptions';
 
 const CustomSelect = styled(Select)(({ theme }) => ({
   '& .MuiOutlinedInput-notchedOutline': {
@@ -39,9 +42,50 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 }));
 
 const BookingForm = () => {
-  const dispatch = useDispatch();
   const location = useLocation();
-  const { packageData, finalPrice, adults, children, infants } = location.state || {};
+  const [paymentType, setPaymentType] = useState('full'); // Single state for payment type
+  const theme =  useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const { packageData, finalPrice, adults, children, infants } = location.state || {};
+    console.log("packageData",packageData)
+  const {data: createTravelCardPaymentLink, loading: createTravelCardPaymentLinkLoading, error: createTravelCardPaymentLinkError} =
+  useSelector((state) => state.createTravelCardPaymentLinkApiReducer);
+const {data: createHotelPaymentLink, loading: createHotelPaymentLinkLoading, error: createHotelPaymentLinkError} =
+  useSelector((state) => state.createHotelPaymentLinkApiReducer);
+  console.log("createTravelCardPaymentLink",createTravelCardPaymentLink,createHotelPaymentLink)
+  useEffect(() => {
+    
+    dispatch(createTravelCardPaymentLinkApi({
+        travel_card: "6711865ebf40d421a707c21d",
+        price:"6711865ebf40d421a707c21e",
+        room:"6711865ebf40d421a707c222",
+        images:["https://dibbz.s3.amazonaws.com/sixth_out_ot_06_1_2c5b36118e.jpg"],
+        number_of_adults:2,
+        number_of_infants:1,
+        hotel : "6711865ebf40d421a707c220"
+
+    }))
+
+
+    dispatch(createHotelPaymentLinkApi({
+        hotel:"66f871475f65661e14c8dda8",
+        price:"66ef626a62c3cca3f476e9f0",
+        room:"66ed756c877e8b8f1fdeeb2b",
+        activity:"66ed756d877e8b8f1fdeeb2f",
+        transfer:"66ed756d877e8b8f1fdeeb2d",
+        images:["https://dibbz.s3.amazonaws.com/sixth_out_ot_06_1_2c5b36118e.jpg"],
+        number_of_adults:2,
+        number_of_infants:2,
+
+    }))
+
+    return function cleanup() {
+        
+        dispatch(createTravelCardPaymentLinkApiReset());
+        dispatch(createHotelPaymentLinkApiReset());
+    };
+}, []);
+  const dispatch = useDispatch();
 
   const [adultsDetails, setAdultsDetails] = useState(
     Array(adults).fill({ name: '', passport: '', visa: '', nationality: '', visaOptions: [] })
@@ -77,7 +121,6 @@ const BookingForm = () => {
   const { data: allFormOptions } = useSelector((state) => state.formOptionsApiSliceReducer) || {};
   const umrahVisaCountries = allFormOptions?.[0]?.umrahVisaNationality ? allFormOptions[0].umrahVisaNationality.split('\n') : [];
   const tourismVisaCountries = allFormOptions?.[0]?.tourismVisaNationality ? allFormOptions[0].tourismVisaNationality.split('\n') : [];
-
   const validateForm = () => {
     let formErrors = {};
     adultsDetails.forEach((adult, index) => {
@@ -153,7 +196,7 @@ const BookingForm = () => {
       boxShadow: '0 8px 30px rgba(0, 0, 0, 0.1)', // Softer shadow for a clean look
     }}
   >
-    <Typography variant="h2" align='center' gutterBottom sx={{ fontWeight: 'bolder', color: '#004e8c' }}>
+    <Typography variant={isMobile?'h4':"h2"} align='center' gutterBottom sx={{ fontWeight: 'bolder', color: '#004e8c' }}>
       Booking Form
     </Typography>
   
@@ -197,7 +240,7 @@ const BookingForm = () => {
   
     <Box sx={{ textAlign: 'center', marginBottom: '24px' }}>
   <Typography 
-    variant="h4" 
+    variant={isMobile?'h7':"h4"} 
     sx={{ 
       color: '#004e8c', 
       fontWeight: 'bold', 
@@ -206,26 +249,25 @@ const BookingForm = () => {
     }} 
     gutterBottom
   >
-    Total Price
+    {paymentType==="full"?"Total Price":"Deposit"}
   </Typography>
   <Typography 
-    variant="h3" 
     sx={{ 
       color: '#FF8C42', // Orange color for the price
       fontWeight: 'bold',
-      fontSize: '2.5rem', // Larger font size for emphasis
+      fontSize: isMobile?'1.5rem':'2.5rem', // Larger font size for emphasis
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', // Subtle shadow for depth
       marginBottom: '16px',
     }}
   >
-    €{totalPrice}
+    €{paymentType==="full"?totalPrice:packageData?.DepositPrice}
   </Typography>
   <Typography 
     variant="body1" 
     sx={{ 
       color: '#004e8c', 
       fontWeight: 'bold', 
-      fontSize: '1.2rem', 
+      fontSize: isMobile?'0.8rem':'1.2rem', 
       marginBottom: '16px',
     }}
   >
@@ -236,30 +278,7 @@ const BookingForm = () => {
   
     <Divider sx={{ my: 3, backgroundColor: '#FF8C42' }} />
   
-    <Button
-  variant="contained"
-  fullWidth
-  sx={{
-    backgroundColor: '#004e8c', // Blue button background
-    color: '#ffffff', // White text
-    fontWeight: 'bold',
-    mt: 3,
-    borderRadius: '50px', // More rounded corners
-    padding: '15px 20px', // Bigger padding for a larger button
-    fontSize: '1.2rem', // Increase font size for better readability
-    '&:hover': {
-      backgroundColor: '#00336a', // Darker blue on hover
-    },
-    transition: 'background-color 0.3s, transform 0.2s', // Add smooth transitions
-    '&:active': {
-      transform: 'scale(0.98)', // Slight "press" effect on click
-    },
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow for depth
-  }}
-  onClick={handleSubmit}
->
-  Submit Booking
-</Button>
+    <PaymentOptions paymentType={paymentType} setPaymentType={setPaymentType}/>
 
   </Paper>
   

@@ -18,6 +18,7 @@ import ImageCarousel from './ImageCarousel';
 import DatePicker from './DatePicker';
 import RoomAndOccupantsSelection from './RoomAndOccupantsSelection';
 import DetailsSection from './DetailsSection';
+import AdditionalOptions from './AdditionalOption';
 
 const LandPackageCardDetails = () => {
   const navigate = useNavigate();
@@ -29,13 +30,30 @@ const LandPackageCardDetails = () => {
   const [selectedRoom, setSelectedRoom] = useState(filterRoom || null);
   const [adults, setAdults] = useState(filterAdults || 1);
   const [infants, setInfants] = useState(filterInfants || 0);
-  const [selectedActivity, setSelectedActivity] = useState(packageData?.activityDetails?.[0] || null);
-  const [selectedTransfer, setSelectedTransfer] = useState(packageData?.transferDetails?.[0] || null);
+  const [selectedActivity, setSelectedActivity] = useState(0);
+  const [selectedTransfer, setSelectedTransfer] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
+  const [activityInsurance, setActivityInsurance] = useState(null); // null, 'yes', 'no'
+  const [transferInsurance, setTransferInsurance] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-
+  const handleActivityInsuranceChange = (event) => {
+    const value = event.target.value;
+    setActivityInsurance(value);
+    if (value === 'no') {
+      setActivityInsurance('no');
+    }
+  };
+  
+  const handleTransferInsuranceChange = (event) => {
+    const value = event.target.value;
+    setTransferInsurance(value);
+    if (value === 'no') {
+      setTransferInsurance('no');
+    }
+  };
+  
   const handleMealPlanChange = (event) => {
     const selected = availableMealPlans.find((meal) => meal._id === event.target.value);
     setSelectedMealPlan(selected);
@@ -69,7 +87,7 @@ const LandPackageCardDetails = () => {
     Inclusions,
   } = packageData;
   const findPriceInEuro = (priceArray) => {
-    return priceArray?.find((p) => p.currency === 'Euro')?.value || 0;
+    return priceArray?.find((p) => p.currency === 'eur')?.value || 0;
   };
 
   const basePriceEuro = findPriceInEuro(PackagePrice);
@@ -182,6 +200,8 @@ const handleDecrease = (type) => {
         Number(transferPrice || 0) +       // Transfer price
         Number(mealPrice || 0);
     // Return the total price, ensuring it's valid and not NaN
+    console.log("PRICE",mealPrice,basePriceEuro,totalRoomPrice,infantsTotalPrice,activityPrice,transferPrice)
+
     return isNaN(total) ? 0 : total;
 };
 
@@ -275,75 +295,16 @@ const handleDecrease = (type) => {
 
         {/* Activity and Transfer Selection */}
         
-        <Grid container spacing={2} alignItems="center">
-        {/* Activity Options */}
-        <Grid item xs={12} sm={6}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#004e8c' }}>
-        Activity Options:
-          </Typography>
-          <FormControl fullWidth>
-            <Select
-              value={selectedActivity?.id || ''}
-              onChange={handleActivityChange}
-              sx={{
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                borderColor: '#004e8c',
-                '& .MuiSelect-select': {
-                  fontWeight: 'bold',
-                  color: '#004e8c',
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#004e8c',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#00336a',
-                },
-              }}
-            >
-              {activityDetails?.map((activity) => (
-                <MenuItem key={activity.id} value={activity.id}>
-                  {activity.activities}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
+         {/* Additional Options */}
+         <AdditionalOptions
+        selectedActivity={selectedActivity} 
+        selectedTransfer={selectedTransfer} activityDetails={activityDetails} 
+        transferDetails={transferDetails} handleTransferChange={handleTransferChange} 
+        handleActivityChange={handleActivityChange} activityInsurance={activityInsurance} 
+        handleActivityInsuranceChange={handleActivityInsuranceChange} transferInsurance={transferInsurance}
+        handleTransferInsuranceChange={handleTransferInsuranceChange} 
+        />
 
-        {/* Transfer Options */}
-        <Grid item xs={12} sm={6}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#004e8c' }}>
-        Transfer Options:
-          </Typography>
-          <FormControl fullWidth>
-            <Select
-              value={selectedTransfer?.id || ''}
-              onChange={handleTransferChange}
-              sx={{
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                borderColor: '#004e8c',
-                '& .MuiSelect-select': {
-                  fontWeight: 'bold',
-                  color: '#004e8c',
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#004e8c',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#00336a',
-                },
-              }}
-            >
-              {transferDetails?.map((transfer) => (
-                <MenuItem key={transfer.id} value={transfer.id}>
-                  {transfer.trsnsfers}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        </Grid>
 
         <Divider sx={{ my: 2 }} />
         <RoomAndOccupantsSelection
