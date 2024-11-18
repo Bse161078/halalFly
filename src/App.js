@@ -1,10 +1,9 @@
 import logo from './logo.svg';
 import 'src/App.css';
-import {BrowserRouter as Router, Routes, Route, BrowserRouter} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Navigation from "src/components/navigation";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
-import Login from "src/components/login";
 import Home from "src/components/home";
 import {store} from "src/store/store";
 import {Provider} from 'react-redux'
@@ -12,7 +11,6 @@ import 'src/assets/css/index.css'
 import { useTheme } from '@emotion/react';
 import useMediaQuery from '@mui/material';
 import PackageDetails from "./components/package-details";
-import Register from "./components/register";
 import { CssBaseline, Box } from "@mui/material";
 import HotelList from './components/LandPackages/LandPackages';
 import ContactUsForm from './components/ContactUs/contactUs';
@@ -20,6 +18,11 @@ import LandPackageCardDetails from './components/LandPackageCardDetails'
 import UmrahPackageDetails from './components/UmrahPackageCardDetails';
 import BookingForm from './components/BookingDetails';
 import BusinessCollaborationForm from './components/BuisnessCollaborationForm'
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsAndConditions from './components/TermsAndCondition';
+import OwnerDetails from './components/OwnersDetail';
+import SuccessfulPayment from './components/PaymentStatus/SuccessfulPayment';
+import NotSuccessfulPayment from './components/PaymentStatus/NotSuccessfulPayment';
 
 const theme = createTheme({
     palette: {
@@ -60,8 +63,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigation />}>
                 <Route path="home" element={<Home />} />
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
+                
                 <Route path="package/:id/details" element={<PackageDetails />} />
                 <Route path="hotels" element={<HotelList />} />
                 <Route path="get-in-touch" element={<ContactUsForm />} />
@@ -69,6 +71,11 @@ function App() {
                 <Route path="umrah-package/:packageId/details" element={<UmrahPackageDetails />} />
                 <Route path="booking-details" element={<BookingForm />} />
                 <Route path="business-collaboration" element={<BusinessCollaborationForm />} />
+                <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+                <Route path="owners-details" element={<OwnerDetails />} />
+                <Route path="payment/success/:id" element={<SuccessfulPayment />} />
+                <Route path="payment/failure/:id" element={<NotSuccessfulPayment />} />
 
               </Route>
             </Routes>

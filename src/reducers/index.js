@@ -3,7 +3,8 @@ import {
     registerUserApi,logUserApi,getUserApi,getAllHotelsApi,getHotelTravelCardsApi,
     getHotelTravelOptionsApi,searchPackagesApi,getLandOptions
     ,getFormOptionsApi,createHotelPaymentLinkApi,createTravelCardPaymentLinkApi,
-    getStaticHomeApi,validateCouponApi
+    getStaticHomeApi,validateCouponApi,getB2bPackagesApi,validateLandpackageCouponApi,createGetInTouch,
+    createB2bForm,getBookingDetails
 
 } from 'src/services/index';
 import {selectedLanguage} from "src/constants/service";
@@ -341,6 +342,31 @@ export const createHotelPaymentLinkApiSlice = createSlice({
     },
 });
 
+export const getB2bPackagesApiSlice = createSlice({
+    name: 'getB2bPackagesApiSlice',
+    initialState,
+    reducers: {
+        getB2bPackagesApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [getB2bPackagesApi.pending]: (state) => {
+        state.loading = true;
+      },
+      [getB2bPackagesApi.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [getB2bPackagesApi.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+
 export const getStaticHomeApiSlice = createSlice({
     name: 'getStaticHomeApiSlice',
     initialState,
@@ -365,6 +391,32 @@ export const getStaticHomeApiSlice = createSlice({
       },
     },
   });
+
+  export const getBookingDetailsApiSlice = createSlice({
+    name: 'getBookingDetailsApiSlice',
+    initialState,
+    reducers: {
+        getBookingDetailsApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [getBookingDetails.pending]: (state) => {
+        state.loading = true;
+      },
+      [getBookingDetails.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [getBookingDetails.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+
   export const validateCouponApiSlice = createSlice({
     name: 'validateCouponApiSlice',
     initialState,
@@ -389,6 +441,82 @@ export const getStaticHomeApiSlice = createSlice({
       },
     },
   });
+
+  export const validateLandpackageCouponApiSlice = createSlice({
+    name: 'validateLandpackageCouponApiSlice',
+    initialState,
+    reducers: {
+        validateLandpackageCouponApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [validateLandpackageCouponApi.pending]: (state) => {
+        state.loading = true;
+      },
+      [validateLandpackageCouponApi.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [validateLandpackageCouponApi.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+
+  export const createGetInTouchApiSlice = createSlice({
+    name: 'createGetInTouchApiSlice',
+    initialState,
+    reducers: {
+        createGetInTouchApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [createGetInTouch.pending]: (state) => {
+        state.loading = true;
+      },
+      [createGetInTouch.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [createGetInTouch.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+
+  export const createB2bFormApiSlice = createSlice({
+    name: 'createB2bFormApiSlice',
+    initialState,
+    reducers: {
+        createB2bFormApiReset: (state) => {
+        state.loading = false;
+        state.error = null;
+        state.data = null;
+      },
+    },
+    extraReducers: {
+      [createB2bForm.pending]: (state) => {
+        state.loading = true;
+      },
+      [createB2bForm.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      },
+      [createB2bForm.rejected]: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
+  });
+
 export const {registerUserApiReset} = registerUserApiSlice.actions
 export const {logUserApiReset} = logUserApiSlice.actions;
 export const {getUserApiReset} = getUserApiSlice.actions;
@@ -402,6 +530,11 @@ export const {createTravelCardPaymentLinkApiReset} = createTravelCardPaymentLink
 export const {createHotelPaymentLinkApiReset} = createHotelPaymentLinkApiSlice.actions;
 export const {validateCouponApiReset} = validateCouponApiSlice.actions;
 export const {getStaticHomeApiReset} =  getStaticHomeApiSlice.actions;
+export const {getB2bPackagesApiReset} = getB2bPackagesApiSlice.actions;
+export const {validateLandpackageCouponApiReset} = validateLandpackageCouponApiSlice.actions;
+export const {createGetInTouchApiReset} = createGetInTouchApiSlice.actions;
+export const {createB2bFormApiReset} = createB2bFormApiSlice.actions;
+export const {getBookingDetailsApiReset} = getBookingDetailsApiSlice.actions;
 
 export const registerUserApiReducer = registerUserApiSlice.reducer;
 export const logUserApiReducer = logUserApiSlice.reducer;
@@ -416,3 +549,8 @@ export const createTravelCardPaymentLinkApiReducer = createTravelCardPaymentLink
 export const createHotelPaymentLinkApiReducer = createHotelPaymentLinkApiSlice.reducer;
 export const validateCouponApiReducer= validateCouponApiSlice.reducer;
 export const getStaticHomeApiReducer = getStaticHomeApiSlice.reducer;
+export const getB2bPackagesApiReducer = getB2bPackagesApiSlice.reducer;
+export const validateLandpackageCouponApiReducer = validateLandpackageCouponApiSlice.reducer;
+export const createGetInTouchApiReducer = createGetInTouchApiSlice.reducer;
+export const createB2bFormApiReducer = createB2bFormApiSlice.reducer;
+export const getBookingDetailsApiReducer = getBookingDetailsApiSlice.reducer;

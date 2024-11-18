@@ -71,7 +71,7 @@ const VisaDescriptionModal = ({ visaDescriptionOpen, handleClose, visaDescriptio
       variant="contained"
       fullWidth
     >
-      Close
+      Schließen
     </Button>
   </Paper>
 </Modal>

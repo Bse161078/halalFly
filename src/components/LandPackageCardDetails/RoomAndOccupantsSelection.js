@@ -9,12 +9,15 @@ import {
   MenuItem, 
   Divider, 
   Box, 
-  Tooltip 
+  Tooltip ,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
+import Translation_german from '../Translation/translation_german';
 
 const RoomAndOccupantsSelection = ({ 
   selectedHotel, 
@@ -39,52 +42,67 @@ const RoomAndOccupantsSelection = ({
   // Function to render person icons based on the number of occupants
   const renderPersonIcons = (count) => {
     return Array.from({ length: count }, (_, index) => (
-      <PersonIcon key={index} sx={{ color: '#003366', fontSize: '1.2rem' }} />
+      <PersonIcon key={index} sx={{ color: '#003366', fontSize: isMobile?'0.65rem':'1.2rem' }} />
     ));
   };
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return (
-    <Box sx={{ padding: '20px' }}>
-      {/* Room Selection */}
+    <Box sx={{ padding: '20px', backgroundColor: '#F7FAFC', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)' }}>
+      
+      {/* Room Selection Section */}
       <Typography
-        variant="h6"
+        variant={isMobile?'body2':"h6"}
         gutterBottom
-        sx={{ mt: 2, fontWeight: 'bold', color: '#003366' }} // Darker blue for heading
+        sx={{ mt: 2, fontWeight: 'bold', color: '#003366', textAlign: 'center' }} // Center align for a cleaner look
       >
-        Select Room Type:
+        {Translation_german.SELECT_ROOM}
       </Typography>
-      <Grid container spacing={2}>
+      
+      <Grid container spacing={2} justifyContent="center">
         {selectedHotel?.hotelRoomPrice?.map((room) => {
           // Calculate total occupants
           const totalOccupants = room.totalAdults;
           return (
-            <Grid item xs={6} sm={3} key={room._id}>
-              <Tooltip title={room.RoomTypes} arrow>
-                <Button
-                  variant={selectedRoom?._id === room._id ? 'contained' : 'outlined'}
-                  onClick={() => handleRoomChange(room)}
-                  fullWidth
-                  sx={{
-                    backgroundColor: selectedRoom?._id === room._id ? '#FF8C42' : 'transparent', // Orange for selected
-                    color: selectedRoom?._id === room._id ? '#0C0C0C' : '#003366', // Black text on orange, dark blue text otherwise
-                    borderColor: '#003366', // Dark blue border
-                    borderRadius: '8px',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '&:hover': {
-                      backgroundColor: selectedRoom?._id === room._id ? '#B87231' : '#f1f1f1', // Slightly darker orange on hover
-                    },
-                  }}
-                  aria-label={`Select ${room.RoomTypes} room`}
-                >
-                  {room.RoomTypes.toLowerCase() === 'share' 
-                    ? <GroupIcon sx={{ color: '#003366', fontSize: '1.2rem' }} /> 
-                    : renderPersonIcons(totalOccupants)}
-                </Button>
-              </Tooltip>
-            </Grid>
+            <Grid 
+              item 
+              xs={6} 
+              sm={3} 
+              key={room._id} 
+              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} // Center the button
+            >
+            <Tooltip title={room.RoomTypes} arrow>
+              <Button
+                variant={selectedRoom?._id === room._id ? 'contained' : 'outlined'}
+                onClick={() => handleRoomChange(room)}
+                sx={{
+                  backgroundColor: selectedRoom?._id === room._id ? '#FF8C42' : 'transparent', // Orange for selected
+                  color: selectedRoom?._id === room._id ? '#FAF3E0' : '#003366', // Light text on orange, dark blue text otherwise
+                  borderColor: selectedRoom?._id === room._id ? '#FF8C42' : '#003366', // Border color for outlined buttons
+                  borderRadius: '12px',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '10px',
+                  justifyContent: 'center',
+                  width: isMobile ? '80%' : '100%', // Center and slightly reduce width for mobile
+                  maxWidth: '250px', // Optional: set max width to keep button from stretching too far
+                  textTransform: 'capitalize', // Make room types readable
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: selectedRoom?._id === room._id ? '#D97A36' : '#f1f1f1', // Slightly darker orange on hover
+                    boxShadow: selectedRoom?._id === room._id ? '0px 4px 12px rgba(0, 0, 0, 0.1)' : 'none',
+                  },
+                }}
+                aria-label={`Select ${room.RoomTypes} room`}
+              >
+                {room.RoomTypes.toLowerCase() === 'share' 
+                  ? <GroupIcon sx={{ color: '#003366', fontSize: isMobile ? '0.65rem' : '1.2rem' }} /> 
+                  : renderPersonIcons(totalOccupants)}
+              </Button>
+            </Tooltip>
+          </Grid>
+
           );
         })}
       </Grid>
@@ -96,107 +114,137 @@ const RoomAndOccupantsSelection = ({
         </Typography>
       )}
 
-      {/* Occupant Selection */}
+      {/* Occupants Section */}
+      <Divider sx={{ my: 3, borderColor: '#003366' }} />
+
       <Typography
-        variant="h6"
+        variant={isMobile?'body2':"h6"}
         gutterBottom
-        sx={{ fontWeight: 'bold', color: '#003366' }} // Darker blue for heading
+        sx={{ fontWeight: 'bold', color: '#003366', textAlign: 'center' }} // Centered heading
       >
-        Select Occupants:
+        {Translation_german.SELECT_OCCUPANTS}
       </Typography>
-      <Grid container spacing={2} alignItems="center">
+      
+      <Grid container spacing={3} justifyContent="center">
+        
         {/* Adults Selection */}
-        <Grid item xs={6} sm={4}>
-          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
-            Adults
-          </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <IconButton
-              onClick={() => handleDecrease('adults')}
-              disabled={adults <= 1}
-              sx={{
-                backgroundColor: '#FF8C42', // Orange background
-                color: '#004e8c', // Black icon
-                '&:disabled': {
-                  backgroundColor: '#ccc', // Grey when disabled
-                },
-              }}
-              aria-label="Decrease adults"
-            >
-              <RemoveCircleIcon />
-            </IconButton>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2 }}>
-              {adults}
+        <Grid item xs={6} sm={3}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Typography variant={isMobile?'caption':"body1"} sx={{ fontWeight: 'bold', color: '#003366', mb: 1 }}>
+              {Translation_german.ADULTS}
             </Typography>
-            <IconButton
-              onClick={() => handleIncrease('adults')}
-              sx={{
-                backgroundColor: '#FF8C42', // Orange background
-                color: '#004e8c', // Black icon
-              }}
-              aria-label="Increase adults"
-            >
-              <AddCircleIcon />
-            </IconButton>
+            <Box display="flex" alignItems="center">
+              <Tooltip title="Erwachsene entfernen">
+                <IconButton
+                  onClick={() => handleDecrease('adults')}
+                  disabled={adults <= 1}
+                  sx={{
+                    backgroundColor: adults <= 1 ? '#f1f1f1' : '#FF8C42', // Grey when disabled
+                    color: adults <= 1 ? '#aaa' : '#FAF3E0',
+                    '&:hover': {
+                      backgroundColor: adults <= 1 ? '#f1f1f1' : '#D97A36',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  aria-label="Kleinkinder entfernen"
+                >
+                  <RemoveCircleIcon />
+                </IconButton>
+              </Tooltip>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2, color: '#003366' }}>
+                {adults}
+              </Typography>
+              <Tooltip title=" Erwachsene hinzufügen">
+                <IconButton
+                  onClick={() => handleIncrease('adults')}
+                  sx={{
+                    backgroundColor: '#FF8C42', // Orange background
+                    color: '#FAF3E0', // Light icon color
+                    '&:hover': {
+                      backgroundColor: '#D97A36',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  aria-label="Increase adults"
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
         </Grid>
 
         {/* Infants Selection */}
-        <Grid item xs={6} sm={4}>
-          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
-            Infants
-          </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <IconButton
-              onClick={() => handleDecrease('infants')}
-              disabled={infants <= 0}
-              sx={{
-                backgroundColor: '#FF8C42', // Orange background
-                color: '#004e8c', // Black icon
-                '&:disabled': {
-                  backgroundColor: '#ccc', // Grey when disabled
-                },
-              }}
-              aria-label="Decrease infants"
-            >
-              <RemoveCircleIcon />
-            </IconButton>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2 }}>
-              {infants}
+        <Grid item xs={6} sm={3}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Typography variant={isMobile?'caption':"body1"} sx={{ fontWeight: 'bold', color: '#003366', mb: 1 }}>
+              {Translation_german.INFANTS}
             </Typography>
-            <IconButton
-              onClick={() => handleIncrease('infants')}
-              sx={{
-                backgroundColor: '#FF8C42', // Orange background
-                color: '#004e8c', // Black icon
-              }}
-              aria-label="Increase infants"
-            >
-              <AddCircleIcon />
-            </IconButton>
+            <Box display="flex" alignItems="center">
+              <Tooltip title="Decrease Infants">
+                <IconButton
+                  onClick={() => handleDecrease('infants')}
+                  disabled={infants <= 0}
+                  sx={{
+                    backgroundColor: infants <= 0 ? '#f1f1f1' : '#FF8C42', // Grey when disabled
+                    color: infants <= 0 ? '#aaa' : '#FAF3E0',
+                    '&:hover': {
+                      backgroundColor: infants <= 0 ? '#f1f1f1' : '#D97A36',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  aria-label="Decrease infants"
+                >
+                  <RemoveCircleIcon />
+                </IconButton>
+              </Tooltip>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2, color: '#003366' }}>
+                {infants}
+              </Typography>
+              <Tooltip title="Kleinkinder hinzufügen">
+                <IconButton
+                  onClick={() => handleIncrease('infants')}
+                  sx={{
+                    backgroundColor: '#FF8C42', // Orange background
+                    color: '#FAF3E0', // Light icon color
+                    '&:hover': {
+                      backgroundColor: '#D97A36',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  aria-label="Increase infants"
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
         </Grid>
       </Grid>
 
-      {/* Meal Plan Selection */}
+      {/* Meal Plan Section */}
       {uniqueMealPlans.length > 0 && (
-        <Box>
-          <Divider sx={{ my: 3, borderColor: '#003366' }} /> {/* Darker blue divider */}
+        <Box >
+          <Divider sx={{ my: 3, borderColor: '#003366' }} />
           <Typography
-            variant="h6"
+            variant={isMobile?'body2':"h6"}
             gutterBottom
-            sx={{ fontWeight: 'bold', color: '#003366' }} // Darker blue for heading
+            sx={{ fontWeight: 'bold', color: '#003366', textAlign: 'center' }}
           >
-            Select Meal Plan:
+            {Translation_german.SELECT_MEAL_PLAN}
           </Typography>
-          <FormControl fullWidth>
+          <FormControl sx={{display:"flex",alignItems:'center',justifyContent:'center'}} fullWidth>
             <Select
               value={selectedMealPlan?._id || ''}
               onChange={handleMealPlanChange}
               sx={{
                 backgroundColor: '#fff',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 borderColor: '#003366', // Dark blue border
+                width: isMobile ? '70%' : '100%', // Adjust width for mobile
+                display:"flex",
+                justifyContent:'center',
+                alignItems:'center',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: '#003366', // Ensure border color
                 },
@@ -206,13 +254,15 @@ const RoomAndOccupantsSelection = ({
                 '& .MuiSelect-select': {
                   fontWeight: 'bold',
                   color: '#003366', // Dark blue text
+                  fontSize: isMobile ? '0.875rem' : '1rem', // Smaller font for mobile
+                  padding: isMobile ? '8px' : '12px', // Adjust padding for mobile
                 },
               }}
               displayEmpty
               inputProps={{ 'aria-label': 'Select Meal Plan' }}
             >
               <MenuItem value="">
-                <em>None</em>
+                <em>{Translation_german.NONE}</em>
               </MenuItem>
               {uniqueMealPlans?.map((meal) => (
                 <MenuItem key={meal._id} value={meal._id}>

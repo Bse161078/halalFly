@@ -72,7 +72,7 @@ const LandPackageCard = ({ packageData }) => {
         style={{
           width: '100%',
           height: '200px',
-          objectFit: 'contain',
+          objectFit: 'cover',
           borderTopLeftRadius: '12px',
           borderTopRightRadius: '12px',
         }}

@@ -13,7 +13,7 @@ const PreferredContactMethod = ({ preferredContactMethod, setPreferredContactMet
         textAlign: 'center'  // Center alignment for the title
       }}
     >
-      How would you like us to contact you?
+      Wie möchten Sie kontaktiert werden?
     </Typography>
     
     <Box 
@@ -27,6 +27,7 @@ const PreferredContactMethod = ({ preferredContactMethod, setPreferredContactMet
     >
       <FormControl component="fieldset" sx={{ width: '100%' }}>
         <RadioGroup
+          id="preferredContactMethod"
           value={preferredContactMethod}
           onChange={(e) => setPreferredContactMethod(e.target.value)}
         >
@@ -41,7 +42,7 @@ const PreferredContactMethod = ({ preferredContactMethod, setPreferredContactMet
                 }} 
               />
             }
-            label={<Typography sx={{ color: '#004e8c', fontWeight: 'bold' }}>Email</Typography>}  // Blue label text
+            label={<Typography sx={{ color: '#004e8c', fontWeight: 'bold' }}>E-Mail</Typography>}  // Blue label text
           />
           
           <FormControlLabel
@@ -55,7 +56,7 @@ const PreferredContactMethod = ({ preferredContactMethod, setPreferredContactMet
                 }} 
               />
             }
-            label={<Typography sx={{ color: '#004e8c', fontWeight: 'bold' }}>Phone</Typography>}  // Blue label text
+            label={<Typography sx={{ color: '#004e8c', fontWeight: 'bold' }}>Telefon</Typography>}  // Blue label text
           />
           
           <FormControlLabel

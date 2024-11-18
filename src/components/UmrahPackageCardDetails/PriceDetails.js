@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Box, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import Translation_german from '../Translation/translation_german';
 
 const PriceDetails = ({ finalPrice }) => {
   const theme = useTheme();
@@ -29,7 +30,7 @@ const PriceDetails = ({ finalPrice }) => {
           textTransform: 'uppercase',
         }}
       >
-        Total Price
+        {Translation_german.TOTAL_PRICE}
       </Typography>
 
       {/* Price */}
@@ -61,7 +62,7 @@ const PriceDetails = ({ finalPrice }) => {
           mx: 'auto'  // Center the text and limit its width for readability
         }}
       >
-        *Price may vary based on availability.
+        {Translation_german.PRICE_NOTE}
       </Typography>
     </Box>
   );

@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, IconButton } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AvatarLogin from "src/assets/images/avatar-login.png";
-import UaeCurrencyIcon from "src/assets/images/uae-icon.png";
-import EnglandIcon from "src/assets/images/england.png";
-import LogoImage from "src/assets/images/halal-fly-logo.png";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CustomLabelCurrency } from '../common/CustomLabel'; 
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 import NavigationButton from '../NavigationButton';
+import { getStaticHomeApi,getB2bPackagesApi} from '../../services';
+import { getStaticHomeApiReset,getB2bPackagesApiReset } from "../../reducers";
+import LoadingScreen from '../LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   headerContainer: {
@@ -86,58 +83,62 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-  
-  const Header = () => {
-    const classes = useStyles();
-    const navigate = useNavigate();
-    const location = useLocation();
-  
-    const handleLogout = () => {
-      console.log('Logout clicked');
-      navigate('/login');
+const Header = () => {
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const location = useLocation(); // Used to track the current route
+  const dispatch = useDispatch();
+
+  const { data: homePage, loading: homePageLoading } = useSelector(
+    (state) => state.getStaticHomeApiReducer
+  );
+  const {data:b2bPackages, loading:b2bPackagesLoading} = useSelector((state)=>state.getB2bPackagesApiReducer);
+
+  useEffect(() => {
+    dispatch(getStaticHomeApi());
+    dispatch(getB2bPackagesApi());
+
+    return () => {
+      dispatch(getStaticHomeApiReset());
+      dispatch(getB2bPackagesApiReset());
     };
-  
-    return (
-      <Grid container spacing={2} alignItems="center" className={classes.headerContainer}>
-        {/* Logo */}
-        <Grid item xs="auto" style={{ flex: '1 1 auto' }}>
-          <img src={LogoImage} alt="Logo" className={classes.logo} onClick={() => navigate('/home')} />
-        </Grid>
-  
-        {/* Conditional Navigation Button */}
-        {location.pathname !== '/home' &&
-          location.pathname !== '/login' &&
-          location.pathname !== '/register' && (
-            <Grid item>
-              <NavigationButton className={classes.navButton}>Navigate</NavigationButton>
-            </Grid>
-          )}
-  
-        {/* Currency and Language Selection */}
-        <Grid item container xs alignItems="center" justifyContent="flex-end" spacing={2}>
-          {/* Uncomment these lines if you want to include currency and language selection */}
-          {/* <Grid item className={classes.iconContainer}>
-              <img src={UaeCurrencyIcon} alt="UAE Currency" className={classes.icon} />
-              <CustomLabelCurrency text="AED" fontWeight="bold" style={{ marginLeft: 4 }} />
-              <ArrowDropDownIcon className={classes.dropdownIcon} />
-            </Grid>
-            <Grid item className={classes.iconContainer}>
-              <img src={EnglandIcon} alt="England" className={classes.icon} />
-              <CustomLabelCurrency text="Eng" fontWeight="bold" style={{ marginLeft: 4 }} />
-              <ArrowDropDownIcon className={classes.dropdownIcon} />
-            </Grid> */}
-  
-          {/* Logout Button */}
-          {/* {location.pathname !== '/login' && location.pathname !== '/register' && (
-            <Grid item>
-              <IconButton className={classes.logoutButton} onClick={handleLogout}>
-                <LogoutIcon />
-              </IconButton>
-            </Grid>
-          )} */}
-        </Grid>
+  }, [dispatch, location.pathname]); // Adding location.pathname ensures API is called on route change
+
+  // If the API is still loading, display the LoadingScreen component
+  if (homePageLoading&& b2bPackagesLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Only render the rest of the UI after loading is complete
+  return (
+    <Grid container spacing={0} alignItems="center" className={classes.headerContainer}>
+      {/* Logo */}
+      <Grid item xs={2} style={{ flex: '1 1 auto' }}>
+        <img
+        
+          src={homePage?.length > 0 && homePage[0].Logo?.url}
+          alt="Logo"
+          loading='lazy'
+          className={classes.logo}
+          onClick={() => navigate('/home')}
+        />
       </Grid>
-    );
-  };
-  
-  export default Header;
+
+      {/* Conditional Navigation Button */}
+      <Grid item xs={10}>
+        <NavigationButton
+          homePageLoading={homePageLoading}
+          b2bPackages={b2bPackages}
+          homePage={homePage?.length > 0 ? homePage[0] : null}
+          className={classes.navButton}
+        >
+          Navigate
+        </NavigationButton>
+      </Grid>
+
+    
+    </Grid>
+  );
+};
+
+export default Header;

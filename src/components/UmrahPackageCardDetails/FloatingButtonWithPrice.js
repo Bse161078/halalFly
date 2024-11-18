@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Button, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Translation_german from '../Translation/translation_german';
 
-const FloatingButtonWithPrice = ({ finalPrice, packageData, adults, infants, selectedActivity, selectedTransfer }) => {
+const FloatingButtonWithPrice = ({couponCode,selectedRoomsId,selectedInsuranceIds,selectedMealPlanId,
+  selectedTransferId,selectedActivityId,selectedRoom, finalPrice, packageData, previousLocation,adults, infants }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -66,13 +68,17 @@ const FloatingButtonWithPrice = ({ finalPrice, packageData, adults, infants, sel
               finalPrice,
               adults,
               infants,
-              selectedActivity,
-              selectedTransfer,
+              selectedRoomsId,
+              couponCode,
+              selectedInsuranceIds,
+              selectedMealPlanId,
+              selectedTransferId,selectedActivityId,
+              previousLocation,selectedRoom
             },
           })
         }
       >
-        Book Now
+        {Translation_german.PROCEED_TO_BOOK}
       </Button>
     </Box>
   );

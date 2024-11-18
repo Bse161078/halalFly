@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Grid, Card, CardContent, Typography, Container, Box, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-const Services = ({ services }) => {
+const Services = ({ homePage }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // State to manage the "View More" functionality
+  const services = homePage?.OurServices || [];
+  const OurServiceTitle = homePage?.OurServiceTitle || '';
+
+  // State to manage "View More" functionality
   const [showAll, setShowAll] = useState(false);
 
-  // Determine the services to display based on the state and screen size
-  const displayedServices = isMobile && !showAll ? services.slice(0, 3) : services;
+  // Memoize displayed services for performance
+  const displayedServices = useMemo(() => {
+    return isMobile && !showAll ? services.slice(0, 3) : services;
+  }, [services, isMobile, showAll]);
 
-  const handleToggleShowAll = () => {
-    setShowAll((prev) => !prev);
-  };
+  const handleToggleShowAll = () => setShowAll((prev) => !prev);
 
   return (
     <Container sx={{ py: isMobile ? 2 : 5 }}>
       {/* Main Title */}
-      {services && (
+      {services.length > 0 && (
         <Typography
           variant={isMobile ? 'h5' : 'h4'}
           align="center"
@@ -32,89 +35,83 @@ const Services = ({ services }) => {
             mb: isMobile ? 2 : 4,
           }}
         >
-          Our Services
+          {OurServiceTitle}
         </Typography>
       )}
 
       {/* Service Cards */}
       <Grid container spacing={isMobile ? 2 : 4} justifyContent="center">
-        {displayedServices?.length > 0 &&
-          displayedServices.map((service, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
-              <Card
+        {displayedServices.map((service, index) => (
+          <Grid item key={index} xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: '12px',
+                backgroundColor: `#${service?.backgroundColor}`,
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                '&:hover': !isMobile && {
+                  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)',
+                  transform: 'translateY(-8px)',
+                },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                p: 2,
+              }}
+            >
+              {/* Lazy Loaded Image */}
+              <Box
                 sx={{
-                  height: '100%',
-                  borderRadius: isMobile ? '10px' : '15px',
-                  backgroundColor: `#${service?.BackgroundColor}`,
-                  boxShadow: isMobile ? 'none' : '0 4px 10px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.3s, box-shadow 0.3s',
-                  '&:hover': {
-                    boxShadow: !isMobile && '0 8px 20px rgba(0, 0, 0, 0.15)',
-                    transform: !isMobile && 'translateY(-8px)',
-                  },
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
                   display: 'flex',
-                  flexDirection: isMobile ? 'row' : 'column',
                   alignItems: 'center',
-                  textAlign: isMobile ? 'left' : 'center',
-                  padding: isMobile ? '10px' : '20px',
+                  justifyContent: 'center',
+                  mb: 2,
+                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.15)',
                 }}
               >
-                {/* Service Icon */}
-                <Box
+                <img
+                  src={service?.icon?.url}
+                  alt={service?.title}
+                  loading="lazy" // Lazy loading for images
+                  style={{ width: 50, height: 50 }}
+                />
+              </Box>
+
+              <CardContent sx={{ p: 0 }}>
+                {/* Service Title */}
+                <Typography
+                  variant="h6"
                   sx={{
-                    width: isMobile ? 40 : 60,
-                    height: isMobile ? 40 : 60,
-                    borderRadius: '50%',
-                    backgroundColor: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mr: isMobile ? 2 : 0,
-                    mb: isMobile ? 0 : 2,
-                    boxShadow: isMobile ? 'none' : '0 2px 5px rgba(0, 0, 0, 0.15)',
+                    color: '#004e8c',
+                    fontWeight: 'bold',
+                    mb: 1,
+                    textTransform: 'uppercase',
+                    fontSize: '1.25rem',
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={service?.icon?.url}
-                    alt={service?.title}
-                    sx={{
-                      width: isMobile ? 30 : 50,
-                      height: isMobile ? 30 : 50,
-                    }}
-                  />
-                </Box>
+                  {service?.title}
+                </Typography>
 
-                <CardContent sx={{ p: isMobile ? '0 10px' : 0 }}>
-                  {/* Service Title */}
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: '#004e8c',
-                      fontWeight: 'bold',
-                      mb: isMobile ? 0.5 : 1,
-                      textTransform: 'uppercase',
-                      fontSize: isMobile ? '1rem' : '1.25rem',
-                    }}
-                  >
-                    {service?.title}
-                  </Typography>
-
-                  {/* Service Description */}
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: '#004e8c',
-                      lineHeight: 1.4,
-                      fontSize: isMobile ? '0.85rem' : '1rem',
-                    }}
-                  >
-                    {service?.Description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                {/* Service Description */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#004e8c',
+                    lineHeight: 1.4,
+                    fontSize: '1rem',
+                  }}
+                >
+                  {service?.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
 
       {/* "View More" / "View Less" Button */}
@@ -132,7 +129,8 @@ const Services = ({ services }) => {
               textTransform: 'none',
               fontWeight: 'bold',
               borderRadius: '8px',
-              padding: '8px 16px',
+              px: 3,
+              py: 1,
             }}
           >
             {showAll ? 'View Less' : 'View More'}

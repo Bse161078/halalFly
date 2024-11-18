@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Typography, Box, TextField, Button, IconButton, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -8,19 +8,40 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import TikTokIcon from '@mui/icons-material/MusicNote'; // Placeholder for TikTok icon
+import { useDispatch, useSelector } from 'react-redux';
+import { getStaticHomeApiReset } from '../../reducers';
+import { getStaticHomeApi } from 'src/services';
+import LoadingScreen from '../LoadingScreen';
+import Translation_german from '../Translation/translation_german';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { data: homePage, loading: homePageLoading } = useSelector((state) => state.getStaticHomeApiReducer);
+
+  useEffect(() => {
+    dispatch(getStaticHomeApi());
+    return () => {
+      dispatch(getStaticHomeApiReset());
+    };
+  }, [dispatch]);
+
+  
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   return (
     <Box
       sx={{
-        width: '100%',
-        margin: 0,
-        padding: 0,
         backgroundColor: '#004e8c',
         color: '#FAF3E0',
+        width: '100%',
         padding: isMobile ? '20px 0' : '40px 0',
       }}
     >
@@ -33,108 +54,151 @@ const Footer = () => {
           justifyContent: 'center',
         }}
       >
-        <Grid container justifyContent="center" spacing={isMobile ? 1 : 2} sx={{ textAlign: 'center', color: '#FAF3E0', width: '90%' }}>
-          <Grid item xs={6} sm={4}>
-            <PhoneIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />
-            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF', fontSize: isMobile ? '0.75rem' : '1rem' }}>
-              Call Now
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: isMobile ? '0.70rem' : '0.9rem' }}>+49 177 9365929</Typography>
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <AccessTimeIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />
-            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF', fontSize: isMobile ? '0.75rem' : '1rem' }}>
-              Time Operational
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: isMobile ? '0.7rem' : '0.9rem' }}>09:00 AM - 05:00 PM</Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <LocationOnIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />
-            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF', fontSize: isMobile ? '0.75rem' : '1rem' }}>
-              Location
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: isMobile ? '0.7rem' : '0.9rem' }}>Germany</Typography>
-          </Grid>
+        <Grid container justifyContent="center" spacing={2} sx={{ width: '90%' }}>
+          {[
+            {
+              icon: <PhoneIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />,
+              label: Translation_german.CALL_NOW_LABEL,
+              text: '+49 177 9365929',
+            },
+            {
+              icon: <AccessTimeIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />,
+              label: Translation_german.TIME_OPERATIONAL_LABEL,
+              text: '09:00 AM - 05:00 PM',
+            },
+            {
+              icon: <LocationOnIcon sx={{ fontSize: isMobile ? '20px' : '32px', color: '#FFFFFF' }} />,
+              label: Translation_german.LOCATION_LABEL,
+              text: Translation_german.LOCATION_COUNTRY,
+            },
+          ].map((item, index) => (
+            <Grid item xs={6} sm={4} key={index} textAlign="center">
+              {item.icon}
+              <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFFFFF', fontSize: isMobile ? '0.75rem' : '1rem' }}>
+                {item.label}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: isMobile ? '0.7rem' : '0.9rem' }}>
+                {item.text}
+              </Typography>
+            </Grid>
+          ))}
         </Grid>
       </Box>
 
       {/* Main Footer Section */}
-      <Grid container justifyContent="space-between" spacing={isMobile ? 1 : 2} sx={{ padding: isMobile ? '20px 10px' : '40px 20px', maxWidth: '1200px', margin: 'auto' }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ padding: isMobile ? '20px' : '40px', maxWidth: '1200px', margin: 'auto' }}
+      >
         {/* Logo and Social Media */}
         <Grid item xs={12} sm={6} md={4}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: isMobile ? 1 : 2, color: '#FFFFFF', fontSize: isMobile ? '0.8rem' : '1.5rem' }}>
-            HalalFly
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              mb: 2,
+              color: '#FFFFFF',
+              fontSize: isMobile ? '0.8rem' : '1.5rem',
+            }}
+          >
+            {homePage?.[0]?.FooterHeading || 'HalalFly'}
           </Typography>
-          <Typography variant="body2" sx={{ lineHeight: 1.6, mb: isMobile ? 1 : 2, color: '#FAF3E0', fontSize: isMobile ? '0.7rem' : '0.9rem' }}>
-            HalalFly is committed to providing exceptional Hajj and Umrah travel experiences, ensuring a smooth journey with top-quality services tailored to your needs.
+          <Typography
+            variant="body2"
+            sx={{
+              lineHeight: 1.6,
+              mb: 2,
+              color: '#FAF3E0',
+              fontSize: isMobile ? '0.7rem' : '0.9rem',
+            }}
+          >
+            {homePage?.[0]?.FooterText || 'Your travel partner for Umrah and Hajj.'}
           </Typography>
           <Box>
-            <IconButton
-              sx={{ color: '#FAF3E0', mx: 0.5 }}
-              component="a"
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook Link"
-            >
-              <FacebookIcon fontSize={isMobile ? 'small' : 'medium'} />
-            </IconButton>
-            <IconButton
-              sx={{ color: '#FAF3E0', mx: 0.5 }}
-              component="a"
-              href="https://www.instagram.com/halalfly/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram Link"
-            >
-              <InstagramIcon fontSize={isMobile ? 'small' : 'medium'} />
-            </IconButton>
-            <IconButton
-              sx={{ color: '#FAF3E0', mx: 0.5 }}
-              component="a"
-              href="https://wa.me/491779365929"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp Link"
-            >
-              <WhatsAppIcon fontSize={isMobile ? 'small' : 'medium'} />
-            </IconButton>
-            <IconButton
-              sx={{ color: '#FAF3E0', mx: 0.5 }}
-              component="a"
-              href="https://www.tiktok.com/@halal.fly"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="TikTok Link"
-            >
-              <TikTokIcon fontSize={isMobile ? 'small' : 'medium'} />
-            </IconButton>
+            {[
+              { icon: <FacebookIcon />, link: 'https://www.facebook.com', label: 'Facebook' },
+              { icon: <InstagramIcon />, link: 'https://www.instagram.com/halalfly/', label: 'Instagram' },
+              { icon: <WhatsAppIcon />, link: 'https://wa.me/491779365929', label: 'WhatsApp' },
+              { icon: <TikTokIcon />, link: 'https://www.tiktok.com/@halal.fly', label: 'TikTok' },
+            ].map((item, index) => (
+              <IconButton
+                key={index}
+                sx={{ color: '#FAF3E0', mx: 0.5 }}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={item.label}
+              >
+                {item.icon}
+              </IconButton>
+            ))}
           </Box>
         </Grid>
 
         {/* Quick Links */}
-        {!isMobile && <Grid item xs={12} sm={4} md={3}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: isMobile ? 1 : 2, color: '#FFFFFF', fontSize: isMobile ? '0.8rem' : '1.2rem' }}>
-            Quick Links
-          </Typography>
-          {['About Us', 'Our Services', 'Packages', 'FAQs', 'Blog'].map((link, index) => (
-            <Typography key={index} variant="body2" sx={{ marginBottom: isMobile ? '4px' : '8px', cursor: 'pointer', color: '#FAF3E0', fontSize: isMobile ? '0.7rem' : '0.9rem' }}>
-              {link}
+        {!isMobile && (
+          <Grid item xs={12} sm={4} md={3}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 'bold',
+                mb: 2,
+                color: '#FFFFFF',
+                fontSize: isMobile ? '0.8rem' : '1.2rem',
+              }}
+            >
+              {Translation_german.QUICK_LINKS_TITLE}
             </Typography>
-          ))}
-        </Grid>}
+            {[
+              { label: Translation_german.PRIVACY_POLICY, path: '/privacy-policy' },
+              { label: Translation_german.TERMS_AND_CONDITIONS_LINK, path: '/terms-and-conditions' },
+              { label: Translation_german.OWNERS_DETAILS, path: '/owners-details' },
+              { label: Translation_german.FAQS_LINK, path: '' },
+            ].map((link, index) => (
+              <Typography
+                key={index}
+                variant="body2"
+                onClick={() => handleNavigation(link.path)}
+                sx={{
+                  cursor: 'pointer',
+                  color: '#FAF3E0',
+                  fontSize: isMobile ? '0.7rem' : '0.9rem',
+                  mb: 1,
+                }}
+              >
+                {link.label}
+              </Typography>
+            ))}
+          </Grid>
+        )}
 
-        {/* Subscribe to Newsletter */}
+        {/* Newsletter Subscription */}
         <Grid item xs={12} sm={6} md={4}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: isMobile ? 1 : 2, color: '#FFFFFF', fontSize: isMobile ? '0.8rem' : '1.2rem' }}>
-            Subscribe to Our Newsletter
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              mb: 2,
+              color: '#FFFFFF',
+              fontSize: isMobile ? '0.8rem' : '1.2rem',
+            }}
+          >
+            {Translation_german.NEWSLETTER_TITLE}
           </Typography>
-          <Typography variant="body2" sx={{ mb: isMobile ? 1 : 2, color: '#FAF3E0', fontSize: isMobile ? '0.7rem' : '0.9rem' }}>
-            Stay updated with our latest offers and services.
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 2,
+              color: '#FAF3E0',
+              fontSize: isMobile ? '0.7rem' : '0.9rem',
+            }}
+          >
+            {Translation_german.NEWSLETTER_DESCRIPTION}
           </Typography>
           <TextField
             variant="outlined"
-            placeholder="Enter your email"
+            placeholder={Translation_german.NEWSLETTER_PLACEHOLDER}
             fullWidth
             sx={{
               input: { backgroundColor: '#FFFFFF', borderRadius: '4px', padding: '10px' },
@@ -153,14 +217,21 @@ const Footer = () => {
               padding: isMobile ? '8px' : '10px',
             }}
           >
-            SUBSCRIBE NOW
+            {Translation_german.SUBSCRIBE_BUTTON}
           </Button>
         </Grid>
       </Grid>
 
       {/* Bottom Footer Section */}
-      <Box sx={{ textAlign: 'center', padding: isMobile ? '15px 0' : '20px 0', backgroundColor: '#004e8c', color: '#FAF3E0', fontSize: isMobile ? '0.8rem' : '1rem' }}>
-        <Typography variant="body2">© Copyright 2023. All Rights Reserved. Designed by HalalFly</Typography>
+      <Box
+        sx={{
+          textAlign: 'center',
+          padding: isMobile ? '15px 0' : '20px 0',
+          backgroundColor: '#004e8c',
+          color: '#FAF3E0',
+        }}
+      >
+        <Typography variant="body2">{Translation_german.COPYRIGHT_TEXT}</Typography>
       </Box>
     </Box>
   );

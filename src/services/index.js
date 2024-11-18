@@ -145,6 +145,18 @@ const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {re
 }
 )
 
+const getB2bPackagesApi = createAsyncThunk("landPackagesApi", async (data, {rejectWithValue}) => {
+    try {
+        const response = await axios.get(`${baseUl}package/b2b-pacakges`,
+        );
+        return response.data.data;
+    } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        return rejectWithValue(errorResponse);
+    }
+}
+)
+
 
 
 // const searchPackagesApi = createAsyncThunk("searchPackagesApi", async (data, {rejectWithValue}) => {
@@ -244,6 +256,23 @@ export const getStaticHomeApi = createAsyncThunk(
     }
   );
   
+  export const getBookingDetails = createAsyncThunk(
+    'getBookingDetails',
+    async (bookingId, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(`${baseUl}package/booking-details/${bookingId}`);
+        return response.data.data; // Assumes 'data.data' structure is correct based on API response
+      } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message 
+          ? e.response.data.message 
+          : "Server error";
+  
+        return rejectWithValue(errorResponse);
+      }
+    }
+  );
+  
+
   // POST request to 'package/validate-coupon'
   export const validateCouponApi = createAsyncThunk(
     'validateCouponApi',
@@ -263,6 +292,45 @@ export const getStaticHomeApi = createAsyncThunk(
     }
   );
 
+  export const validateLandpackageCouponApi = createAsyncThunk(
+    'validateLandpackageCouponApi',
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await axios.post(
+          `${baseUl}package/validate-land-coupon`,
+          data
+        );
+        return response.data.data;
+      } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        console.log("errorResponse",errorResponse)
+
+        return rejectWithValue(errorResponse);
+      }
+    }
+  );
+
+
+  const createGetInTouch = createAsyncThunk("createGetInTouch", async (data, {rejectWithValue}) => {
+    try {
+        const response = await axios.post(`${baseUl}static/get-in-touch`,data);
+        return response.data.data;
+    } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        return rejectWithValue(errorResponse);
+    }
+}
+)
+const createB2bForm = createAsyncThunk("createB2bForm", async (data, {rejectWithValue}) => {
+    try {
+        const response = await axios.post(`${baseUl}static/b2b-form`,data);
+        return response.data.data;
+    } catch (e) {
+        const errorResponse = e.response && e.response.data && e.response.data.message ? e.response.data.message : "Server error";
+        return rejectWithValue(errorResponse);
+    }
+}
+)
 export {
     registerUserApi,
     logUserApi,
@@ -276,5 +344,7 @@ export {
     getLandOptionsApi,
     createTravelCardPaymentLinkApi,
     createHotelPaymentLinkApi,
-
+    getB2bPackagesApi,
+    createGetInTouch,
+    createB2bForm
 }

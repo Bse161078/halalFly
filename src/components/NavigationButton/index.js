@@ -11,67 +11,91 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import HotelIcon from '@mui/icons-material/Hotel';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import { BusinessCenter } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import LoadingScreen from '../LoadingScreen';
 
-const NavigationButton = ({ umrahPackages, landPackages }) => {
+const NavigationButton = ({ b2bPackages,homePage,homePageLoading }) => {
+  console.log("b2bPackages",b2bPackages)
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
+console.log("hamza2",homePage)
   const handleNavigation = (text) => {
     setDrawerOpen(false); // Close the drawer when navigating
 
-    if (text === 'Land Packages') {
+    if (text === homePage.navButton3Text) {
       if (location.pathname === '/home') {
         window.location.hash = 'land-packages';
       } else {
         navigate('/home');
       }
-    } else if (text === 'Home') {
+    } else if (text === homePage?.navButton1Text) {
       navigate('/home');
-    } else if (text === 'Umrah Packages') {
+    } else if (text === homePage?.navButton2Text) {
       if (location.pathname === '/home') {
         window.location.hash = 'umrah-packages';
       } else {
         navigate('/home');
       }
-    } else if (text === 'Get in Touch') {
+    } else if (text === homePage?.navButton4Text) {
       navigate('/get-in-touch');
-    } else if (text === 'B2B Collaboration') {
+    } else if (text === homePage?.navButton5Text) {
       navigate('/business-collaboration', {
         state: {
-          umrahPackages,
-          landPackages,
+          b2bPackages
         },
       });
     }
   };
 
   const isActive = (text) => {
-    if (text === 'Home' && location.pathname === '/home') return true;
-    if (text === 'Umrah Packages' && location.hash === '#umrah-packages') return true;
-    if (text === 'Land Packages' && location.hash === '#land-packages') return true;
-    if (text === 'Get in Touch' && location.pathname === '/get-in-touch') return true;
-    if (text === 'B2B Collaboration' && location.pathname === '/business-collaboration') return true;
+    if (text === homePage?.navButton1Text && location.pathname === '/home') return true;
+    if (text === homePage?.navButton2Text && location.hash === '#umrah-packages') return true;
+    if (text === homePage?.navButton3Text && location.hash === '#land-packages') return true;
+    if (text === homePage?.navButton4Text && location.pathname === '/get-in-touch') return true;
+    if (text === homePage?.navButton5Text && location.pathname === '/business-collaboration') return true;
     return false;
   };
 
   const buttonData = [
-    { text: 'Home', icon: <HomeIcon sx={{ fontSize: 24, color: '#FFFFFF' }} /> },
-    { text: 'Umrah Packages', icon: <Inventory2OutlinedIcon sx={{ fontSize: 24, color: '#FFFFFF' }} /> },
-    { text: 'Land Packages', icon: <HotelIcon sx={{ fontSize: 24, color: '#FFFFFF' }} /> },
-    { text: 'Get in Touch', icon: <ContactPageIcon sx={{ fontSize: 24, color: '#FFFFFF' }} /> },
-    { text: 'B2B Collaboration', icon: <BusinessCenter sx={{ fontSize: 24, color: '#FFFFFF' }} /> },
+    {
+      text: homePage?.navButton1Text,
+      icon: homePage?.navButton1Icon?.url 
+        ? <img src={homePage.navButton1Icon.url} alt="icon1" style={{ width: 24, height: 24 }} />
+        : null,
+    },
+    {
+      text: homePage?.navButton2Text,
+      icon: homePage?.navButton2Icon?.url 
+        ? <img src={homePage.navButton2Icon.url} alt="icon2" style={{ width: 24, height: 24 }} />
+        : null,
+    },
+    {
+      text: homePage?.navButton3Text,
+      icon: homePage?.navButton3Icon?.url 
+        ? <img src={homePage.navButton3Icon.url} alt="icon3" style={{ width: 24, height: 24 }} />
+        : null,
+    },
+    {
+      text: homePage?.navButton4Text,
+      icon: homePage?.navButton4Icon?.url 
+        ? <img src={homePage.navButton4Icon.url} alt="icon4" style={{ width: 24, height: 24 }} />
+        : null,
+    },
+    {
+      text: homePage?.navButton5Text,
+      icon: homePage?.navButton5Icon?.url 
+        ? <img src={homePage.navButton5Icon.url} alt="icon5" style={{ width: 24, height: 24 }} />
+        : null,
+    },
   ];
 
   return (
     <>
       {/* Desktop Navigation */}
+      {
+        homePageLoading&&<LoadingScreen/>
+      }
       <Grid container spacing={3} alignItems="center" justifyContent="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
         {buttonData.map((item) => {
           const active = isActive(item.text);

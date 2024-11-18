@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Typography, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 
 const LoadingScreen = () => {
   const theme = useTheme();
@@ -7,50 +7,58 @@ const LoadingScreen = () => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-      width="100%"
       sx={{
         position: 'fixed',
         top: 0,
         left: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark transparent background
-        zIndex: 9999, // Ensures loader stays on top
-        padding: isMobile ? '0 20px' : 0, // Padding for small screens to avoid cutting text
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#FF8C42', // Orange background
+        zIndex: 1300, // Higher than most elements to ensure visibility
+        padding: isMobile ? '0 20px' : '0',
+        overflow: 'hidden', // Avoid any scrolling during loading
       }}
     >
-      <CircularProgress
-        size={isMobile ? 60 : 100} // Smaller size on mobile
-        thickness={4} // Thinner loader for a sleek look
+      {/* Circular Progress Indicator */}
+      <CircularProgress 
         sx={{
-          color: '#FF8C42', // Theme color
-          marginBottom: isMobile ? 2 : 3, // Adjust spacing for mobile
-        }}
+          color: '#FAF3E0', // Light beige from the theme
+          width: isMobile ? 40 : 60, 
+          height: isMobile ? 40 : 60, 
+          mb: isMobile ? 2 : 3, // Margin below the loader
+        }} 
       />
+      
+      {/* Main Loading Text */}
       <Typography
-        variant={isMobile ? 'h6' : 'h5'} // Smaller font for mobile
+        variant={isMobile ? 'h6' : 'h5'}
         sx={{
           color: '#FAF3E0',
           fontWeight: 'bold',
           textAlign: 'center',
-          marginTop: isMobile ? 1 : 3,
+          mt: isMobile ? 1 : 3,
         }}
       >
-        Preparing your Umrah & Hajj experience...
+        {isMobile ? 'Laden...' : 'Bereite Ihr Umrah- und Hajj-Erlebnis vor...'}
       </Typography>
+      
+      {/* Supporting Text */}
       <Typography
         variant="body2"
         sx={{
           color: '#FAF3E0',
           textAlign: 'center',
-          marginTop: isMobile ? 0.5 : 1,
-          fontSize: isMobile ? '0.85rem' : '1rem', // Smaller font size for better fit on mobile
+          mt: isMobile ? 0.5 : 1,
+          fontSize: isMobile ? '0.85rem' : '1rem',
         }}
       >
-        Please wait while we connect you to our services.
+        {isMobile
+          ? 'Bitte warten Sie kurz.'
+          : 'Bitte warten Sie, während wir Sie mit unseren Diensten verbinden.'}
       </Typography>
     </Box>
   );

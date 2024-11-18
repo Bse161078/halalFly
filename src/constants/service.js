@@ -1,4 +1,4 @@
-const baseUl="https://halalfly-admin-729476ebbf2f.herokuapp.com/";
+const baseUl="https://backend.halal-fly.de/";
 const baseFileUrl="http://musicpassonline.com:3000/images"
 
 

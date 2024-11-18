@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Grid, Typography, Paper, Tab, Tabs, Box, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import Translation_german from 'src/components/Translation/translation_german';
 
 const PackageInclusionsExclusions = ({ packages }) => {
   const { Include, Exclusion } = packages;
+  console.log("packages",packages)
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -63,8 +65,8 @@ const PackageInclusionsExclusions = ({ packages }) => {
             <Grid item xs={12} sm={6} md={6} key={item._id} align="center">
               <Paper sx={paperStyle}>
                 <img
-                  src={item.IncludeIcons?.[0]?.url || item.Icon?.[0]?.url || ''}
-                  alt={item.IncludeIcons?.[0]?.alternativeText || item.Icon?.[0]?.alternativeText || 'Icon'}
+                  src={item.IncludeIcons?.url || item.Icon?.url || ''}
+                  alt={item.IncludeIcons?.alternativeText || item.Icon?.alternativeText || 'Icon'}
                   style={iconStyle}
                 />
                 <Typography color={label === "Include" ? "#004e8c" : "#FF8C42"} fontWeight="bold" 
@@ -76,14 +78,14 @@ const PackageInclusionsExclusions = ({ packages }) => {
             </Grid>
           ))
         ) : (
-          <Typography variant="body1" sx={{ textAlign: 'center', color: '#999' }}>No items {label.toLowerCase()}</Typography>
+          <Typography variant="body1" sx={{ textAlign: 'center', color: '#999' }}>Keine Artikel{label.toLowerCase()}</Typography>
         )}
       </Grid>
       {items && items.length > initialVisibleItems && (
         <Box textAlign="center" mt={2}>
           <Button variant="text" color="primary" sx={{    fontSize: isMobile ? '0.55rem' : '1rem', // Adjust font size for mobile
 }} onClick={toggleShow}>
-            {showAll ? "Show Less" : "Show More"}
+            {showAll ? Translation_german.VIEW_LESS_BUTTON : Translation_german.VIEW_MORE_BUTTON}
           </Button>
         </Box>
       )}
@@ -112,8 +114,8 @@ const PackageInclusionsExclusions = ({ packages }) => {
             minHeight: 'unset', // Allow flexible tab height on mobile
           }}
         >
-          <Tab label="Included in Package" sx={{ ...tabStyle, maxWidth: '100%' }} />
-          <Tab label="Not Included in Package" sx={{ ...tabStyle, maxWidth: '100%' }} />
+          <Tab label= {Translation_german.INCLUDED_SERVICES} sx={{ ...tabStyle, maxWidth: '100%' }} />
+          <Tab label={Translation_german.SERVICES_EXCLUDED} sx={{ ...tabStyle, maxWidth: '100%' }} />
         </Tabs>
       </Box>
 
@@ -135,7 +137,7 @@ const PackageInclusionsExclusions = ({ packages }) => {
               marginBottom: '1rem',
             }}
           >
-            Included in Package
+            {Translation_german.INCLUDED_SERVICES}
           </Typography>}
           {renderItems(Include, showAllIncludes, toggleShowAllIncludes, "Include")}
         </Box>
@@ -150,8 +152,8 @@ const PackageInclusionsExclusions = ({ packages }) => {
               marginBottom: '1rem',
             }}
           >
-            Excluded in Package
-          </Typography>}
+            {Translation_german.SERVICES_EXCLUDED}
+            </Typography>}
           {renderItems(Exclusion, showAllExclusions, toggleShowAllExclusions, "Exclusion")}
         </Box>
       )}
@@ -169,8 +171,8 @@ const PackageInclusionsExclusions = ({ packages }) => {
             marginBottom: '1rem',
           }}
         >
-          Included in Package
-        </Typography>
+            {Translation_german.INCLUDED_SERVICES}
+            </Typography>
         {renderItems(Include, showAllIncludes, toggleShowAllIncludes, "Include")}
       </Grid>
 
@@ -185,8 +187,8 @@ const PackageInclusionsExclusions = ({ packages }) => {
             marginBottom: '1rem',
           }}
         >
-          Excluded in Package
-        </Typography>
+            {Translation_german.SERVICES_EXCLUDED}
+            </Typography>
         {renderItems(Exclusion, showAllExclusions, toggleShowAllExclusions, "Exclusion")}
       </Grid>
     </Grid>

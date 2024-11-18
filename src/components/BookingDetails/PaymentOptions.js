@@ -3,8 +3,7 @@ import { Box, Button, Grid, Typography, ToggleButtonGroup, ToggleButton, useThem
 import { CreditCard } from '@mui/icons-material';
 import paypal from '../../assets/images/paypal.png';
 
-const PaymentOptions = ({paymentType,setPaymentType}) => {
-  const [selectedMethod, setSelectedMethod] = useState(''); // State to track selected payment method
+const PaymentOptions = ({selectedMethod,setSelectedMethod,paymentType,setPaymentType}) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -16,7 +15,6 @@ const PaymentOptions = ({paymentType,setPaymentType}) => {
   const handlePaymentTypeChange = (event, newType) => {
     setPaymentType(event.target.value);
   };
-console.log("paymentOptions",paymentType)
   return (
     <Box sx={{ textAlign: 'center', mt: 4, px: isMobile ? 2 : 0 }}>
       <Typography variant={isMobile ? 'h6' : 'h5'} gutterBottom>
@@ -43,7 +41,7 @@ console.log("paymentOptions",paymentType)
             onClick={() => handleSelectMethod('Stripe')}
           >
             <CreditCard sx={{ color: '#004e8c', fontSize: isMobile ? 20 : 50, mb: 1 }} />
-            <Typography variant="button">Pay with Stripe</Typography>
+            <Typography variant="button">Pay with Debit/Credit Card</Typography>
           </Button>
         </Grid>
 

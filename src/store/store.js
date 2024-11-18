@@ -11,7 +11,9 @@ import {
     searchPackagesApiSliceReducer,
     formOptionsApiSliceReducer,  createHotelPaymentLinkApiReducer,
     createTravelCardPaymentLinkApiReducer,validateCouponApiReducer,
-    getStaticHomeApiReducer
+    getStaticHomeApiReducer,getB2bPackagesApiReducer,validateLandpackageCouponApiReducer,
+    createGetInTouchApiReducer,
+    createB2bFormApiReducer,getBookingDetailsApiReducer
     
 } from '../reducers';
 import {setupListeners} from '@reduxjs/toolkit/query'
@@ -29,8 +31,13 @@ export const store = configureStore({
         createHotelPaymentLinkApiReducer,
         createTravelCardPaymentLinkApiReducer,
         validateCouponApiReducer,
-        getStaticHomeApiReducer
-    },
+        getStaticHomeApiReducer,
+        getB2bPackagesApiReducer,
+        validateLandpackageCouponApiReducer,
+        createGetInTouchApiReducer,
+        createB2bFormApiReducer,
+        getBookingDetailsApiReducer
+        },
 });
 setupListeners(store.dispatch)
 

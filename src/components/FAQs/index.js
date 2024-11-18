@@ -6,11 +6,11 @@ import {
   AccordionSummary,
   AccordionDetails,
   Box,
-  Button,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const FAQItem = ({ question, answer, number, isMobile }) => {
   const [expanded, setExpanded] = useState(false);
@@ -32,7 +32,13 @@ const FAQItem = ({ question, answer, number, isMobile }) => {
       }}
     >
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon sx={{ color: '#004e8c', fontSize: isMobile ? '1.2rem' : 'default' }} />}
+        expandIcon={
+          expanded ? (
+            <RemoveIcon sx={{ color: '#004e8c', fontSize: isMobile ? '1.2rem' : 'default' }} />
+          ) : (
+            <AddIcon sx={{ color: '#004e8c', fontSize: isMobile ? '1.2rem' : 'default' }} />
+          )
+        }
         sx={{
           display: 'flex',
           alignItems: 'center',
@@ -68,32 +74,15 @@ const FAQItem = ({ question, answer, number, isMobile }) => {
   );
 };
 
-const FAQs = ({faqs}) => {
+const FAQs = ({ homePage }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const faqList = [
-    {
-      question: 'How do I make a reservation on your website?',
-      answer: 'Provide a step-by-step guide on how users can browse and book travel services on your platform.',
-    },
-    {
-      question: 'What documents do I need for my trip, and how do I obtain them?',
-      answer: 'Provide the necessary documentation required for international travel, such as passports, visas, and insurance.',
-    },
-    {
-      question: 'In the event that I need to modify or cancel my reservation, what are the policies?',
-      answer: 'Outline the cancellation and modification policies, including any fees that may apply.',
-    },
-    {
-      question: 'Can you specify the types of credit/debit cards, digital wallets, or other payment methods accepted?',
-      answer: 'List the accepted payment methods available on your website.',
-    },
-  ];
+  const FAQS = homePage?.FAQS || [];
+  const FaqsTitle = homePage?.FaqsTitle || '';
 
   return (
     <Container sx={{ py: 5 }}>
-      {/* Title and Subtitle */}
+      {/* Title */}
       <Typography
         variant={isMobile ? 'h5' : 'h4'}
         align="center"
@@ -103,13 +92,12 @@ const FAQs = ({faqs}) => {
           mb: isMobile ? 2 : 3,
         }}
       >
-        Frequently Asked Questions
+        {FaqsTitle}
       </Typography>
-  
 
       {/* FAQ Items */}
       <Box>
-        {faqs?.length>0&&faqs.map((faq, index) => (
+        {FAQS?.length > 0 && FAQS.map((faq, index) => (
           <FAQItem key={index} question={faq.Question} answer={faq.Answer} number={`0${index + 1}`} isMobile={isMobile} />
         ))}
       </Box>

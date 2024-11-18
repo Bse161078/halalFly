@@ -3,6 +3,11 @@ import { LocalizationProvider, StaticDatePicker, PickersDay } from '@mui/x-date-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de'; // Import German locale
+
+// Set Day.js locale to German
+dayjs.locale('de');
 
 const DateRangePickerComponent = ({ dateRange }) => {
   const theme = useTheme();
@@ -28,15 +33,14 @@ const DateRangePickerComponent = ({ dateRange }) => {
             backgroundColor: isSelected ? '#003f70' : '#f0f0f0', // Slightly darker blue on hover
             cursor: 'pointer',
           },
-        }}
-      />
+        }}      />
     );
   };
 
   const shouldDisableDate = (date) => !date.isBetween(dateRange.start, dateRange.end, null, '[]');
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de"> {/* Set locale to German */}
       <Box sx={{ display: 'flex', justifyContent: 'center', p: isMobile ? 1 : 2 }}>
         <StaticDatePicker
           displayStaticWrapperAs="desktop"

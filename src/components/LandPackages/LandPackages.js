@@ -1,20 +1,52 @@
 import React from 'react';
 import Slider from 'react-slick';
-import { useMediaQuery,useTheme,Typography, Box } from '@mui/material';
+import { useMediaQuery, useTheme, Typography, Box, IconButton } from '@mui/material';
 import LandPackageCard from './LandPackageCard'; // Replace with your LandPackageCard component
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-const LandPackages = ({ hotels }) => {
+const LandPackages = ({ hotels, homePage }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { LandPackageTitle } = homePage;
+
+  const ArrowButton = ({ onClick, direction }) => (
+    <IconButton
+    onClick={onClick}
+    sx={{
+      position: 'absolute',
+      [direction === 'left' ? 'left' : 'right']: '10px', // Adjust position
+      marginLeft:direction === 'left'?-10:0,
+      marginRight:direction === 'right'?-10:0,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      backgroundColor: '#004e8c', // Bright orange for better visibility
+      color: '#FFFFFF',
+      fontSize: '58px',
+      padding: '10px',
+      borderRadius: '50%',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow for depth
+      zIndex: 2,
+      '&:hover': {
+        backgroundColor: '#E07B39', // Slightly darker orange on hover
+      },
+    }}
+  >
+    {direction === 'left' ? <ChevronLeftIcon fontSize="large" /> : <ChevronRightIcon fontSize="large" />}
+  </IconButton>
+  );
+
   const settings = {
     infinite: true,
     speed: 500,
-    slidesToShow: isMobile?1:3,
+    slidesToShow: isMobile ? 1 : 3, // Show 1 slide on mobile, 3 on larger screens
     slidesToScroll: 1,
     autoplay: true, // Enables auto-moving of the cards
-    autoplaySpeed: 2000, // 2 seconds per slide
+    autoplaySpeed: 3000, // 3 seconds per slide
+    nextArrow: !isMobile&&<ArrowButton direction="right" />,
+    prevArrow: !isMobile&&<ArrowButton direction="left" />,
     responsive: [
       {
         breakpoint: 1024,
@@ -34,19 +66,19 @@ const LandPackages = ({ hotels }) => {
   };
 
   return (
-    <Box sx={{ padding: '20px 0', maxWidth: '95%', margin: '0 auto' }}>
+    <Box id="land-packages" sx={{ padding: '20px 0', maxWidth: '95%', margin: '0 auto' }}>
       {/* Heading for Land Packages */}
       <Typography
-        variant={isMobile?'h5':"h3"}
+        variant={isMobile ? 'h5' : 'h3'}
         align="center"
         sx={{
           fontFamily: 'Neon, sans-serif',
           fontWeight: 'bold',
-          color: '#004e8c', // Adjusted to match the theme for land packages
+          color: '#004e8c', // Blue color for title
           marginBottom: '30px',
         }}
       >
-        Popular Land Packages
+        {LandPackageTitle || 'Land Packages'}
       </Typography>
 
       {hotels?.length === 0 ? (

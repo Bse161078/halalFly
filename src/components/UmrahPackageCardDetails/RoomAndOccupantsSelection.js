@@ -17,6 +17,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
+import Translation_german from '../Translation/translation_german';
 
 const RoomAndOccupantsSelection = ({ 
   selectedHotel, 
@@ -55,7 +56,7 @@ const RoomAndOccupantsSelection = ({
         gutterBottom
         sx={{ mt: 2, fontWeight: 'bold', color: '#003366', textAlign: 'center' }} // Center align for a cleaner look
       >
-        Select Room Type
+        {Translation_german.SELECT_ROOM}
       </Typography>
       
       <Grid container spacing={2} justifyContent="center">
@@ -121,7 +122,7 @@ const RoomAndOccupantsSelection = ({
         gutterBottom
         sx={{ fontWeight: 'bold', color: '#003366', textAlign: 'center' }} // Centered heading
       >
-        Select Occupants
+        {Translation_german.SELECT_OCCUPANTS}
       </Typography>
       
       <Grid container spacing={3} justifyContent="center">
@@ -130,10 +131,10 @@ const RoomAndOccupantsSelection = ({
         <Grid item xs={6} sm={3}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Typography variant={isMobile?'caption':"body1"} sx={{ fontWeight: 'bold', color: '#003366', mb: 1 }}>
-              Adults
+              {Translation_german.ADULTS}
             </Typography>
             <Box display="flex" alignItems="center">
-              <Tooltip title="Decrease Adults">
+              <Tooltip title="Erwachsene entfernen">
                 <IconButton
                   onClick={() => handleDecrease('adults')}
                   disabled={adults <= 1}
@@ -153,7 +154,7 @@ const RoomAndOccupantsSelection = ({
               <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2, color: '#003366' }}>
                 {adults}
               </Typography>
-              <Tooltip title="Increase Adults">
+              <Tooltip title="Erwachsene hinzufügen">
                 <IconButton
                   onClick={() => handleIncrease('adults')}
                   sx={{
@@ -177,10 +178,10 @@ const RoomAndOccupantsSelection = ({
         <Grid item xs={6} sm={3}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Typography variant={isMobile?'caption':"body1"} sx={{ fontWeight: 'bold', color: '#003366', mb: 1 }}>
-              Infants
+              {Translation_german.INFANTS}
             </Typography>
             <Box display="flex" alignItems="center">
-              <Tooltip title="Decrease Infants">
+              <Tooltip title="Kleinkinder entfernen">
                 <IconButton
                   onClick={() => handleDecrease('infants')}
                   disabled={infants <= 0}
@@ -200,7 +201,7 @@ const RoomAndOccupantsSelection = ({
               <Typography variant="body1" sx={{ fontWeight: 'bold', mx: 2, color: '#003366' }}>
                 {infants}
               </Typography>
-              <Tooltip title="Increase Infants">
+              <Tooltip title="Erwachsene hinzufügen">
                 <IconButton
                   onClick={() => handleIncrease('infants')}
                   sx={{
@@ -230,7 +231,7 @@ const RoomAndOccupantsSelection = ({
             gutterBottom
             sx={{ fontWeight: 'bold', color: '#003366', textAlign: 'center' }}
           >
-            Select Meal Plan
+            {Translation_german.SELECT_MEAL_PLAN}
           </Typography>
           <FormControl sx={{display:"flex",alignItems:'center',justifyContent:'center'}} fullWidth>
             <Select
@@ -261,7 +262,7 @@ const RoomAndOccupantsSelection = ({
               inputProps={{ 'aria-label': 'Select Meal Plan' }}
             >
               <MenuItem value="">
-                <em>None</em>
+                <em>{Translation_german.NONE}</em>
               </MenuItem>
               {uniqueMealPlans?.map((meal) => (
                 <MenuItem key={meal._id} value={meal._id}>

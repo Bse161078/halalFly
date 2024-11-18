@@ -21,7 +21,7 @@ const UmrahPackageCardDetails = () => {
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [selectedHotel, setSelectedHotel] = useState(filterHotel || null);
   const [selectedRoom, setSelectedRoom] = useState(filterRoom || null);
-  const [adults, setAdults] = useState(filterAdults || 1);
+  const [adults, setAdults] = useState(filterAdults || 0);
   const [infants, setInfants] = useState(filterInfants || 0);
   const [selectedActivity, setSelectedActivity] = useState(0);
   const [selectedTransfer, setSelectedTransfer] = useState(0);
@@ -36,16 +36,17 @@ const UmrahPackageCardDetails = () => {
   const [selectedInsurances, setSelectedInsurances] = useState([]);  // Array to hold selected insurance types
   const [discount,setDiscount] = useState(0)
   const [couponCode, setCouponCode] = useState('');
-
+ const [selectedRoomsId,setSelectedRoomsId] = useState([]);
+  const [couponId,setCoupodId] = useState('')
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
   const dispatch = useDispatch();
-
+  const previousLocation = location.pathname;
   const couponsApi = async (couponCode) => {
     try {
       // Dispatch the API call with the coupon code in the required format
       const response = await dispatch(validateCouponApi({ coupon: couponCode }));
-      console.log("responsbbe",response.payload)
       // Check if the response contains a valid coupon and discount
+      setCoupodId(response?.payload?._id)
       if (response.payload?.CouponName) {
         setDiscount(response?.payload?.DiscountPrice) ;
         return { isValid: true };
@@ -75,6 +76,7 @@ const UmrahPackageCardDetails = () => {
     setActivityInsurance(value);
     if (value === 'no') {
       setActivityInsurance('no');
+      setSelectedActivity([]);
     }
   };
   
@@ -83,6 +85,7 @@ const UmrahPackageCardDetails = () => {
     setTransferInsurance(value);
     if (value === 'no') {
       setTransferInsurance('no');
+      setSelectedTransfer([]);
     }
   };
   
@@ -132,8 +135,14 @@ const UmrahPackageCardDetails = () => {
     cities,
     tripTypes,
     packages,
-    flightDetails
+    flightDetails,
+    NeedInsurance,
+    NeedTransfer,
+    NeedActivity
   } = packageData;
+
+  // Iterate through all hotelTypes to find matching room types
+  
 
   useEffect(() => {
     if (packageData?.packageDateRange[0]) {
@@ -142,59 +151,78 @@ const UmrahPackageCardDetails = () => {
         end: dayjs(selectedDateRange?.dateTo?selectedDateRange?.dateTo:packageData?.packageDateRange[0].dateTo),
       });
     }
-    setAdults(filterAdults ? filterAdults : 1);
+    setAdults(filterAdults ? filterAdults : 0);
+
   }, [packageData]);
 
   if (!packageData) {
     return <Typography>Loading...</Typography>;
   }  
-
-
   const handleRoomChange = (room) => {
+    const selectedRooms = [];
+  
+    hotelTypes.forEach((hotel) => {
+      const matchingRoom = hotel.hotelRoomPrice.find(
+        (hotelRoom) => hotelRoom.RoomTypes === room?.RoomTypes
+      );
+  
+      if (matchingRoom) {
+        selectedRooms.push(matchingRoom.id);
+      }
+    });
+  
+    // Update states
+    setSelectedRoomsId(selectedRooms);
     setSelectedRoom(room);
+  
     setErrorMessage(''); // Reset the error message
+  
+    // Combine meal plans
     const combinedMealPlans = packageData?.hotelTypes.reduce((acc, hotel) => {
-      return [...acc, ...hotel?.mealPlans || []];
-  }, []);
-
-  setAvailableMealPlans(combinedMealPlans);
+      return [...acc, ...(hotel?.mealPlans || [])];
+    }, []);
+    setAvailableMealPlans(combinedMealPlans);
+  
+    // Adjust adults and infants based on room type
     if (room.RoomTypes === 'Quad') {
-      // If the room type is Quad, set 1 adult and 0 infants
       setAdults(1);
       setInfants(0);
     } else {
-      // For other room types, set the number of adults and infants based on the room's total capacity
       setAdults(room.totalAdults || 1);
       setInfants(room.totalInfants || 0);
     }
   };
   
-
+  // Log the updated states after they change
+ 
+  
+  
   // Disable increase or decrease of adults or infants if no room is selected
-const handleIncrease = (type) => {
-  if (!selectedRoom) {
-    setErrorMessage('Please select a room type before adding adults or infants.');
-    return;
-  }
-
-  if (type === 'adults') {
-    if (selectedRoom.RoomTypes !== 'Custom' && adults >= selectedRoom.totalAdults) {
-      setErrorMessage(`You can't add more than ${selectedRoom.totalAdults} adults.`); 
+  const handleIncrease = (type) => {
+    if (!selectedRoom) {
+      setErrorMessage('Bitte wählen Sie einen Zimmertyp aus, bevor Sie Erwachsene oder Kleinkinder hinzufügen.');
       return;
     }
-    setAdults(adults + 1);
-  }
-
-  if (type === 'infants') {
-    if (selectedRoom.RoomTypes !== 'Custom' && infants >= selectedRoom.totalInfants) {
-      setErrorMessage(`You can't add more than ${selectedRoom.totalInfants} infants.`);
-      return;
+  
+    const updateCount = (currentCount, maxCount, setter, typeLabel) => {
+      if (selectedRoom.RoomTypes !== 'Custom' && currentCount >= maxCount) {
+        setErrorMessage(`Sie können nicht mehr als ${maxCount} ${typeLabel} hinzufügen.`);
+        return false;
+      }
+      setter(currentCount + 1);
+      return true;
+    };
+  
+    let success = false;
+    if (type === 'adults') {
+      success = updateCount(adults, selectedRoom.totalAdults, setAdults, 'Erwachsene');
+    } else if (type === 'infants') {
+      success = updateCount(infants, selectedRoom.totalInfants, setInfants, 'Kleinkinder');
     }
-    setInfants(infants + 1);
-  }
-
-  setErrorMessage(''); // Clear the error message if the increment is successful
-};
+  
+    if (success) setErrorMessage(''); // Clear the error only if increment was successful
+  };
+  
 
 const handleDecrease = (type) => {
   if (!selectedRoom) {
@@ -239,15 +267,15 @@ const handleMealPlanChange = (event) => {
     let totalRoomPrice = 0;      // To store the total room price for all hotels
     let totalDays = 0;           // To track total days (in case it's needed separately)
     let infantsTotalPrice = 0;   // To store total price for infants across hotels
-    const activityPrice = selectedActivity?.price || 0;  // Activity price
-    const transferPrice = selectedTransfer?.Price || 0;  // Transfer price
-    const mealPrice = selectedMealPlan?.Meal_Price || 0;
-    const flightPrice = selectedFlights?.Price || 0;
+    const activityPrice = selectedActivity?.price*adults || 0;  // Activity price
+    const transferPrice = selectedTransfer?.Price*adults || 0;  // Transfer price
+    const mealPrice = selectedMealPlan?.Meal_Price*adults || 0;
+    const flightPrice = selectedFlights?.Price*adults || 0;
     let insurancePrice = 0
     if(selectedInsurances)
     {
       selectedInsurances?.map((insurance)=>{
-        insurancePrice = insurance?.InsurancePrice
+        insurancePrice += insurance?.InsurancePrice
       })
 
     }
@@ -265,10 +293,11 @@ const handleMealPlanChange = (event) => {
                 totalRoomPrice += adultRoomPrice * adults * hotel?.totalDays; // Multiply by adults and total days
 
                 // Calculate the infants' total price for this hotel
-                infantsTotalPrice += (hotel?.InfantPrice || 0) * infants ; // Infant price
             }
         });
     }
+    const totalDiscount = (discount || 0) * adults;
+    infantsTotalPrice = (packageData?.InfantPrice || 0) * infants ; // Infant price
 
     // Ensure basePriceEuro is a valid number and calculate the final total
     const total = 
@@ -278,10 +307,12 @@ const handleMealPlanChange = (event) => {
         Number(activityPrice || 0) +       // Activity price
         Number(transferPrice || 0) +       // Transfer price
         Number(mealPrice || 0)+
-        Number(flightPrice||0)+
         Number(insurancePrice||0)-
-        discount *adults
-    console.log("PRICE",mealPrice,basePriceEuro,totalRoomPrice,infantsTotalPrice,activityPrice,transferPrice,flightPrice)
+        Number(totalDiscount ||0)
+
+    console.log("mealPrice",mealPrice,"basePriceEuro",basePriceEuro,
+      "totalRoomPrice",totalRoomPrice,"infantsTotalPrice",infantsTotalPrice,
+      "activityPrice",activityPrice,"transferPrice",transferPrice,"insurancePrice",insurancePrice,"couponCode",couponCode)
     // Return the total price, ensuring it's valid and not NaN
     return isNaN(total) ? 0 : total;
 };
@@ -289,14 +320,15 @@ const handleMealPlanChange = (event) => {
   
   // Usage of totalPrice function
   const finalPrice = totalPrice();
-  const displayFinalPrice = typeof finalPrice === 'number' && !isNaN(finalPrice) ? finalPrice.toFixed(2) : '0.00';
-
-
+  const selectedInsuranceIds = selectedInsurances?.map((insurance) => insurance.id);
+  const selectedMealPlanId = selectedMealPlan?.id;
+  const selectedActivityId = selectedActivity?.id;
+  const selectedTransferId = selectedTransfer?.id
   return (
     <Paper
      sx={{
         padding: '20px',
-        maxWidth: '1200px',
+        maxWidth: '1700px',
         margin: '20px auto',
         borderRadius: '10px',
         backgroundColor: 'white', // Light background color
@@ -332,27 +364,92 @@ const handleMealPlanChange = (event) => {
   gutterBottom
 >
   {title}
-</Typography>
+        </Typography>
 
-<Typography
-  variant="subtitle1" // Use subtitle1 for a cleaner look
-  sx={{
-    mb: 3, // Add margin below for spacing
-    color: '#FF8C42', // Keep the theme color for description
-    textAlign: 'center', // Center-align to match the title
-    fontSize: isMobile?'0.75rem':'1.1rem', // Slightly larger font size
-    lineHeight: '1.6', // Improve readability with line height
-    maxWidth: '800px', // Limit width for better focus
-    mx: 'auto', // Center the description by using auto margins
-  }}
->
-  {description}
-</Typography>
+          <Typography
+            variant="subtitle1" // Use subtitle1 for a cleaner look
+            sx={{
+              mb: 3, // Add margin below for spacing
+              color: '#FF8C42', // Keep the theme color for description
+              textAlign: 'center', // Center-align to match the title
+              fontSize: isMobile?'0.75rem':'1.1rem', // Slightly larger font size
+              lineHeight: '1.6', // Improve readability with line height
+              maxWidth: '800px', // Limit width for better focus
+              mx: 'auto', // Center the description by using auto margins
+            }}
+          >
+            {description}
+          </Typography>
 
 
 <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
+<Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    mt: 3, // Margin on top to separate it from other elements
+    mb: 3, // Margin on bottom for additional spacing
+  }}
+>
+  {adults>0&&<Button
+    variant="contained"
+    disableElevation
+    sx={{
+      backgroundColor: '#FF8C42', // Bold contrasting background for visibility
+      color: '#FFFFFF', // White text color for contrast
+      borderRadius: '30px', // More rounded for badge-like look
+      padding: '10px 20px', // Padding for a compact badge feel
+      fontSize: '1.1rem', // Slightly larger font for readability
+      fontWeight: 'bold',
+      minWidth: '200px', // Fixed minimum width for consistent badge appearance
+      textAlign: 'center',
+      textTransform: 'none',
+      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)', // Subtle shadow for badge effect
+      position: 'relative', // For additional styling if needed
+      '&:hover': {
+        backgroundColor: '#E6793B', // Darken on hover for effect
+        transform: 'scale(1.02)', // Slight scale for interactivity
+      },
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: '-6px',
+        right: '-6px',
+        width: '14px',
+        height: '14px',
+        backgroundColor: '#0070ba',
+        borderRadius: '50%', // Dot style to indicate action or focus
+        boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.2)',
+      },
+    }}
+    onClick={() =>
+      navigate('/booking-details', {
+        state: {
+          packageData,
+          finalPrice,
+          adults,
+          selectedRoomsId,
+          infants,
+          couponId,
+          selectedInsuranceIds,
+          selectedActivity,
+          selectedTransfer,
+          selectedMealPlanId,
+          selectedTransferId,
+          selectedActivityId,
+          couponCode,
+          previousLocation,
+          selectedRoom,
+        },
+      })
+    }
+  >
+    Weiter zur Buchung - Gesamt: €{totalPrice}
+  </Button>}
+</Box>
 
 
+<Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
         
 
@@ -391,6 +488,9 @@ const handleMealPlanChange = (event) => {
       selectedInsurances={selectedInsurances}
       handleAddInsurance={handleAddInsurance}
       handleRemoveInsurance={handleRemoveInsurance}
+      NeedInsurance = {NeedInsurance}
+      NeedTransfer={NeedTransfer}
+      NeedActivity={NeedActivity}
       travelInsurance={travelInsurance}
       handleTravelInsuranceChange={handleTravelInsuranceChange}
         />
@@ -402,58 +502,28 @@ const handleMealPlanChange = (event) => {
         <Divider sx={{ my: 2, borderColor: '#004e8c' }} />
 
         {/* Proceed to Book Button */}
-        <FloatingButtonWithPrice 
+        {adults>0&&<FloatingButtonWithPrice 
         finalPrice={finalPrice}
         packageData={packageData}
         adults={adults}
         infants={infants}
-        selectedActivity={selectedActivity}
-        selectedTransfer={selectedTransfer}
-      />
+        selectedRoomsId={selectedRoomsId}
+        selectedRoom={selectedRoom}
+        couponCode={couponCode}
+        selectedInsuranceIds={selectedInsuranceIds}
+        selectedMealPlanId={selectedMealPlan}
+        selectedTransferId={selectedTransferId}
+        selectedActivityId={selectedActivityId}
+        previousLocation={previousLocation}
+      />}
       <Coupons setCouponCode={setCouponCode}
        setDiscount={setDiscount} 
        discount={discount} couponCode={couponCode}
        couponsApi={couponsApi}  // Pass the wrapped API function
        />
-      <Button
-  variant="contained"
-  fullWidth
-  sx={{
-    background: 'linear-gradient(90deg, #004e8c 0%, #005b99 50%, #0070ba 100%)',
-    color: '#FAF3E0',
-    borderRadius: isMobile ? '30px' : '50px', // Slightly less rounded on mobile for compactness
-    textTransform: 'none',
-    fontWeight: 'bold',
-    py: isMobile ? 1.5 : 2, // Reduced padding for mobile to fit smaller screens
-    fontSize: isMobile ? '1rem' : '1.2rem', // Adjusted font size for better readability on small screens
-    boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.1)',
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      background: 'linear-gradient(90deg, #00336a 0%, #004c88 50%, #00508c 100%)',
-      transform: 'scale(1.05)', // Adds an interactive hover effect
-      boxShadow: '0px 8px 18px rgba(0, 0, 0, 0.2)',
-    },
-    ...(isMobile && {
-      py: 1.5, // Slightly smaller padding for mobile devices
-      fontSize: '1rem', // Adjusted font size for mobile readability
-      minWidth: '90%', // Ensures button width fits nicely on mobile
-    }),
-  }}
-  onClick={() =>
-    navigate('/booking-details', {
-      state: {
-        packageData,
-        finalPrice,
-        adults,
-        infants,
-        selectedActivity,
-        selectedTransfer,
-      },
-    })
-  }
->
-  Proceed to Book
-</Button>
+  
+
+
 
 
 

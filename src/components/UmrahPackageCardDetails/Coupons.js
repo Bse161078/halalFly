@@ -1,26 +1,23 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Paper, Alert, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import Translation_german from '../Translation/translation_german';
 
 const Coupons = ({ couponsApi, discount, setDiscount, setCouponCode, couponCode }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
   // Handle applying the coupon via API
   const handleApplyCoupon = async () => {
     try {
-      console.log("couponCode", couponCode);
       const response = await couponsApi(couponCode); // Call the API and retrieve the response
-      console.log("API response: ", response);
 
       if (response.isValid === true) {
-        const discountPrice = discount;
-        setSuccessMessage(`Coupon applied! You saved ${discount}€ Per Person.`);
+        setSuccessMessage(`${Translation_german.COUPON_APPLIED} ${discount} € ${Translation_german.PER_PERSON}.`);
         setErrorMessage('');
       } else {
-        setErrorMessage('Invalid coupon code. Please try again.');
+        setErrorMessage(`${Translation_german.COUPON_ERROR}`);
         setSuccessMessage('');
       }
     } catch (error) {
@@ -44,12 +41,12 @@ const Coupons = ({ couponsApi, discount, setDiscount, setCouponCode, couponCode 
         variant={isMobile ? "subtitle1" : "h6"} 
         sx={{ fontWeight: 'bold', color: '#004e8c', mb: 2 }}
       >
-        Apply Coupon
+        {Translation_german.COUPONS_SECTION}
       </Typography>
       
       <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2 }}>
         <TextField
-          label="Enter coupon code"
+          label={Translation_german.ENTER_YOUR_COUPON_CODE}
           variant="outlined"
           fullWidth
           value={couponCode}
@@ -79,7 +76,7 @@ const Coupons = ({ couponsApi, discount, setDiscount, setCouponCode, couponCode 
           }}
           onClick={handleApplyCoupon}
         >
-          Apply
+          {Translation_german.APPLY}
         </Button>
       </Box>
 
@@ -89,11 +86,11 @@ const Coupons = ({ couponsApi, discount, setDiscount, setCouponCode, couponCode 
           {errorMessage}
         </Alert>
       )}
-      {successMessage && (
+      {/* {successMessage && (
         <Alert severity="success" sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1rem' }}>
           {successMessage}
         </Alert>
-      )}
+      )} */}
 
       {/* Show discount */}
       {discount > 0 && (
@@ -101,7 +98,7 @@ const Coupons = ({ couponsApi, discount, setDiscount, setCouponCode, couponCode 
           variant="body2" 
           sx={{ fontWeight: 'bold', color: '#004e8c', fontSize: isMobile ? '0.875rem' : '1rem' }}
         >
-          Discount Applied: {discount}€ Per Person
+          {Translation_german.APPLY_DISCOUNT} {discount}€ {Translation_german.PER_PERSON}
         </Typography>
       )}
     </Paper>

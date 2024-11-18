@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   TextField,
   Button,
-  Tooltip,
   Divider,
   FormControl,
   FormLabel,
@@ -19,61 +18,82 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import PersonIcon from '@mui/icons-material/Person';
+import { useDispatch } from 'react-redux';
+import { createGetInTouch } from 'src/services';
+import { createGetInTouchApiReset } from 'src/reducers';
+import LoadingScreen from '../LoadingScreen';
+import Translation_german from '../Translation/translation_german';
+import { Circle } from '@mui/icons-material';
 
 const ContactUsForm = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [loading, setLoading] = useState(false); // Loading state
+  const dispatch = useDispatch();
+  const [message, setMessage] = useState(null); // State to store the feedback message
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    packageType: 'Umrah Package',
-    numTravelers: '',
-    arrivalDate: '',
-    departureDate: '',
-    flight: 'No',
-    hotelClass: '5 Star',
-    roomType: 'Single',
-    transfer: 'No',
-    transport: 'No',
-    activities: 'No',
-    specialRequests: '',
-    contactMethod: 'Email',
-  });
+    PackageType: Translation_german.UMRAH_PACKAGE_OPTION,
+    DepartureDate: '',
+    NumberOfTraveler: 1,
+    ArrivalDate: '',
+    Name: '',
+    Phoneno: '',
+    IsFlightIncluded: false,
+    DOB: '12-12-2222', // Static DOB value
+    Email: '',
+});
 
-  const roomTypes = {
-    Single: { persons: 1, color: '#4CAF50' },
-    Double: { persons: 2, color: '#2196F3' },
-    Triple: { persons: 3, color: '#FF9800' },
-    Quad: { persons: 4, color: '#E91E63' },
-  };
-
-  const renderPersons = (count, color) => {
-    return Array.from({ length: count }, (_, index) => (
-      <PersonIcon key={index} sx={{ color, fontSize: isMobile ? '1rem' : '1.5rem' }} />
-    ));
-  };
-
-  const handleChange = (event) => {
+const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
-  const handleSubmit = (event) => {
+    setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: name === "NumberOfTraveler" ? parseInt(value, 10) || 1 : value,
+    }));
+};
+
+const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Form Data:', formData);
-    alert('Form submitted successfully!');
-  };
+    setLoading(true);
+
+    // Set the static DOB value before sending to the backend
+    const formDataToSend = {
+        ...formData,
+        DOB: '12-12-2222', // Ensure DOB is always the static value
+    };
+
+    try {
+        await dispatch(createGetInTouch(formDataToSend));
+        setMessage({
+            text: 'Formular erfolgreich übermittelt!',
+            type: 'success',
+        });
+
+        // Reset the form fields after submission
+        setFormData({
+            PackageType: Translation_german.UMRAH_PACKAGE_OPTION,
+            DepartureDate: '',
+            NumberOfTraveler: 1,
+            ArrivalDate: '',
+            Name: '',
+            Phoneno: '',
+            IsFlightIncluded: false,
+            DOB: '12-12-2222', // Reset to static value if needed in form
+            Email: '',
+        });
+    } catch (error) {
+        setMessage({
+            text: 'Fehler beim Übermitteln des Formulars.',
+            type: 'error',
+        });
+        console.error('Error submitting form:', error);
+    } finally {
+        dispatch(createGetInTouchApiReset());
+        setLoading(false);
+    }
+};
+
 
   // Adjustments to input and radio styles for mobile view
   const inputStyle = {
@@ -93,6 +113,23 @@ const ContactUsForm = () => {
 
   return (
     <Container maxWidth="md" sx={{ padding: 4, borderRadius: 3, marginTop: 5 }}>
+            {/* Show feedback message */}
+            {message && (
+        <Box
+          sx={{
+            mb: 2,
+            padding: 2,
+            color: message.type === 'success' ? 'green' : 'red',
+            backgroundColor: message.type === 'success' ? '#e0f7e9' : '#fdecea',
+            borderRadius: '8px',
+            textAlign: 'center',
+          }}
+        >
+          {message.text}
+        </Box>
+      )}
+
+        
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -103,24 +140,25 @@ const ContactUsForm = () => {
           boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.1)',
         }}
       >
+      
         <Typography
           variant={isMobile ? 'h5' : 'h4'}
           gutterBottom
           align="center"
           sx={{ color: '#004e8c', fontWeight: 'bold', mb: isMobile ? 2 : 4 }}
         >
-          Contact Us
+          {Translation_german.CONTACT_US_FORM_TITLE}
         </Typography>
         <Divider sx={{ my: isMobile ? 2 : 4, borderBottom: '2px solid #FF8C42' }} />
 
         <Grid container spacing={isMobile ? 2 : 3}>
-          {/* Name */}
+          {/* Full Name */}
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Full Name"
-              name="name"
-              value={formData.name}
+              label={Translation_german.FULL_NAME_LABEL}
+              name="Name"
+              value={formData.Name}
               onChange={handleChange}
               required
               sx={inputStyle}
@@ -131,10 +169,10 @@ const ContactUsForm = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Email Address"
-              name="email"
-              type="email"
-              value={formData.email}
+              label={Translation_german.EMAIL_LABEL}
+              name="Email"
+              type='email'
+              value={formData.Email}
               onChange={handleChange}
               required
               sx={inputStyle}
@@ -145,10 +183,10 @@ const ContactUsForm = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Phone Number"
-              name="phone"
+              label={Translation_german.PHONE_LABEL}
+              name="Phoneno"
               type="tel"
-              value={formData.phone}
+              value={formData.Phoneno}
               onChange={handleChange}
               required
               sx={inputStyle}
@@ -158,15 +196,22 @@ const ContactUsForm = () => {
           {/* Package Type */}
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="standard">
-              <InputLabel sx={{ color: '#004e8c' }}>Package Type</InputLabel>
+              <InputLabel sx={{ color: '#004e8c' }}>
+                {Translation_german.PACKAGE_TYPE_LABEL}
+              </InputLabel>
               <Select
-                name="packageType"
+              required
+                name="PackageType"
                 value={formData.packageType}
                 onChange={handleChange}
                 sx={inputStyle}
               >
-                <MenuItem value="Umrah Package">Umrah Package</MenuItem>
-                <MenuItem value="Land Package">Land Package</MenuItem>
+                <MenuItem value={Translation_german.UMRAH_PACKAGE_OPTION}>
+                  {Translation_german.UMRAH_PACKAGE_OPTION}
+                </MenuItem>
+                <MenuItem value={Translation_german.LAND_PACKAGE_OPTION}>
+                  {Translation_german.LAND_PACKAGE_OPTION}
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -175,10 +220,10 @@ const ContactUsForm = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Number of Travelers"
-              name="numTravelers"
-              type="number"
-              value={formData.numTravelers}
+              label={Translation_german.NUM_TRAVELERS_LABEL}
+              name="NumberOfTraveler"
+              type='number'
+              value={formData.NumberOfTraveler}
               onChange={handleChange}
               required
               sx={inputStyle}
@@ -188,12 +233,13 @@ const ContactUsForm = () => {
           {/* Arrival Date */}
           <Grid item xs={12} sm={6}>
             <TextField
+            required
               fullWidth
-              label="Arrival Date"
-              name="arrivalDate"
+              label={Translation_german.ARRIVAL_DATE_LABEL}
+              name="ArrivalDate"
               type="date"
               InputLabelProps={{ shrink: true }}
-              value={formData.arrivalDate}
+              value={formData.ArrivalDate}
               onChange={handleChange}
               sx={inputStyle}
             />
@@ -202,12 +248,13 @@ const ContactUsForm = () => {
           {/* Departure Date */}
           <Grid item xs={12} sm={6}>
             <TextField
+            required
               fullWidth
-              label="Departure Date"
-              name="departureDate"
+              label={Translation_german.DEPARTURE_DATE_LABEL}
+              name="DepartureDate"
               type="date"
               InputLabelProps={{ shrink: true }}
-              value={formData.departureDate}
+              value={formData.DepartureDate}
               onChange={handleChange}
               sx={inputStyle}
             />
@@ -217,18 +264,22 @@ const ContactUsForm = () => {
           <Grid item xs={12}>
             <FormControl fullWidth>
               <FormLabel sx={{ color: '#004e8c', fontSize: isMobile ? '0.85rem' : '1rem' }}>
-                Do you already have flight tickets?
+                {Translation_german.FLIGHT_TICKETS_LABEL}
               </FormLabel>
               <RadioGroup
                 row={!isMobile}
-                name="flight"
-                value={formData.flight}
-                onChange={handleChange}
+                name="IsFlightIncluded"
+                value={formData.IsFlightIncluded}
+                onChange={(event) => setFormData({
+                  ...formData,
+                  IsFlightIncluded: event.target.value === "true" // Convert string "true"/"false" to actual boolean
+                })}
                 sx={{ flexDirection: isMobile ? 'column' : 'row' }}
               >
-                <FormControlLabel value="Yes" control={<Radio sx={radioStyle} />} label="Yes" />
-                <FormControlLabel value="No" control={<Radio sx={radioStyle} />} label="No" />
+                <FormControlLabel value={true} control={<Radio sx={radioStyle} />} label={Translation_german.YES_OPTION} />
+                <FormControlLabel value={false} control={<Radio sx={radioStyle} />} label={Translation_german.NO_OPTION} />
               </RadioGroup>
+
             </FormControl>
           </Grid>
 
@@ -248,8 +299,11 @@ const ContactUsForm = () => {
                 },
               }}
               fullWidth
-            >
-              Submit Your Request
+            > {loading ? (
+              <Circle size={24} sx={{ color: '#fff' }} />
+            ) : (
+              Translation_german.SUBMIT_BUTTON_TEXT
+            )}
             </Button>
           </Grid>
         </Grid>

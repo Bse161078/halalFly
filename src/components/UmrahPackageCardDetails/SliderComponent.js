@@ -3,6 +3,7 @@ import { useTheme,useMediaQuery,Box, Grid, IconButton, Typography } from '@mui/m
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Translation_german from '../Translation/translation_german';
 
 const SliderComponent = ({ images }) => {
   const [open, setOpen] = useState(false); // For controlling the modal
@@ -55,7 +56,8 @@ const SliderComponent = ({ images }) => {
               alt={images[0]?.name}
               style={{
                 width: '100%',
-                height: '400px',
+                marginLeft:isMobile?0:70,
+                height: '500px',
                 objectFit: 'contain', // Cover instead of contain for a more immersive look
                 borderRadius: '8px',
               }}
@@ -136,7 +138,7 @@ const SliderComponent = ({ images }) => {
                       fontWeight: 'bold',
                     }}
                   >
-                    View all photos
+                    {Translation_german.VIEW_ALL_PHOTOS_BUTTON}
                   </Typography>
                 </Box>
               </Grid>

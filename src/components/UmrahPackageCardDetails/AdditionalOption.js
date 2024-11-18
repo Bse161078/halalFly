@@ -29,6 +29,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import InfoIcon from '@mui/icons-material/Info';
+import Translation_german from '../Translation/translation_german';
 
 const AdditionalOptions = ({ 
   // Activity-related props
@@ -37,6 +38,8 @@ const AdditionalOptions = ({
   selectedActivity,
   handleActivityChange,
   activityDetails,
+  NeedTransfer,
+  NeedActivity,
   
   // Transfer-related props
   transferInsurance,
@@ -53,7 +56,9 @@ const AdditionalOptions = ({
   handleRemoveInsurance,
   
   // Insurance options
-  insuranceOptions
+  insuranceOptions,
+
+  NeedInsurance
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -124,14 +129,14 @@ const AdditionalOptions = ({
     <Grid container spacing={4}>
       {/* Activity Options */}
       {/* Activity Options */}
-      <Grid item xs={12} sm={6}>
+     {NeedActivity&& <Grid item xs={12} sm={6}>
   {/* Activity Insurance Yes/No */}
   <Box mt={2} ml={isMobile?3:0}>
     <Typography 
       variant={isMobile?'caption':"subtitle1"} 
       sx={{ fontWeight: 'bold', color: '#004e8c' }}
     >
-      Do you need Activity Options?
+      {Translation_german.NEED_ACTIVITY_OPTIONS}
     </Typography>
     <RadioGroup
       row
@@ -148,7 +153,7 @@ const AdditionalOptions = ({
   }}
   value="yes"
   control={<Radio sx={{ transform: isMobile ? 'scale(0.8)' : 'scale(1)' }} />} // Adjust Radio size for mobile
-  label="Yes"
+  label={Translation_german.YES_OPTION}
 />
 <FormControlLabel
   sx={{
@@ -158,7 +163,7 @@ const AdditionalOptions = ({
   }}
   value="no"
   control={<Radio sx={{ transform: isMobile ? 'scale(0.8)' : 'scale(1)' }} />} // Adjust Radio size for mobile
-  label="No"
+  label={Translation_german.NO_OPTION}
 />
 
     </RadioGroup>
@@ -172,7 +177,7 @@ const AdditionalOptions = ({
         gutterBottom 
         sx={{ fontWeight: 'bold', color: '#004e8c' }}
       >
-        Activity Options:
+        {Translation_german.ACTIVITY_OPTIONS_TITLE}
       </Typography>
       <FormControl fullWidth>
         
@@ -203,7 +208,7 @@ const AdditionalOptions = ({
           inputProps={{ 'aria-label': 'Select Activity Option' }}
         >
           <MenuItem value="">
-            <em style={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>None</em>
+            <em style={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>{Translation_german.NONE}</em>
           </MenuItem>
           {activityDetails
             .filter(activity => activity.isActivityIncluded)
@@ -220,21 +225,21 @@ const AdditionalOptions = ({
   {/* Optional: Handle Case When No Activities Are Included */}
   {activityInsurance === 'yes' && !activityDetails.some(activity => activity.isActivityIncluded) && (
     <Typography variant={isMobile?'caption':"body2"} color="textSecondary" mt={2}>
-      No available Activity Options at this time.
+      {Translation_german.NO_ACTIVITY_AVAILABLE}
     </Typography>
   )}
-</Grid>
+</Grid>}
 
 
       {/* Transfer Options */}
-      <Grid item xs={12} sm={6}>
+     {NeedTransfer&& <Grid item xs={12} sm={6}>
   {/* Transfer Insurance Yes/No */}
   <Box mt={2}ml={isMobile?3:0}>
     <Typography 
       variant={isMobile?'caption':"subtitle1"} 
       sx={{ fontWeight: 'bold', color: '#004e8c' }}
     >
-      Do you need Transfer Options?
+      {Translation_german.NEED_TRANSFER_OPTIONS}
     </Typography>
     <RadioGroup
       row
@@ -250,7 +255,7 @@ const AdditionalOptions = ({
   }}
   value="yes"
   control={<Radio sx={{ transform: isMobile ? 'scale(0.8)' : 'scale(1)' }} />} // Adjust Radio size for mobile
-  label="Yes"
+  label={Translation_german.YES_OPTION}
 />
       <FormControlLabel sx={{
     '& .MuiFormControlLabel-label': {
@@ -259,7 +264,7 @@ const AdditionalOptions = ({
   }}
   value="no"
   control={<Radio sx={{ transform: isMobile ? 'scale(0.8)' : 'scale(1)' }} />} // Adjust Radio size for mobile
-  label="No"
+  label={Translation_german.NO_OPTION}
 />
     </RadioGroup>
   </Box>
@@ -272,8 +277,8 @@ const AdditionalOptions = ({
         gutterBottom 
         sx={{ fontWeight: 'bold', color: '#004e8c' }}
       >
-        Transfer Options:
-      </Typography>
+      {Translation_german.TRANSFER_OPTIONS_TITLE}     
+ </Typography>
       <FormControl fullWidth>
   <Select
     labelId="transfer-select-label"
@@ -303,7 +308,7 @@ const AdditionalOptions = ({
     inputProps={{ 'aria-label': 'Select Transfer Option' }}
   >
     <MenuItem value="">
-      <em style={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>None</em>
+      <em style={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>{Translation_german.NONE}</em>
     </MenuItem>
     {transferDetails
       .filter(transfer => transfer.isTransferIncluded)
@@ -321,13 +326,13 @@ const AdditionalOptions = ({
   {/* Optional: Handle Case When No Transfers Are Included */}
   {transferInsurance === 'yes' && !transferDetails.some(transfer => transfer.isTransferIncluded) && (
     <Typography variant={isMobile?'caption':"body2"} color="textSecondary" mt={2}>
-      No available Transfer Options at this time.
+      {Translation_german.NO_TRANSFER_AVAILABLE}
     </Typography>
   )}
-</Grid>
+</Grid>}
 
       {/* Travel Insurance Section */}
-      <Grid item xs={12}>
+      {NeedInsurance&&<Grid item xs={12}>
       <Box
         sx={{
           padding: isMobile ? '16px' : '24px',
@@ -341,7 +346,7 @@ const AdditionalOptions = ({
           gutterBottom 
           sx={{ fontWeight: 'bold', color: '#004e8c' }}
         >
-          Travel Insurance:
+          {Translation_german.TRAVEL_INSURANCE_TITLE}
         </Typography>
 
         {/* Travel Insurance Yes/No */}
@@ -350,7 +355,7 @@ const AdditionalOptions = ({
             variant={isMobile ? 'body2' : 'subtitle1'} 
             sx={{ fontWeight: 'bold', color: '#004e8c' }}
           >
-            Do you need travel insurance?
+            {Translation_german.NEED_TRAVEL_INSURANCE}
           </Typography>
           <RadioGroup
             row
@@ -363,12 +368,15 @@ const AdditionalOptions = ({
             <FormControlLabel
               value="yes"
               control={<Radio />}
-              label={<Typography sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>Yes</Typography>}
+              label={<Typography sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
+                {Translation_german.YES_OPTION}
+                </Typography>}
             />
             <FormControlLabel
               value="no"
               control={<Radio />}
-              label={<Typography sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>No</Typography>}
+              label={<Typography sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
+                {Translation_german.NO_OPTION}</Typography>}
             />
           </RadioGroup>
         </FormControl>
@@ -380,7 +388,7 @@ const AdditionalOptions = ({
               variant={isMobile ? 'body2' : 'subtitle1'} 
               sx={{ fontWeight: 'bold', color: '#004e8c' }}
             >
-              Selected Insurance Types:
+              {Translation_german.SELECTED_INSURANCE_TYPES}
             </Typography>
 
             {selectedInsurances.length > 0 ? (
@@ -392,7 +400,7 @@ const AdditionalOptions = ({
                   <Typography variant="body2" sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
                     {formatInsuranceType(insurance.InsuranceType)} - €{insurance.InsurancePrice}
                   </Typography>
-                  <Tooltip title="View Details">
+                  <Tooltip title="Details anzeigen">
                     <IconButton 
                       color="primary" 
                       onClick={() => handleDialogOpen(insurance.InsuranceType)}
@@ -401,7 +409,7 @@ const AdditionalOptions = ({
                       <InfoIcon fontSize={isMobile ? 'small' : 'medium'} />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Remove Insurance">
+                  <Tooltip title="Versicherung entfernen">
                     <IconButton 
                       color="error" 
                       onClick={() => handleRemoveInsurance(idx)}
@@ -414,7 +422,7 @@ const AdditionalOptions = ({
               ))
             ) : (
               <Typography variant="body2" color="textSecondary" sx={{ fontSize: isMobile ? '0.7rem' : '1rem' }}>
-                No insurance types selected.
+                {Translation_german.NO_INSURANCE_SELECTED}
               </Typography>
             )}
 
@@ -430,13 +438,13 @@ const AdditionalOptions = ({
                   padding: isMobile ? '4px 8px' : '6px 16px',
                 }}
               >
-                Add Insurance
+                {Translation_german.ADD_INSURANCE}
               </Button>
             </Box>
           </Box>
         )}
       </Box>
-    </Grid>
+    </Grid>}
 
       {/* Insurance Selection Dialog */}
       {/* Insurance Selection Dialog */}
@@ -459,7 +467,7 @@ const AdditionalOptions = ({
       justifyContent: 'space-between',
     }}
   >
-    Select Insurance Type
+    {Translation_german.SELECTED_INSURANCE_TYPES}
     <IconButton
       aria-label="close"
       onClick={handleInsuranceSelectionCancel}
@@ -512,7 +520,7 @@ const AdditionalOptions = ({
         },
       }}
     >
-      Cancel
+      {Translation_german.CANCEL_BUTTON}
     </Button>
     <Button 
       onClick={handleInsuranceSelectionConfirm} 
@@ -528,7 +536,7 @@ const AdditionalOptions = ({
         },
       }}
     >
-      Add
+      {Translation_german.ADD_SELECTED_INSURANCE}
     </Button>
   </DialogActions>
 </Dialog>
@@ -556,7 +564,7 @@ const AdditionalOptions = ({
       justifyContent: 'space-between',
     }}
   >
-    Insurance Details
+    {Translation_german.INSURANCE_DETAILS_DIALOG_TITLE}
     <IconButton
       aria-label="close"
       onClick={handleDialogClose}
@@ -591,7 +599,7 @@ const AdditionalOptions = ({
         },
       }}
     >
-      Close
+      {Translation_german.CLOSE_BUTTON}
     </Button>
   </DialogActions>
 </Dialog>

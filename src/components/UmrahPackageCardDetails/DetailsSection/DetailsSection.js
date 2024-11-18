@@ -3,6 +3,7 @@ import { useTheme,useMediaQuery,Box, Typography, Divider, Paper } from '@mui/mat
 import FlightDetailsSection from './FlightDetailsSection';
 import HotelDetailsSection from './hotelDetailsSection';
 import PackageInclusionsExclusions from './PackageInclusionsExclusions';
+import Translation_german from 'src/components/Translation/translation_german';
 
 const DetailsSection = ({ flightDetails, hotelTypes, packages }) => {
   const theme = useTheme();
@@ -20,7 +21,7 @@ const DetailsSection = ({ flightDetails, hotelTypes, packages }) => {
           letterSpacing: isMobile?'0.5px':'1px', // Add letter spacing for a cleaner look
         }}
       >
-        What's Included in Your Umrah Package
+        {Translation_german.INCLUDED_IN_SERVICE}
       </Typography>
 
       <Divider sx={{ mb: 4, borderColor: '#004e8c' }} />
@@ -50,7 +51,7 @@ const DetailsSection = ({ flightDetails, hotelTypes, packages }) => {
           variant="h5"
           sx={{fontSize:isMobile?'1rem':'1.5rem' ,color: '#ff8c42', fontWeight: 'bold', mb: isMobile?0:2, textAlign: 'center' }}
         >
-          Flights
+          {Translation_german.FLIGHTS_LABEL}
         </Typography>
         <FlightDetailsSection flightDetails={flightDetails} />
       </Paper>
@@ -74,7 +75,7 @@ const DetailsSection = ({ flightDetails, hotelTypes, packages }) => {
           variant="h5"
           sx={{ fontSize:isMobile?'1rem':'1.5rem' , color: '#ff8c42', fontWeight: 'bold', mb: isMobile?0:2, textAlign: 'center' }}
         >
-          Hotels
+          {Translation_german.HOTELS_LABEL}
         </Typography>
         <HotelDetailsSection hotelTypes={hotelTypes} />
       </Paper>
@@ -86,7 +87,7 @@ const DetailsSection = ({ flightDetails, hotelTypes, packages }) => {
         variant="body1"
         sx={{fontSize:isMobile?'0.5rem':'1rem' , color: '#004e8c', textAlign: 'center', fontStyle: 'italic', maxWidth: '800px', mx: 'auto' }}
       >
-        These inclusions are part of your journey, offering you a seamless and memorable Umrah experience.
+        {Translation_german.JOURNEY_INCLUSIONS}
       </Typography>
     </Box>
   );
